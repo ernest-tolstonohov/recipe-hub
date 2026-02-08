@@ -1,0 +1,18 @@
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    container_name: recipehub-mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: recipehub
+      MYSQL_USER: recipehub_user
+      MYSQL_PASSWORD: recipehub_pass
+
+volumes:
+  mysql_data:
