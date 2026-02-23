@@ -1,24 +1,20 @@
 {
-  "name": "recipe-hub",
+  "name": "sd2-example",
   "version": "1.0.0",
-  "description": "RecipeHub is a student-focused, database-driven web app for sharing and discovering recipes. It supports the 2026 module theme of “Sharing, exchange and building community” by enabling knowledge exchange, collaboration, and community support around cooking.",
-  "main": "backend/server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "supervisor index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ernest-tolstonohov/recipe-hub.git"
-  },
-  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ernest-tolstonohov/recipe-hub/issues"
-  },
-  "homepage": "https://github.com/ernest-tolstonohov/recipe-hub#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.0",
+    "sqlite3": "^5.0.2",
+    "supervisor": "^0.12.0"
   }
 }

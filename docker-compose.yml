@@ -1,18 +1,28 @@
+version: '3.3'
 services:
-  mysql:
+  web:
     build:
-      context: .
-      dockerfile: ./docker/mysql/Dockerfile
-    container_name: recipehub-mysql
-    ports:
-      - "3306:3306"
+      context: ./
     volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: recipehub
-      MYSQL_USER: recipehub_user
-      MYSQL_PASSWORD: recipehub_pass
-
-volumes:
-  mysql_data:
+      - .:/src
+    command: supervisor -e  'js,pug,html' index.js
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+  db:
+    image: mysql
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./db:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "8081:80"
