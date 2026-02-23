@@ -27,8 +27,10 @@ University students often face limited cooking skills, food waste, tight budgets
 
 - Frontend: HTML, CSS, JavaScript, Pug.
 - Backend: Node.js, Express.js, RESTful routes.
-- Database: MySQL (normalized, relational).
+- Database: MySQL (normalized, relational) with MySQL2 package for Node.js compatibility.
 - DevOps: Docker, Git, GitHub Actions.
+- Development: Node.js runs with supervisor for automatic rebuild on file changes.
+- Security: Environment variables managed via .env file (dotenv package).
 
 ## Project Structure
 
@@ -47,27 +49,51 @@ recipe-hub/
 └── package.json
 ```
 
+## System Requirements
+
+If running on your own computer (not Azure labs):
+
+- [Node.js](https://nodejs.org/en/download/) (for Windows)
+- [Docker Desktop](https://docs.docker.com/desktop/windows/install/) (for Windows, includes Linux Subsystem for Windows)
+
 ## Setup Instructions
 
-### 1. Install Dependencies
+### 1. Environment Configuration
+
+For security, this project uses a `.env` file for credentials. A sample is provided in the `env-sample` file.
+
+**Important:** Copy `env-sample` to `.env` before first run. Do NOT commit the `.env` file to your repository (it's already in .gitignore).
+
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Start MySQL Database (Docker)
+### 3. Start MySQL Database (Docker)
+
+Make sure no other containers are running (`docker ps`), then:
 
 ```bash
 docker compose up -d --build
 ```
 
-### 3. Start the Server
+This will set up:
+
+- MySQL database server
+- PHPMyAdmin (web-based database management)
+- Node.js application with auto-restart on file changes
+
+### 4. Start the Server
 
 ```bash
 npm start
 ```
 
-Visit http://localhost:3000 to see the application.
+### 5. Access the Application
+
+- **Express App:** http://localhost:3000
+- **PHPMyAdmin:** http://localhost:8081/
 
 ### Database Credentials
 
@@ -76,6 +102,46 @@ Visit http://localhost:3000 to see the application.
 - Database: recipehub
 - Username: recipehub_user
 - Password: recipehub_pass
+
+## Database Service
+
+The project includes a `db.js` service file (`app/services/db.js`) that handles all database connections using credentials from the `.env` file. It provides a `query()` function for sending queries to the database.
+
+To use the database service in your code:
+
+```javascript
+const db = require("./services/db");
+```
+
+## What's Included
+
+- **Docker Setup:** Preconfigured MySQL, PHPMyAdmin, and Node.js environment where all components can communicate.
+- **Database Service:** Ready-to-use database connection module with query functionality.
+- **Environment Configuration:** Secure credential management via `.env` file.
+- **Auto-Restart:** File changes automatically trigger app rebuild during development.
+- **Volume Mounting:** Local files are mounted into containers for seamless development.
+
+## Useful Commands
+
+### Access Container Shell
+
+```bash
+docker exec -it <container name> bash -l
+```
+
+### MySQL CLI Access
+
+Once inside the database container:
+
+```bash
+mysql -uroot -p<password>
+```
+
+### View Running Containers
+
+```bash
+docker ps
+```
 
 ## Author
 
