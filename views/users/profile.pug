@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+    .hero-section
+        h1 #{profileUser.username}'s Profile
+        p.subtitle Member since #{new Date(profileUser.created_at).toLocaleDateString()}
+        if user && user.id === profileUser.id
+            p.email Email: #{profileUser.email}
+            p.role Role: #{profileUser.role}
+
+    section.profile-saved
+        h2 Saved Recipes
+        .recipe-grid
+            each recipe in saved
+                .recipe-card-wrapper(data-recipe-id=recipe.id)
+                    article.recipe-card
+                        a.card-link(href=`/recipes/${recipe.id}`)
+                            .card-image-box
+                                img(src=recipe.image_url || 'https://via.placeholder.com/400x250?text=No+Image', alt=recipe.title)
+                            .card-content
+                                h2 #{recipe.title}
+                                p.author By #{recipe.author}
+                        
+                        if user && user.id === profileUser.id
+                            .card-actions
+                                button.btn.btn-unsave(data-recipe-id=recipe.id, data-user-id=user.id) 🗑️ Remove
+            else
+                .empty-state
+                    p No saved recipes yet.
+                    if user && user.id === profileUser.id
+                        a.btn.btn-primary(href="/") Explore Recipes
+
+block scripts
+    script(src="/js/bookmark.js")

@@ -7,7 +7,7 @@ var app = express();
 
 // Tell the app to use Pug for pages
 app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "../views"));
 
 // Allow the app to read form data
 app.use(express.urlencoded({ extended: true }));
@@ -27,10 +27,14 @@ app.use(session({
 const db = require('./services/db');
 
 // Import routes
-const authRoutes = require('./routes/auth');
+const authRoutes = require('../routes/auth');
+const recipeRoutes = require('../routes/recipes');
+const userRoutes = require('../routes/users');
 
 // Use routes
 app.use('/', authRoutes);
+app.use('/recipes', recipeRoutes);
+app.use('/users', userRoutes);
 
 // Home route
 app.get("/", function(req, res) {

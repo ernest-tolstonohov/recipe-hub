@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+    .hero-section
+        h1 My Saved Recipes
+        p.subtitle Your personal collection of student favorites.
+
+    .recipe-grid
+        each recipe in saved
+            .recipe-card(data-recipe-id=recipe.id, style="position: relative; cursor: default;")
+                a.card-link(href=`/recipes/${recipe.id}`, style="display:block; text-decoration:none;")
+                    .card-img-placeholder
+                        if recipe.image_url
+                            img(src=recipe.image_url, style="width:100%; height:100%; object-fit:cover;")
+                        else
+                            span(style="font-size:3rem; color:#d1d5db;") 🍽️
+                    .card-body
+                        h3 #{recipe.title}
+                        .card-author
+                            .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'U'}
+                            span @#{recipe.author}
+                        .card-meta
+                            span.stars ★★★★★
+                if user && user.id === profileUser.id
+                    button.btn.btn-unsave(data-recipe-id=recipe.id, data-user-id=user.id, style="position: absolute; top: 10px; right: 10px; background: white; border: 1px solid #ef4444; color: #ef4444; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; z-index: 10;") 🗑️ Remove
+        else
+            .empty-state(style="grid-column: 1 / -1; text-align: center; padding: 4rem; background: var(--white); border: 1px solid var(--border); border-radius: 8px;")
+                p You haven't saved any recipes yet.
+                a.btn.btn-primary(href="/", style="display:inline-block; margin-top: 1rem;") Explore Recipes
+
+block scripts
+    script(src="/js/bookmark.js")

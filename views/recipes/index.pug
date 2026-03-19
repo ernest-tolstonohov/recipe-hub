@@ -1,0 +1,136 @@
+extends ../layout
+
+block content
+    .hero-wrapper
+        .hero-hatch
+        h1 What's in your fridge?
+        p Find recipes using what you already have – reduce waste, save money.
+        
+        .search-widget
+            .input-group
+                .tag-chip chicken 
+                    span &times;
+                .tag-chip rice 
+                    span &times;
+                .tag-chip garlic 
+                    span &times;
+                input(type="text", placeholder="Add ingredient..")
+            
+            .filter-row
+                select
+                    option(selected) Meal Type
+                select
+                    option(selected) Dietary
+                select
+                    option(selected) Difficulty
+            
+            button.btn-find Find Recipes &rarr;
+
+    .container
+        .results-container
+            .results-area
+                .results-header
+                    h2 Popular This Week
+                
+                .recipe-grid
+                    article.recipe-card
+                        .match-badge 4 of 5 ingredients matched
+                        a.card-link(href="#")
+                            .card-image
+                                span.res-hint 16:9 image
+                            .card-body
+                                h3 Creamy Garlic Chicken Pasta
+                                .card-author
+                                    .avatar-xs(style="background: #a5d6a7;") J
+                                    span @jamie_cooks
+                                .card-meta
+                                    span.stars ★★★★★
+                                    span.recipe-tag(style="background: #e1f5fe; color: #01579b; border-color: #b3e5fc;") 🕒 30 min
+                                    span.recipe-tag Vegetarian
+
+                    article.recipe-card
+                        .match-badge 4 of 5 ingredients matched
+                        a.card-link(href="#")
+                            .card-image
+                                span.res-hint 16:9 image
+                            .card-body
+                                h3 Simple Fried Rice Bowl
+                                .card-author
+                                    .avatar-xs(style="background: #ef9a9a;") S
+                                    span @student_eats
+                                .card-meta
+                                    span.stars ★★★★☆
+                                    span.recipe-tag(style="background: #e1f5fe; color: #01579b; border-color: #b3e5fc;") 🕒 20 min
+                                    span.recipe-tag Easy
+
+                    article.recipe-card
+                        a.card-link(href="#")
+                            .card-image
+                                span.res-hint 16:9 image
+                            .card-body
+                                h3 Lemon Herb Baked Salmon
+                                .card-author
+                                    .avatar-xs(style="background: #ce93d8;") U
+                                    span @uni_kitchen
+                                .card-meta
+                                    span.stars ★★★★★
+                                    span.recipe-tag(style="background: #e1f5fe; color: #01579b; border-color: #b3e5fc;") 🕒 35 min
+                                    span.recipe-tag GF
+
+                //- Loop for real recipes if they exist, otherwise show placeholders as default
+                each recipe in recipes
+                    article.recipe-card
+                        .match-badge 5 of 5 ingredients matched
+                        a.card-link(href=`/recipes/${recipe.id}`)
+                            .card-image
+                                if recipe.image_url
+                                    img(src=recipe.image_url, alt=recipe.title)
+                                else
+                                    span.res-hint 16:9 image
+                            .card-body
+                                h3 #{recipe.title}
+                                .card-author
+                                    .avatar-xs(style="background: #ccc;") #{recipe.author ? recipe.author[0].toUpperCase() : 'G'}
+                                    span @#{recipe.author || 'chef_guest'}
+                                .card-meta
+                                    span.stars ★★★★★
+                                    span.recipe-tag(style="background: #e1f5fe; color: #01579b; border-color: #b3e5fc;") 🕒 30 min
+                                    span.recipe-tag Vegetarian
+
+            aside.sidebar
+                .sidebar-section
+                    h3 Recent Contributors
+                    .contributor
+                        .avatar-circle(style="background: #e0e0e0;") A
+                        .contributor-info
+                            h4 @alex_budget
+                            p 2 hours ago
+                    .contributor
+                        .avatar-circle(style="background: #f5f5f5;") S
+                        .contributor-info
+                            h4 @sara_vegan
+                            p 5 hours ago
+                    .contributor
+                        .avatar-circle(style="background: #eeeeee;") M
+                        .contributor-info
+                            h4 @mike_dorm
+                            p Yesterday
+
+                .sidebar-section
+                    h3 Latest Reviews
+                    .review-card
+                        span.stars ★★★★★
+                        p "Really easy to follow, perfect for a busy weeknight.."
+                    .review-card
+                        span.stars ★★★★☆
+                        p "Halved the ingredients and it still turned out great.."
+
+                .sidebar-section
+                    h3 Trending Tags
+                    .tag-cloud
+                        a.trending-tag(href="#") Vegan
+                        a.trending-tag(href="#") Italian
+                        a.trending-tag(href="#", style="background: #edf2f7; color: #2d3748;") Budget
+                        a.trending-tag(href="#") GF
+                        a.trending-tag(href="#", style="background: #e6fffa; color: #2c7a7b;") Quick
+                        a.trending-tag(href="#") Asian
