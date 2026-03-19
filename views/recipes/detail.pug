@@ -1,0 +1,106 @@
+extends ../layout
+
+block content
+    .container
+        .detail-header
+            .recipe-title-section
+                nav.breadcrumbs
+                    a(href="/") Home
+                    span &rsaquo;
+                    a(href="/browse") Browse
+                    span &rsaquo;
+                    a(href="#") Italian
+                    span &rsaquo;
+                    span #{recipe.title}
+                
+                h1 #{recipe.title}
+                
+                .card-author
+                    .avatar-xs
+                    span By @#{recipe.author || 'chef_guest'}
+                    span &bull; Published 12 Jan 2025
+                
+                .status-badges
+                    span.history-badge Last improved 3 days ago &bull; View history
+                
+                .meta-strip
+                    .meta-item
+                        span.meta-val 15 min
+                        span.meta-label Prep
+                    .meta-item
+                        span.meta-val 20 min
+                        span.meta-label Cook
+                    .meta-item
+                        span.meta-val 35 min
+                        span.meta-label Total
+                    .meta-item
+                        span.meta-val 4
+                        span.meta-label Serves
+                    .meta-item
+                        span.meta-val Easy
+                        span.meta-label Level
+                    .meta-item
+                        span.meta-val Italian
+                        span.meta-label Cuisine
+
+            .detail-hero-box
+                if recipe.image_url
+                    img(src=recipe.image_url, alt=recipe.title)
+                else
+                    span.emoji-placeholder 🥘
+
+        .action-bar(style="border-top: 2px solid #eee; border-bottom: 2px solid #eee; padding: 1rem 0; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;")
+            h3(style="font-size: 1rem; color: #555;") #{recipe.title}
+            .action-buttons(style="display: flex; gap: 1rem; align-items: center;")
+                if user
+                    button#bookmark-btn.btn.btn-bookmark(
+                        class=isSaved ? 'saved' : '', 
+                        data-recipe-id=recipe.id, 
+                        data-user-id=user.id, 
+                        data-saved=isSaved ? 'true' : 'false',
+                        style="padding: 0.4rem 1rem; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer;"
+                    )
+                        span.icon #{isSaved ? '🔖' : '☆'}
+                        span.label #{isSaved ? ' Save' : ' Save'}
+                span.stars(style="color: #fcc419;") ★★★★★
+                button.btn-suggest(style="padding: 0.4rem 1rem; border: 1px solid var(--secondary); color: var(--secondary); background: white; border-radius: 4px; cursor: pointer; font-weight: 600;") Suggest an Edit
+
+        .recipe-info
+            .ingredients
+                h2 Ingredients
+                p Servings: 
+                    button(style="width: 24px;") -
+                    span(style="margin: 0 0.5rem; font-weight: bold;") 4
+                    button(style="width: 24px;") +
+                pre(style="margin-top: 1rem;") #{recipe.ingredients}
+            
+            .instructions
+                h2 Instructions
+                pre #{recipe.instructions}
+
+        .reviews-section(style="margin-top: 4rem; padding-top: 2rem; border-top: 2px solid #eee;")
+            .review-header(style="display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem;")
+                span(style="font-size: 3rem; font-weight: 800; color: var(--navy);") 4.2
+                .rating-info
+                    span.stars(style="color: #fcc419; font-size: 1.5rem;") ★★★★☆
+                    p(style="font-size: 0.8rem; color: #666;") Based on 38 reviews
+            
+            .review-grid(style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;")
+                .review-card
+                    .card-author
+                        .avatar-xs
+                        span @lucy_halls
+                    span.stars ★★★★★
+                    p "Really easy to follow for a beginner. Turned out creamy and delicious first try."
+                    p(style="font-size: 0.7rem; color: #999; margin-top: 0.5rem;") 3 days ago
+                .review-card
+                    .card-author
+                        .avatar-xs
+                        span @tom_budget
+                    span.stars ★★★★☆
+                    p "Halved the recipe for one person, worked perfectly. Used bacon instead of pancetta."
+                    p(style="font-size: 0.7rem; color: #999; margin-top: 0.5rem;") 1 week ago
+
+block scripts
+    script(src="/js/bookmark.js")
+

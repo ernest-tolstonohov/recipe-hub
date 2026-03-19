@@ -1,0 +1,123 @@
+extends layout.pug
+
+block content
+  .hero-section
+    h1 What's in your fridge?
+    p Find recipes using what you already have - reduce waste, save money.
+    
+    .search-widget
+      .ingredient-input-area
+        .chip
+          span chicken
+          button ×
+        .chip
+          span rice
+          button ×
+        .chip
+          span garlic
+          button ×
+        input(type="text", placeholder="Add ingredient...", style="border:none; background:transparent; outline:none; font-size:0.9rem; margin:0;")
+      
+      .filter-row
+        select
+          option(value="") Meal Type
+          option(value="breakfast") Breakfast
+          option(value="lunch") Lunch
+          option(value="dinner") Dinner
+          option(value="snack") Snack
+        select
+          option(value="") Dietary
+          option(value="high-protein") High Protein
+          option(value="vegan") Vegan
+          option(value="vegetarian") Vegetarian
+          option(value="gluten-free") Gluten Free
+        select
+          option(value="") Difficulty
+          option(value="easy") Easy
+          option(value="medium") Medium
+          option(value="hard") Hard
+      button.btn-green Find Recipes &rarr;
+
+  .container.main-layout
+    .content-area
+      .section-header
+        span Popular This Week
+        
+      .recipe-grid
+        .recipe-card(onclick="window.location.href='/recipes/1'")
+          .match-badge 4 of 5 ingredients matched
+          .card-img-placeholder
+            span(style="font-size:3rem; color:#d1d5db;") 🍽️
+          .card-body
+            h3 Creamy Garlic Chicken Pasta
+            .card-author
+              .avatar-xs J
+              span @jamie_cooks
+            .card-meta
+              span.stars ★★★★★
+              span.tag.tag-green Vegetarian
+              
+        .recipe-card(onclick="window.location.href='/recipes/2'")
+          .card-img-placeholder
+            span(style="font-size:3rem; color:#d1d5db;") 🍽️
+          .card-body
+            h3 Simple Fried Rice Bowl
+            .card-author
+              .avatar-xs S
+              span @student_eats
+            .card-meta
+              span.stars ★★★★☆
+              span.tag Easy
+              
+        .recipe-card(onclick="window.location.href='/recipes/3'")
+          .card-img-placeholder
+            span(style="font-size:3rem; color:#d1d5db;") 🍽️
+          .card-body
+            h3 Lemon Herb Baked Salmon
+            .card-author
+              .avatar-xs M
+              span @uni_kitchen
+            .card-meta
+              span.stars ★★★★★
+              span.tag.tag-green GF
+
+    .sidebar
+      .sidebar-card
+        h4 Recent Contributors
+        .contributor-item
+          .avatar-md A
+          .contributor-info
+            p @alex_budget
+            span 2 hours ago
+        .contributor-item
+          .avatar-md S
+          .contributor-info
+            p @sara_vegan
+            span 5 hours ago
+        .contributor-item
+          .avatar-md M
+          .contributor-info
+            p @mike_dorm
+            span Yesterday
+
+      .sidebar-card
+        h4 Latest Reviews
+        .review-item
+          .stars ★★★★★
+          p "Really easy to follow, perfect for a busy weeknight..."
+        .review-item
+          .stars ★★★★☆
+          p "Halved the ingredients and it still turned out great..."
+
+      .sidebar-card
+        h4 Trending Tags
+        .tags-wrap
+          span.tag.tag-green Vegan
+          span.tag Italian
+          span.tag Budget
+          span.tag.tag-green GF
+          span.tag.tag-green Quick
+          span.tag Asian
+
+block scripts
+  script(src="/js/search.js")

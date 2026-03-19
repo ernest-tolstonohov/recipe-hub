@@ -1,0 +1,11 @@
+nav
+  a(href='/') RecipeHub
+  div
+    a(href='/') Browse
+    a(href='/recipes/new') My Recipes
+    if user
+      a(href='/users/' + user.user_id) My Profile
+      a(href='/logout') Logout
+    else
+      a(href='/register') Register
+      a(href='/login') Login
