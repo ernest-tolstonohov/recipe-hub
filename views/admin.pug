@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+    .hero-section
+        h1 Admin Dashboard
+        p.subtitle Management area for RecipeHub admins.
+
+    .admin-content
+        .alert.alert-info
+            p This is a restricted area. Only admins can see this page.
+        
+        .admin-stats
+            p Welcome, #{user.username}! You have administrative privileges.
+
+block scripts
+    // Add admin specific scripts here if needed

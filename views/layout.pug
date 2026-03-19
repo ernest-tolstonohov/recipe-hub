@@ -1,0 +1,59 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title RecipeHub
+        link(rel="stylesheet", href="/css/style.css")
+    body
+        nav.navbar
+            .container
+                a.brand(href="/")
+                    img(src="/images/logo.png", alt="RecipeHub Logo")
+                ul.nav-links
+                    li: a(href="/") Browse
+                    li: a(href="/my-recipes") My Recipes
+                    li: a(href="/community") Community
+                .auth-links
+                    if user
+                        .avatar-dropdown
+                            button.avatar-btn
+                                .avatar-xs
+                                span #{user.username}
+                            .dropdown-content
+                                a(href=`/users/${user.id}`) My Profile
+                                a(href=`/users/${user.id}/saved`) Saved Recipes
+                                a(href="/admin") Admin Panel
+                                form(method="POST", action="/logout", style="display:inline")
+                                    button.btn-logout(type="submit", style="width: 100%; text-align: left;") Logout
+                    else
+                        a.btn-login(href="/login") Login
+                        a.btn-register(href="/register") Register
+        
+        main
+            block content
+            
+        footer
+            .container
+                .footer-grid
+                    .footer-col.footer-brand
+                        h4 RecipeHub
+                        p Share Knowledge. Reduce Waste.
+                        .social-links
+                            a(href="#") Twitter
+                            span  - 
+                            a(href="#") Instagram
+                            span  - 
+                            a(href="#") GitHub
+                    .footer-col
+                        h4 Navigation
+                        ul
+                            li: a(href="/") Browse Recipes
+                            li: a(href="/my-recipes") My Recipes
+                            li: a(href="/community") Community
+                    .footer-col
+                        h4 Community Commitment
+                        p We believe in reducing food waste through shared knowledge and community cooking.
+            
+        block scripts
+

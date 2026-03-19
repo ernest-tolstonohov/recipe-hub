@@ -1,0 +1,14 @@
+extends layout.pug
+
+block content
+  h1 Welcome to RecipeHub
+  p Share Knowledge. Reduce Waste. Cook Together.
+  
+  if user
+    h2 Welcome back, #{user.username}!
+  else
+    p
+      a(href='/register') Register
+      |  or 
+      a(href='/login') Login
+      |  to get started!
