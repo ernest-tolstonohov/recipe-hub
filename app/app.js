@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
+const session = require("express-session");
 
 var app = express();
 
@@ -14,12 +15,26 @@ app.use(express.urlencoded({ extended: true }));
 // Add static files location (CSS, images)
 app.use(express.static(path.join(__dirname, "../static")));
 
+// Set up sessions (this is how the app remembers who is logged in)
+app.use(session({
+    secret: 'recipehub-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
+}));
+
 // Get the database
 const db = require('./services/db');
 
-// Home route - just for testing for now
+// Import routes
+const authRoutes = require('./routes/auth');
+
+// Use routes
+app.use('/', authRoutes);
+
+// Home route
 app.get("/", function(req, res) {
-    res.send("Hello world!");
+    res.render('index', { user: req.session.user });
 });
 
 // Start the server
