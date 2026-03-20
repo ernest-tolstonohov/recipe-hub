@@ -8,14 +8,18 @@ html(lang="en")
   body
     nav.navbar
       .container
-        a.brand(href="/") RecipeHub
+        a.brand(href="/")
+          img(src="/images/logo.png", alt="RecipeHub Logo")
+          span.brand-text RecipeHub
         ul.nav-links
-          li: a(href="/") Home
+          li: a(href="/browse") Browse
           li: a(href="/users/my-recipes") My Recipes
+          li: a(href="/community") Community
         .auth-links
           if user
             .avatar-dropdown
               button.avatar-btn
+                .avatar-md-circle #{user.username.charAt(0).toUpperCase()}
                 span #{user.username}
               .dropdown-content
                 a(href="/users/" + user.user_id) My Profile
@@ -30,14 +34,21 @@ html(lang="en")
     footer
       .container
         .footer-grid
-          .footer-col
+          .footer-col.footer-brand
             h4 RecipeHub
             p Share Knowledge. Reduce Waste.
+            .social-links
+              a(href="#") Twitter
+              span  · 
+              a(href="#") Instagram
+              span  · 
+              a(href="#") GitHub
           .footer-col
             h4 Navigation
             ul
-              li: a(href="/") Home
+              li: a(href="/browse") Browse Recipes
               li: a(href="/users/my-recipes") My Recipes
+              li: a(href="/community") Community
           .footer-col
             h4 Community Commitment
             p We believe in reducing food waste through shared knowledge and community cooking.

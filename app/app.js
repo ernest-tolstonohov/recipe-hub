@@ -26,10 +26,12 @@ const db = require('./services/db');
 // Import routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
+const recipeRoutes = require('./routes/recipes');
 
 // Use routes
 app.use('/', authRoutes);
 app.use('/', userRoutes);
+app.use('/', recipeRoutes);
 
 // Home route
 app.get("/", function(req, res) {

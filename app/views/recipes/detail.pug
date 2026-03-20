@@ -1,4 +1,4 @@
-extends ../layout
+extends ../layout.pug
 
 block content
     .container
@@ -6,11 +6,11 @@ block content
             .recipe-title-section
                 nav.breadcrumbs
                     a(href="/") Home
-                    span &rsaquo;
+                    span ›
                     a(href="/browse") Browse
-                    span &rsaquo;
-                    a(href="#") Italian
-                    span &rsaquo;
+                    span ›
+                    a(href="#") #{recipe.cuisine || 'Italian'}
+                    span ›
                     span #{recipe.title}
                 
                 h1 #{recipe.title}
@@ -18,29 +18,29 @@ block content
                 .card-author(style="margin-bottom: 1rem;")
                     .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'U'}
                     span by @#{recipe.author || 'guest'}
-                    span.text-muted(style="font-size:0.8rem; margin-left:0.5rem; color: #999;") &bull; Published 12 Jan 2025
+                    span.text-muted(style="font-size:0.8rem; margin-left:0.5rem; color: #999;") · Published 12 Jan 2025
                 
                 .status-badges
-                    span.history-badge ⟲ Last improved 3 days ago &bull; View history
+                    span.history-badge ⟲ Last improved 3 days ago · View history
                 
                 .meta-strip
                     .meta-item
-                        span.meta-val 15 min
+                        span.meta-val #{recipe.prep_time || '15'} min
                         span.meta-label Prep
                     .meta-item
-                        span.meta-val 20 min
+                        span.meta-val #{recipe.cook_time || '20'} min
                         span.meta-label Cook
                     .meta-item
-                        span.meta-val 35 min
+                        span.meta-val #{(parseInt(recipe.prep_time) + parseInt(recipe.cook_time)) || '35'} min
                         span.meta-label Total
                     .meta-item
-                        span.meta-val 4
+                        span.meta-val #{recipe.servings || '4'}
                         span.meta-label Serves
                     .meta-item
-                        span.meta-val Easy
+                        span.meta-val #{recipe.difficulty || 'Easy'}
                         span.meta-label Level
                     .meta-item
-                        span.meta-val Italian
+                        span.meta-val #{recipe.cuisine || 'Italian'}
                         span.meta-label Cuisine
 
             .detail-hero-box
@@ -57,7 +57,7 @@ block content
                     button#bookmark-btn.btn.btn-bookmark(
                         class=isSaved ? 'saved' : '', 
                         data-recipe-id=recipe.id, 
-                        data-user-id=user.id, 
+                        data-user-id=user.user_id, 
                         data-saved=isSaved ? 'true' : 'false'
                     )
                         span.label #{isSaved ? '🔖 Saved' : '⊞ Save'}
@@ -71,7 +71,7 @@ block content
                 h2 Ingredients
                 .servings-stepper
                     span Servings:
-                    button -
+                    button - 
                     span.count 4
                     button +
                 
@@ -124,7 +124,6 @@ block content
 
             .write-review-box
                 h4 Write a Review
-                .stars-input ☆ ☆ ☆ ☆ ☆
                 textarea(placeholder="Share your experience with this recipe...")
                 button.btn-submit Submit Review
 
@@ -138,7 +137,7 @@ block content
                     .history-item
                         .card-author
                             .avatar-xs A
-                            span @alex_cooks - Updated cooking time from 30 to 20 min
+                            span @alex_cooks — Updated cooking time from 30 to 20 min
                         .history-meta
                             span.badge-applied applied
                             span 3 days ago
@@ -146,22 +145,20 @@ block content
                     .history-item
                         .card-author
                             .avatar-xs S
-                            span @sara_vegan - Added GF substitution note to step 1
+                            span @sara_vegan — Added GF substitution note to step 1
                         .history-meta
                             span.badge-applied applied
                             span 1 week ago
                             a(href="#") [View Diff]
 
 block scripts
-    script(src="/js/bookmark.js")
     script.
         document.querySelectorAll('.ing-checkbox').forEach(cb => {
             cb.addEventListener('change', () => {
                 const total = document.querySelectorAll('.ing-checkbox').length;
                 const checked = document.querySelectorAll('.ing-checkbox:checked').length;
-                document.querySelector('.progress-fill').style.width = \`\${(checked/total)*100}%\`;
-                document.querySelector('.progress-text').innerText = \`You have \${checked} of \${total} ingredients\`;
+                document.querySelector('.progress-fill').style.width = `${(checked/total)*100}%`;
+                document.querySelector('.progress-text').innerText = `You have ${checked} of ${total} ingredients`;
                 cb.closest('.ingredient-item').classList.toggle('checked', cb.checked);
             });
         });
-
