@@ -4,123 +4,107 @@ block content
     .container
         .detail-header
             .recipe-title-section
-                nav.breadcrumbs
-                    a(href="/") Home
-                    span &rsaquo;
-                    a(href="/browse") Browse
-                    span &rsaquo;
-                    a(href="#") Italian
-                    span &rsaquo;
-                    span #{recipe.title}
-                
                 h1 #{recipe.title}
-                
+                .action-buttons
+                    if user
+                        button#bookmark-btn.btn.btn-bookmark(
+                            class=isSaved ? 'saved' : '',
+                            data-recipe-id=recipe.id,
+                            data-user-id=user.id,
+                            data-saved=isSaved ? 'true' : 'false'
+                        )
+                            span.icon #{isSaved ? '♥' : '♡'}
+                            span.label #{isSaved ? ' Saved' : ' Save'}
+
                 .card-author(style="margin-bottom: 1rem;")
                     .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'U'}
-                    span by @#{recipe.author || 'guest'}
-                    span.text-muted(style="font-size:0.8rem; margin-left:0.5rem; color: #999;") &bull; Published 12 Jan 2025
-                
-                .status-badges
-                    span.history-badge ⟲ Last improved 3 days ago &bull; View history
-                
+                    a(href=`/users/${recipe.user_id}` style="font-weight:500;") by @#{recipe.author || 'guest'}
+                    span.text-muted(style="font-size:0.8rem; margin-left:0.5rem; color:#999;")
+                        | &bull; #{new Date(recipe.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})}
+
                 .meta-strip
                     .meta-item
-                        span.meta-val 15 min
+                        span.meta-val #{recipe.prep_time} min
                         span.meta-label Prep
                     .meta-item
-                        span.meta-val 20 min
+                        span.meta-val #{recipe.cook_time} min
                         span.meta-label Cook
                     .meta-item
-                        span.meta-val 35 min
+                        span.meta-val #{recipe.prep_time + recipe.cook_time} min
                         span.meta-label Total
                     .meta-item
-                        span.meta-val 4
+                        span.meta-val #{recipe.servings}
                         span.meta-label Serves
                     .meta-item
-                        span.meta-val Easy
+                        span.meta-val #{recipe.difficulty}
                         span.meta-label Level
-                    .meta-item
-                        span.meta-val Italian
-                        span.meta-label Cuisine
 
             .detail-hero-box
                 if recipe.image_url
-                    img(src=recipe.image_url, alt=recipe.title)
+                    img(src=recipe.image_url, alt=recipe.title, style="width:100%;height:100%;object-fit:cover;border-radius:4px;")
                 else
-                    span.emoji-placeholder 📷
-                    span(style="position:absolute; bottom:10px; right:10px; font-size:0.7rem; color:#999;") Recipe Image - 16:9
-
-        .action-bar
-            h3 #{recipe.title}
-            .action-buttons
-                if user
-                    button#bookmark-btn.btn.btn-bookmark(
-                        class=isSaved ? 'saved' : '', 
-                        data-recipe-id=recipe.id, 
-                        data-user-id=user.id, 
-                        data-saved=isSaved ? 'true' : 'false'
-                    )
-                        span.icon #{isSaved ? '🔖' : '⊞'}
-                        span.label #{isSaved ? ' Saved' : ' Save'}
-                span.stars ★★★★★
-                button.btn-suggest - Suggest an Edit
+                    .recipe-img-placeholder
+                        span(style="font-size:3rem;") 🍽️
+                        span(style="font-size:0.8rem;color:#999;margin-top:0.5rem;") No image
 
         .recipe-info
             .ingredients
-                h3.zone-badge TWO-COLUMN BODY
                 h2 Ingredients
                 .servings-stepper
                     span Servings:
-                    button -
-                    span.count 4
-                    button +
-                
-                ul.ingredient-list
-                    - var ingredientsList = recipe.ingredients ? recipe.ingredients.split(',') : []
-                    each item in ingredientsList
-                        li.ingredient-item
-                            label
-                                input.ing-checkbox(type="checkbox")
-                                span.ing-text= item.trim()
-                
-                .progress-wrapper
-                    span.progress-text You have 0 of #{ingredientsList.length} ingredients
-                    .progress-bar
-                        .progress-fill(style="width: 0%;")
-            
+                    button#srv-minus -
+                    span#srv-count.count #{recipe.servings}
+                    button#srv-plus +
+
+                if ingredients && ingredients.length > 0
+                    ul.ingredient-list
+                        each item in ingredients
+                            li.ingredient-item
+                                label
+                                    input.ing-checkbox(type="checkbox")
+                                    span.ing-text
+                                        | #{item.quantity} #{item.unit} #{item.name}
+
+                    .progress-wrapper
+                        span#progress-text.progress-text You have 0 of #{ingredients.length} ingredients
+                        .progress-bar
+                            .progress-fill#progress-fill(style="width:0%;")
+                else
+                    p(style="color:var(--text-muted);font-size:0.9rem;padding:0.5rem 0;") No ingredients listed.
+
             .instructions
                 h2 Instructions
-                .instruction-steps
-                    - var stepsList = recipe.instructions ? recipe.instructions.split('\n') : []
-                    each step, index in stepsList
-                        if step.trim()
+                if Array.isArray(recipe.instructions) && recipe.instructions.length > 0
+                    .instruction-steps
+                        each step, index in recipe.instructions
                             .step-block
                                 .step-number= index + 1
-                                p= step.replace(/^\d+\.\s*/, '').trim()
+                                p= step
+                else
+                    p(style="color:var(--text-muted);font-size:0.9rem;padding:0.5rem 0;") No instructions listed.
 
         .reviews-section
-            h3.zone-badge REVIEWS SECTION
             .review-header
-                span.rating-score 4.2
+                span.rating-score #{parseFloat(recipe.avg_rating) > 0 ? parseFloat(recipe.avg_rating).toFixed(1) : '—'}
                 .rating-info
-                    span.stars ★★★★☆
-                    p Based on 38 reviews
-            
-            .review-grid
-                .review-card
-                    .card-author
-                        .avatar-xs L
-                        span @lucy_halls
-                    span.stars(style="display:block; margin: 0.5rem 0;") ★★★★★
-                    p "Really easy to follow for a beginner. Turned out creamy and delicious first try."
-                    p.review-date 3 days ago
-                .review-card
-                    .card-author
-                        .avatar-xs T
-                        span @tom_budget
-                    span.stars(style="display:block; margin: 0.5rem 0;") ★★★★☆
-                    p "Halved the recipe for one person, worked perfectly. Used bacon instead of pancetta."
-                    p.review-date 1 week ago
+                    span.stars
+                        - var r = Math.round(parseFloat(recipe.avg_rating) || 0)
+                        | #{Array(r).fill('★').join('')}#{Array(5-r).fill('☆').join('')}
+                    p Based on #{recipe.review_count} review#{recipe.review_count !== 1 ? 's' : ''}
+
+            if reviews && reviews.length > 0
+                .review-grid
+                    each review in reviews
+                        .review-card
+                            .card-author
+                                .avatar-xs #{review.username.charAt(0).toUpperCase()}
+                                a(href=`/users/${review.user_id}`) @#{review.username}
+                            span.stars(style="display:block; margin:0.5rem 0;")
+                                - var s = parseInt(review.rating)
+                                | #{Array(s).fill('★').join('')}#{Array(5-s).fill('☆').join('')}
+                            if review.body
+                                p "#{review.body}"
+                            p.review-date #{new Date(review.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})}
 
             .write-review-box
                 h4 Write a Review
@@ -128,40 +112,21 @@ block content
                 textarea(placeholder="Share your experience with this recipe...")
                 button.btn-submit Submit Review
 
-        .edit-history
-            h3.zone-badge(style="background: var(--green);") EDIT HISTORY
-            details
-                summary 
-                    span ⟲ Version History & Contributor Credits (6 edits)
-                    span.collapsed-text ▼ collapsed by default
-                .history-list
-                    .history-item
-                        .card-author
-                            .avatar-xs A
-                            span @alex_cooks - Updated cooking time from 30 to 20 min
-                        .history-meta
-                            span.badge-applied applied
-                            span 3 days ago
-                            a(href="#") [View Diff]
-                    .history-item
-                        .card-author
-                            .avatar-xs S
-                            span @sara_vegan - Added GF substitution note to step 1
-                        .history-meta
-                            span.badge-applied applied
-                            span 1 week ago
-                            a(href="#") [View Diff]
-
 block scripts
     script(src="/js/bookmark.js")
     script.
-        document.querySelectorAll('.ing-checkbox').forEach(cb => {
+        // Ingredient tick-off + progress bar
+        const checkboxes = document.querySelectorAll('.ing-checkbox');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const total = checkboxes.length;
+
+        checkboxes.forEach(cb => {
             cb.addEventListener('change', () => {
-                const total = document.querySelectorAll('.ing-checkbox').length;
                 const checked = document.querySelectorAll('.ing-checkbox:checked').length;
-                document.querySelector('.progress-fill').style.width = \`\${(checked/total)*100}%\`;
-                document.querySelector('.progress-text').innerText = \`You have \${checked} of \${total} ingredients\`;
+                const pct = total > 0 ? (checked / total) * 100 : 0;
+                if (progressFill) progressFill.style.width = pct + '%';
+                if (progressText) progressText.innerText = 'You have ' + checked + ' of ' + total + ' ingredients';
                 cb.closest('.ingredient-item').classList.toggle('checked', cb.checked);
             });
         });
-
