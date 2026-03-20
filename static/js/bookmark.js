@@ -91,12 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const labelSpan = btn.querySelector('.label');
         
         if (saved) {
-            iconSpan.textContent = '🔖';
-            labelSpan.textContent = 'Saved';
+            iconSpan.textContent = '♥';
+            labelSpan.textContent = ' Saved';
             btn.setAttribute('aria-label', 'Remove bookmark');
         } else {
-            iconSpan.textContent = '🏷️';
-            labelSpan.textContent = 'Save';
+            iconSpan.textContent = '♡';
+            labelSpan.textContent = ' Save';
             btn.setAttribute('aria-label', 'Save recipe');
         }
     }

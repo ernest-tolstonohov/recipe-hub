@@ -8,10 +8,12 @@ class SavedRecipe {
      */
     static async findByUser(userId) {
         const rows = await db.query(`
-            SELECT r.*, u.username as author, sr.saved_at
+            SELECT r.recipe_id AS id, r.user_id, r.title, r.description, r.image_url,
+                   r.avg_rating, r.review_count, r.difficulty, r.created_at,
+                   u.username AS author, sr.saved_at
             FROM saved_recipes sr
-            JOIN recipes r ON sr.recipe_id = r.id
-            JOIN users u ON r.user_id = u.id
+            JOIN recipes r ON sr.recipe_id = r.recipe_id
+            JOIN users u ON r.user_id = u.user_id
             WHERE sr.user_id = ?
             ORDER BY sr.saved_at DESC
         `, [userId]);
