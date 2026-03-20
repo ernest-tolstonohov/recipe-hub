@@ -1,38 +1,38 @@
 extends ../layout
 
 block content
-    .container(style="padding-top:2rem; padding-bottom:3rem;")
+    .container.page-container
 
-        .section-header(style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:2px solid var(--navy);")
+        .section-header
             div
-                h1(style="color:var(--navy); font-size:1.8rem; font-weight:800; margin:0;") My Recipes
-                p(style="color:var(--text-muted); font-size:0.9rem; margin-top:0.25rem;") Manage your published recipes
-            a.btn-green(href="/recipes/new" style="text-decoration:none; padding:0.35rem 0.75rem; font-size:0.85rem; white-space:nowrap; width:auto; display:inline-block;") + Create New
+                h1 My Recipes
+                p Manage your published recipes
+            a.btn-green(href="/recipes/new") + Create New
 
         if recipes && recipes.length > 0
             .recipe-grid
                 each recipe in recipes
-                    .recipe-card(style="cursor:pointer; position:relative;")
+                    .recipe-card.recipe-card-relative
                         .card-img-placeholder(onclick=`window.location.href='/recipes/${recipe.id}'`)
-                            img(src=recipe.image_url, alt=recipe.title, style="width:100%;height:100%;object-fit:cover;")
+                            img.card-img-fill(src=recipe.image_url, alt=recipe.title)
                         .card-body
-                            h3(onclick=`window.location.href='/recipes/${recipe.id}'` style="cursor:pointer;") #{recipe.title}
-                            .card-author(style="margin-bottom:0.75rem;")
-                                .avatar-xs(style="font-size:0.7rem;") #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'U'}
-                                span(style="font-size:0.85rem; color:var(--text-muted);") @#{recipe.author}
+                            h3(onclick=`window.location.href='/recipes/${recipe.id}'`) #{recipe.title}
+                            .card-author
+                                .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'U'}
+                                span.text-muted-sm @#{recipe.author}
                             .card-meta
-                                span(style="font-size:0.85rem; color:var(--text-muted);")
+                                span.text-muted-sm
                                     | ★ #{parseFloat(recipe.avg_rating) > 0 ? parseFloat(recipe.avg_rating).toFixed(1) : 'No reviews'}
-                                span(style="margin-left:auto; font-size:0.8rem; text-transform:capitalize; color:var(--text-muted);") #{recipe.difficulty}
-                            .card-actions(style="display:flex; gap:0.5rem; margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--border);")
-                                a(href=`/recipes/${recipe.id}/edit` style="flex:1; text-align:center; padding:0.4rem; border:1px solid var(--navy); border-radius:4px; font-size:0.8rem; color:var(--navy); text-decoration:none;") ✏️ Edit
-                                button.btn-delete(data-id=recipe.id style="flex:1; padding:0.4rem; border:1px solid #ef4444; border-radius:4px; font-size:0.8rem; color:#ef4444; background:none; cursor:pointer;") 🗑️ Delete
+                                span.difficulty-badge(class=`diff-${recipe.difficulty}`) #{recipe.difficulty}
+                            .card-actions
+                                a.btn-card-edit(href=`/recipes/${recipe.id}/edit`) ✏️ Edit
+                                button.btn-card-delete.btn-delete(data-id=recipe.id) 🗑️ Delete
         else
-            .empty-state(style="text-align:center; padding:5rem 2rem; background:var(--white); border:1px dashed var(--border); border-radius:8px;")
-                span(style="font-size:4rem; display:block; margin-bottom:1rem;") 👨‍🍳
-                h3(style="color:var(--navy); margin-bottom:0.5rem;") No recipes yet
-                p(style="color:var(--text-muted); margin-bottom:1.5rem;") Share your first recipe with the community!
-                a.btn-green(href="/recipes/new" style="text-decoration:none; padding:0.6rem 1.5rem;") Create Recipe
+            .empty-state
+                span.empty-icon 👨‍🍳
+                h3 No recipes yet
+                p Share your first recipe with the community!
+                a.btn-green(href="/recipes/new") Create Recipe
 
 block scripts
     script.

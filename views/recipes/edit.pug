@@ -1,171 +1,119 @@
 extends ../layout
 
 block content
-    .container(style="padding-top:2rem; padding-bottom:3rem; max-width:900px;")
+    .container.page-container-narrow
 
-        .section-header(style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:2px solid var(--navy);")
+        .section-header
             div
-                h1(style="color:var(--navy); font-size:1.8rem; font-weight:800; margin:0;") Edit Recipe
-                p(style="color:var(--text-muted); font-size:0.9rem; margin-top:0.25rem;") Update your recipe
+                h1 Edit Recipe
+                p Update your recipe
 
         if error
-            .error-banner(style="background:#fef2f2; border:1px solid #fca5a5; color:#b91c1c; padding:0.75rem 1rem; border-radius:4px; margin-bottom:1.5rem;") #{error}
+            .error-banner #{error}
 
         form(method="POST" action=`/recipes/${recipe.id}/edit`)
 
             //- ── BASIC INFO ──────────────────────────────────
-            .form-section(style="background:var(--white); border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin-bottom:1.5rem;")
-                h2(style="color:var(--navy); font-size:1.1rem; font-weight:700; margin-bottom:1.25rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border);") Basic Info
+            .form-section
+                h2 Basic Info
 
-                .form-row(style="display:grid; grid-template-columns:1fr; gap:1rem;")
+                .form-row-single
                     .form-group
-                        label(for="title" style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;") Title *
-                        input#title(type="text" name="title" value=recipe.title required style="width:100%; padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.95rem; outline:none;")
-
-                    .form-group
-                        label(for="description" style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;") Description
-                        textarea#description(name="description" rows="3" style="width:100%; padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.95rem; outline:none; resize:vertical;") #{recipe.description || ''}
+                        label(for="title") Title *
+                        input#title(type="text" name="title" value=recipe.title required)
 
                     .form-group
-                        label(for="image_url" style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;") Image URL
-                        input#image_url(type="url" name="image_url" value=recipe.image_url placeholder="https://..." style="width:100%; padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.95rem; outline:none;")
-
-                .form-row(style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:1rem; margin-top:1rem;")
-                    .form-group
-                        label(for="prep_time" style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;") Prep (min) *
-                        input#prep_time(type="number" name="prep_time" value=recipe.prep_time min="1" required style="width:100%; padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.95rem; outline:none;")
+                        label(for="description") Description
+                        textarea#description(name="description" rows="3") #{recipe.description || ''}
 
                     .form-group
-                        label(for="cook_time" style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;") Cook (min) *
-                        input#cook_time(type="number" name="cook_time" value=recipe.cook_time min="1" required style="width:100%; padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.95rem; outline:none;")
+                        label(for="image_url") Image URL
+                        input#image_url(type="url" name="image_url" value=recipe.image_url placeholder="https://...")
+
+                .form-row-4
+                    .form-group
+                        label(for="prep_time") Prep (min) *
+                        input#prep_time(type="number" name="prep_time" value=recipe.prep_time min="1" required)
 
                     .form-group
-                        label(for="servings" style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;") Servings *
-                        input#servings(type="number" name="servings" value=recipe.servings min="1" required style="width:100%; padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.95rem; outline:none;")
+                        label(for="cook_time") Cook (min) *
+                        input#cook_time(type="number" name="cook_time" value=recipe.cook_time min="1" required)
 
                     .form-group
-                        label(for="difficulty" style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;") Difficulty *
-                        select#difficulty(name="difficulty" required style="width:100%; padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.95rem; outline:none; background:var(--white);")
+                        label(for="servings") Servings *
+                        input#servings(type="number" name="servings" value=recipe.servings min="1" required)
+
+                    .form-group
+                        label(for="difficulty") Difficulty *
+                        select#difficulty(name="difficulty" required)
                             option(value="" disabled) Select...
                             option(value="easy" selected=recipe.difficulty==='easy') Easy
                             option(value="medium" selected=recipe.difficulty==='medium') Medium
                             option(value="hard" selected=recipe.difficulty==='hard') Hard
 
             //- ── INGREDIENTS ─────────────────────────────────
-            .form-section(style="background:var(--white); border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin-bottom:1.5rem;")
-                h2(style="color:var(--navy); font-size:1.1rem; font-weight:700; margin-bottom:1.25rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border);") Ingredients
+            .form-section
+                h2 Ingredients
 
                 #ingredients-list
                     each ing in ingredients
-                        .ingredient-row(style="display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:0.5rem; align-items:center; margin-bottom:0.5rem;")
-                            input(type="text" name="ing_name" value=ing.name style="padding:0.55rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.9rem; outline:none;")
-                            input(type="number" name="ing_qty" value=ing.quantity min="0" step="0.01" style="padding:0.55rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.9rem; outline:none;")
-                            input(type="text" name="ing_unit" value=ing.unit style="padding:0.55rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.9rem; outline:none;")
-                            button.remove-row(type="button" style="padding:0.55rem 0.7rem; background:none; border:1px solid #ef4444; color:#ef4444; border-radius:4px; cursor:pointer; font-size:0.9rem;") ✕
+                        .ingredient-row
+                            input(type="text" name="ing_name" value=ing.name)
+                            input(type="number" name="ing_qty" value=ing.quantity min="0" step="0.01")
+                            input(type="text" name="ing_unit" value=ing.unit)
+                            button.btn-remove(type="button") ✕
 
-                button#add-ingredient(type="button" style="margin-top:0.5rem; background:none; border:1px dashed var(--border); color:var(--text-muted); padding:0.5rem 1rem; border-radius:4px; cursor:pointer; font-size:0.85rem; width:100%;") + Add Ingredient
+                button#add-ingredient.btn-add-row(type="button") + Add Ingredient
 
             //- ── INSTRUCTIONS ────────────────────────────────
-            .form-section(style="background:var(--white); border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin-bottom:1.5rem;")
-                h2(style="color:var(--navy); font-size:1.1rem; font-weight:700; margin-bottom:1.25rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border);") Instructions
+            .form-section
+                h2 Instructions
 
                 #steps-list
                     each step, idx in recipe.instructions
-                        .step-row(style="display:grid; grid-template-columns:auto 1fr auto; gap:0.75rem; align-items:flex-start; margin-bottom:0.75rem;")
-                            .step-number(style="width:28px; height:28px; background:var(--navy); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0; margin-top:0.55rem;") #{idx + 1}
-                            textarea(name=`step_${idx + 1}` rows="2" style="padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.9rem; outline:none; resize:vertical;") #{step}
-                            button.remove-step(type="button" style="padding:0.55rem 0.7rem; background:none; border:1px solid #ef4444; color:#ef4444; border-radius:4px; cursor:pointer; font-size:0.9rem; margin-top:0.3rem;") ✕
+                        .step-row
+                            .step-number #{idx + 1}
+                            textarea(name=`step_${idx + 1}` rows="2") #{step}
+                            button.btn-remove-step(type="button") ✕
 
-                button#add-step(type="button" style="margin-top:0.5rem; background:none; border:1px dashed var(--border); color:var(--text-muted); padding:0.5rem 1rem; border-radius:4px; cursor:pointer; font-size:0.85rem; width:100%;") + Add Step
+                button#add-step.btn-add-row(type="button") + Add Step
 
             //- ── TAGS ────────────────────────────────────────
-            .form-section(style="background:var(--white); border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin-bottom:1.5rem;")
-                h2(style="color:var(--navy); font-size:1.1rem; font-weight:700; margin-bottom:1.25rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border);") Tags
+            .form-section
+                h2 Tags
 
                 - var dietary = tags.filter(t => t.type === 'dietary')
                 - var mealTypes = tags.filter(t => t.type === 'meal_type')
                 - var cuisines = tags.filter(t => t.type === 'cuisine')
 
-                .tag-group(style="margin-bottom:1rem;")
-                    p(style="font-size:0.8rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem;") Dietary
-                    .tags-wrap(style="display:flex; flex-wrap:wrap; gap:0.5rem;")
+                .tag-group
+                    p.tag-group-label Dietary
+                    .tags-wrap
                         each tag in dietary
-                            label(style="display:flex; align-items:center; gap:0.4rem; cursor:pointer; font-size:0.85rem; padding:0.3rem 0.75rem; border:1px solid var(--border); border-radius:20px;")
-                                input(type="checkbox" name="tags" value=tag.tag_id checked=selectedTagIds.includes(tag.tag_id) style="accent-color:var(--navy);")
-                                span #{tag.name}
-
-                .tag-group(style="margin-bottom:1rem;")
-                    p(style="font-size:0.8rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem;") Meal Type
-                    .tags-wrap(style="display:flex; flex-wrap:wrap; gap:0.5rem;")
-                        each tag in mealTypes
-                            label(style="display:flex; align-items:center; gap:0.4rem; cursor:pointer; font-size:0.85rem; padding:0.3rem 0.75rem; border:1px solid var(--border); border-radius:20px;")
-                                input(type="checkbox" name="tags" value=tag.tag_id checked=selectedTagIds.includes(tag.tag_id) style="accent-color:var(--navy);")
+                            label.tag-checkbox-label
+                                input(type="checkbox" name="tags" value=tag.tag_id checked=selectedTagIds.includes(tag.tag_id))
                                 span #{tag.name}
 
                 .tag-group
-                    p(style="font-size:0.8rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem;") Cuisine
-                    .tags-wrap(style="display:flex; flex-wrap:wrap; gap:0.5rem;")
+                    p.tag-group-label Meal Type
+                    .tags-wrap
+                        each tag in mealTypes
+                            label.tag-checkbox-label
+                                input(type="checkbox" name="tags" value=tag.tag_id checked=selectedTagIds.includes(tag.tag_id))
+                                span #{tag.name}
+
+                .tag-group
+                    p.tag-group-label Cuisine
+                    .tags-wrap
                         each tag in cuisines
-                            label(style="display:flex; align-items:center; gap:0.4rem; cursor:pointer; font-size:0.85rem; padding:0.3rem 0.75rem; border:1px solid var(--border); border-radius:20px;")
-                                input(type="checkbox" name="tags" value=tag.tag_id checked=selectedTagIds.includes(tag.tag_id) style="accent-color:var(--navy);")
+                            label.tag-checkbox-label
+                                input(type="checkbox" name="tags" value=tag.tag_id checked=selectedTagIds.includes(tag.tag_id))
                                 span #{tag.name}
 
             //- ── SUBMIT ──────────────────────────────────────
-            .form-actions(style="display:flex; gap:1rem; justify-content:flex-end;")
-                a(href=`/recipes/${recipe.id}` style="padding:0.65rem 1.5rem; border:1px solid var(--border); border-radius:4px; color:var(--text-muted); text-decoration:none; font-size:0.95rem;") Cancel
-                button.btn-green(type="submit" style="width:auto; padding:0.65rem 2rem; font-size:0.95rem;") Save Changes
+            .form-actions
+                a.btn-cancel(href=`/recipes/${recipe.id}`) Cancel
+                button.btn-green(type="submit") Save Changes
 
 block scripts
-    script.
-        // ── Dynamic ingredient rows ──────────────────────────
-        const ingList = document.getElementById('ingredients-list');
-        document.getElementById('add-ingredient').addEventListener('click', () => {
-            const row = document.createElement('div');
-            row.className = 'ingredient-row';
-            row.style.cssText = 'display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:0.5rem; align-items:center; margin-bottom:0.5rem;';
-            row.innerHTML = `
-                <input type="text" name="ing_name" placeholder="Ingredient name" style="padding:0.55rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.9rem; outline:none;">
-                <input type="number" name="ing_qty" placeholder="Qty" min="0" step="0.01" style="padding:0.55rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.9rem; outline:none;">
-                <input type="text" name="ing_unit" placeholder="Unit (g, ml...)" style="padding:0.55rem 0.75rem; border:1px solid var(--border); border-radius:4px; font-size:0.9rem; outline:none;">
-                <button type="button" class="remove-row" style="padding:0.55rem 0.7rem; background:none; border:1px solid #ef4444; color:#ef4444; border-radius:4px; cursor:pointer;">✕</button>
-            `;
-            ingList.appendChild(row);
-        });
-
-        ingList.addEventListener('click', e => {
-            if (e.target.classList.contains('remove-row')) {
-                e.target.closest('.ingredient-row').remove();
-            }
-        });
-
-        // ── Dynamic instruction steps ────────────────────────
-        const stepsList = document.getElementById('steps-list');
-
-        function renumberSteps() {
-            stepsList.querySelectorAll('.step-row').forEach((row, i) => {
-                row.querySelector('.step-number').textContent = i + 1;
-                row.querySelector('textarea').name = 'step_' + (i + 1);
-            });
-        }
-
-        document.getElementById('add-step').addEventListener('click', () => {
-            const count = stepsList.querySelectorAll('.step-row').length + 1;
-            const row = document.createElement('div');
-            row.className = 'step-row';
-            row.style.cssText = 'display:grid; grid-template-columns:auto 1fr auto; gap:0.75rem; align-items:flex-start; margin-bottom:0.75rem;';
-            row.innerHTML = `
-                <div class="step-number" style="width:28px;height:28px;background:var(--navy);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;margin-top:0.55rem;">${count}</div>
-                <textarea name="step_${count}" rows="2" placeholder="Describe this step..." style="padding:0.6rem 0.75rem;border:1px solid var(--border);border-radius:4px;font-size:0.9rem;outline:none;resize:vertical;"></textarea>
-                <button type="button" class="remove-step" style="padding:0.55rem 0.7rem;background:none;border:1px solid #ef4444;color:#ef4444;border-radius:4px;cursor:pointer;margin-top:0.3rem;">✕</button>
-            `;
-            stepsList.appendChild(row);
-        });
-
-        stepsList.addEventListener('click', e => {
-            if (e.target.classList.contains('remove-step')) {
-                if (stepsList.querySelectorAll('.step-row').length > 1) {
-                    e.target.closest('.step-row').remove();
-                    renumberSteps();
-                }
-            }
-        });
+    script(src="/js/recipe-form.js")

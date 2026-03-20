@@ -19,15 +19,15 @@ html(lang="en")
                     if user
                         .avatar-dropdown
                             button.avatar-btn
-                                .avatar-xs
+                                .avatar-xs #{user.username.charAt(0).toUpperCase()}
                                 span #{user.username}
                             .dropdown-content
                                 a(href=`/users/${user.id}`) My Profile
                                 a(href=`/users/${user.id}/saved`) Saved Recipes
                                 if user.role === 'admin'
                                     a(href="/admin") Admin Panel
-                                form(method="POST", action="/logout", style="display:inline")
-                                    button.btn-logout(type="submit", style="width: 100%; text-align: left;") Logout
+                                form.logout-form(method="POST", action="/logout")
+                                    button.btn-logout(type="submit") Logout
                     else
                         a.btn-login(href="/login") Login
                         a.btn-register(href="/register") Register

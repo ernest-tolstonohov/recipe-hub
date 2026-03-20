@@ -16,10 +16,10 @@ block content
                             span.icon #{isSaved ? '♥' : '♡'}
                             span.label #{isSaved ? ' Saved' : ' Save'}
 
-                .card-author(style="margin-bottom: 1rem;")
+                .author-line
                     .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'U'}
-                    a(href=`/users/${recipe.user_id}` style="font-weight:500;") by @#{recipe.author || 'guest'}
-                    span.text-muted(style="font-size:0.8rem; margin-left:0.5rem; color:#999;")
+                    a(href=`/users/${recipe.user_id}`) by @#{recipe.author || 'guest'}
+                    span.date
                         | &bull; #{new Date(recipe.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})}
 
                 .meta-strip
@@ -41,11 +41,11 @@ block content
 
             .detail-hero-box
                 if recipe.image_url
-                    img(src=recipe.image_url, alt=recipe.title, style="width:100%;height:100%;object-fit:cover;border-radius:4px;")
+                    img.detail-img(src=recipe.image_url, alt=recipe.title)
                 else
                     .recipe-img-placeholder
-                        span(style="font-size:3rem;") 🍽️
-                        span(style="font-size:0.8rem;color:#999;margin-top:0.5rem;") No image
+                        span.placeholder-icon 🍽️
+                        span.no-image-label No image
 
         .recipe-info
             .ingredients
@@ -68,9 +68,9 @@ block content
                     .progress-wrapper
                         span#progress-text.progress-text You have 0 of #{ingredients.length} ingredients
                         .progress-bar
-                            .progress-fill#progress-fill(style="width:0%;")
+                            .progress-fill#progress-fill
                 else
-                    p(style="color:var(--text-muted);font-size:0.9rem;padding:0.5rem 0;") No ingredients listed.
+                    p.no-content No ingredients listed.
 
             .instructions
                 h2 Instructions
@@ -81,7 +81,7 @@ block content
                                 .step-number= index + 1
                                 p= step
                 else
-                    p(style="color:var(--text-muted);font-size:0.9rem;padding:0.5rem 0;") No instructions listed.
+                    p.no-content No instructions listed.
 
         .reviews-section
             .review-header
@@ -99,7 +99,7 @@ block content
                             .card-author
                                 .avatar-xs #{review.username.charAt(0).toUpperCase()}
                                 a(href=`/users/${review.user_id}`) @#{review.username}
-                            span.stars(style="display:block; margin:0.5rem 0;")
+                            span.stars.review-stars
                                 - var s = parseInt(review.rating)
                                 | #{Array(s).fill('★').join('')}#{Array(5-s).fill('☆').join('')}
                             if review.body
@@ -115,7 +115,47 @@ block content
 block scripts
     script(src="/js/bookmark.js")
     script.
-        // Ingredient tick-off + progress bar
+        // ── Servings stepper ─────────────────────────────
+        const srvCount  = document.getElementById('srv-count');
+        const srvMinus  = document.getElementById('srv-minus');
+        const srvPlus   = document.getElementById('srv-plus');
+        const ingTexts  = document.querySelectorAll('.ing-text');
+
+        const baseServings = parseInt(srvCount.textContent);
+        let currentServings = baseServings;
+
+        // Store original quantities as data attributes
+        ingTexts.forEach(el => {
+            el.dataset.original = el.textContent.trim();
+        });
+
+        function updateIngredients() {
+            const ratio = currentServings / baseServings;
+            ingTexts.forEach(el => {
+                const original = el.dataset.original;
+                // Replace leading number (quantity) with scaled value
+                el.textContent = original.replace(/^[\d.]+/, n => {
+                    const scaled = parseFloat(n) * ratio;
+                    return Number.isInteger(scaled) ? scaled : scaled.toFixed(2);
+                });
+            });
+        }
+
+        srvMinus.addEventListener('click', () => {
+            if (currentServings > 1) {
+                currentServings--;
+                srvCount.textContent = currentServings;
+                updateIngredients();
+            }
+        });
+
+        srvPlus.addEventListener('click', () => {
+            currentServings++;
+            srvCount.textContent = currentServings;
+            updateIngredients();
+        });
+
+        // ── Ingredient tick-off + progress bar ───────────
         const checkboxes = document.querySelectorAll('.ing-checkbox');
         const progressFill = document.getElementById('progress-fill');
         const progressText = document.getElementById('progress-text');
@@ -125,7 +165,10 @@ block scripts
             cb.addEventListener('change', () => {
                 const checked = document.querySelectorAll('.ing-checkbox:checked').length;
                 const pct = total > 0 ? (checked / total) * 100 : 0;
-                if (progressFill) progressFill.style.width = pct + '%';
+                if (progressFill) {
+                    progressFill.style.width = pct + '%';
+                    progressFill.style.background = checked === 0 ? 'transparent' : '';
+                }
                 if (progressText) progressText.innerText = 'You have ' + checked + ' of ' + total + ' ingredients';
                 cb.closest('.ingredient-item').classList.toggle('checked', cb.checked);
             });
