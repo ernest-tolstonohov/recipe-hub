@@ -31,18 +31,42 @@ class UserController {
     }
 
     /**
+     * Get the logged-in user's created recipes.
+     */
+    static async getMyRecipes(req, res) {
+        try {
+            const loggedInUser = req.session.user;
+            const Recipe = require('../models/recipe');
+            const recipes = await Recipe.findByUser(loggedInUser.id);
+            res.render('users/my-recipes', { recipes });
+        } catch (err) {
+            console.error(err);
+            res.status(500).render('error', { message: 'Failed to fetch your recipes.' });
+        }
+    }
+
+    /**
      * Show user profile.
      */
-    static async profile(req, res) {
+    static async show(req, res) {
         try {
             const profileId = parseInt(req.params.id);
             const user = await User.findById(profileId);
+            
             if (!user) {
                 return res.status(404).render('error', { message: 'User not found.' });
             }
 
-            const saved = await SavedRecipe.findByUser(profileId);
-            res.render('users/profile', { profileUser: user, saved });
+            // Sprint 3 requirement: check is_active
+            if (!user.is_active) {
+                return res.status(403).render('error', { message: 'This user profile is no longer active.' });
+            }
+
+            // Fetch list of own recipes as requested
+            const Recipe = require('../models/recipe');
+            const recipes = await Recipe.findByUser(profileId);
+            
+            res.render('users/profile', { profileUser: user, recipes });
         } catch (err) {
             console.error(err);
             res.status(500).render('error', { message: 'Something went wrong.' });

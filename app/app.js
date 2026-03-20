@@ -23,6 +23,12 @@ app.use(session({
     cookie: { secure: false }
 }));
 
+// Make user variable globally available to all Pug views
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 // Get the database
 const db = require('./services/db');
 
@@ -39,6 +45,19 @@ app.use('/users', userRoutes);
 // Home route
 app.get("/", function(req, res) {
     res.render('index', { user: req.session.user });
+});
+
+// 404 Not Found Middleware
+app.use((req, res, next) => {
+    res.status(404).render('404');
+});
+
+// Global Error Handler Middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('error', { 
+        message: 'Something went wrong on our end. Please try again later.' 
+    });
 });
 
 // Start the server

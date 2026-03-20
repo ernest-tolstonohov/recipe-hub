@@ -8,7 +8,7 @@ class User {
      */
     static async findById(id) {
         const rows = await db.query(
-            'SELECT id, username, email, role, created_at FROM users WHERE id = ?',
+            'SELECT id, username, email, role, is_active, created_at FROM users WHERE id = ?',
             [id]
         );
         return rows[0] || null;
