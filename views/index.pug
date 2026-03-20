@@ -4,92 +4,103 @@ block content
   .hero-section
     h1 What's in your fridge?
     p Find recipes using what you already have - reduce waste, save money.
-    
+
     .search-widget
-      .ingredient-input-area
-        .chip
-          span chicken
-          button ×
-        .chip
-          span rice
-          button ×
-        .chip
-          span garlic
-          button ×
-        input(type="text", placeholder="Add ingredient...", style="border:none; background:transparent; outline:none; font-size:0.9rem; margin:0;")
-      
+      //- Chip input area
+      .ingredient-input-area#ingredient-input-area
+        span#chips-container
+        span#chips-placeholder(style="color:var(--text-muted);font-size:0.9rem;pointer-events:none;") Add ingredient...
+      //- Ingredient dropdown panel
+      .ingredient-panel#ingredient-panel(style="display:none;")
+        input#ing-search(type="text", placeholder="Search ingredients...", autocomplete="off")
+        .ing-list#ing-list
+          p.ing-loading(style="color:var(--text-muted);font-size:0.9rem;padding:0.5rem;") Loading...
+
       .filter-row
-        select
+        select#filter-meal
           option(value="") Meal Type
           option(value="breakfast") Breakfast
           option(value="lunch") Lunch
           option(value="dinner") Dinner
           option(value="snack") Snack
-        select
+        select#filter-dietary
           option(value="") Dietary
-          option(value="high-protein") High Protein
           option(value="vegan") Vegan
           option(value="vegetarian") Vegetarian
           option(value="gluten-free") Gluten Free
-        select
+          option(value="high-protein") High Protein
+        select#filter-difficulty
           option(value="") Difficulty
           option(value="easy") Easy
           option(value="medium") Medium
           option(value="hard") Hard
-      button.btn-green Find Recipes &rarr;
+      .match-mode-row
+        label.match-radio
+          input(type="radio", name="match_mode", value="any", checked)
+          span Match Any
+        label.match-radio
+          input(type="radio", name="match_mode", value="all")
+          span Match All
+      button#find-btn.btn-green Find Recipes &rarr;
 
   .container.main-layout
     .content-area
-      .recipe-grid(style="margin-top: 2rem;")
-        - for (let i = 0; i < 3; i++)
-          .recipe-card
-            .card-img-placeholder.skeleton(style="border-radius: 4px 4px 0 0; border: none; background: transparent; color: transparent;")
+      .results-bar(style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;")
+        h2#results-heading(style="color:var(--navy); margin:0;") All Recipes
+        span#results-count(style="font-size:0.85rem; color:var(--text-muted);") #{recipes ? recipes.length : 0} recipes
+
+      //- Loading spinner (hidden by default)
+      .spinner-wrap#spinner(style="display:none; grid-column:1/-1; text-align:center; padding:3rem;")
+        .spinner
+
+      .recipe-grid#recipe-grid
+        each recipe in recipes
+          .recipe-card(
+            onclick=`window.location.href='/recipes/${recipe.id}'`,
+            style="cursor:pointer;"
+          )
+            .card-img-placeholder
+              if recipe.image_url
+                img(src=recipe.image_url, alt=recipe.title, style="width:100%;height:100%;object-fit:cover;")
+              else
+                span(style="font-size:3rem;color:#d1d5db;") 🍽️
             .card-body
-              .skeleton.skeleton-text(style="height: 16px; width: 85%; margin-bottom: 1rem;")
-              .card-author(style="margin-bottom: 1rem;")
-                .avatar-xs.skeleton(style="color:transparent;")
-                .skeleton.skeleton-text(style="height: 12px; width: 45%; margin-top: 4px; margin-left: 0.5rem;")
+              h3 #{recipe.title}
+              .card-author
+                .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'C'}
+                span @#{recipe.author || 'chef'}
               .card-meta
-                .skeleton.skeleton-text(style="height: 12px; width: 35%; margin-top: auto;")
+                span(style="font-size:0.85rem;color:var(--text-muted);")
+                  | ★ #{parseFloat(recipe.avg_rating) > 0 ? parseFloat(recipe.avg_rating).toFixed(1) : 'No reviews'}
+                span.difficulty-badge(class=`diff-${recipe.difficulty}`) #{recipe.difficulty}
+              .card-times(style="display:flex; gap:0.75rem; margin-top:0.5rem; font-size:0.8rem; color:var(--text-muted);")
+                span ⏱ #{recipe.prep_time + recipe.cook_time} min
+                span 🍽 #{recipe.servings} servings
+
+        if !recipes || recipes.length === 0
+          div(style="grid-column:1/-1;text-align:center;padding:4rem;")
+            span(style="font-size:3rem;display:block;margin-bottom:1rem;") 🥣
+            h3(style="color:var(--navy);margin-bottom:0.5rem;") No recipes yet
+            p(style="color:var(--text-muted);") Seed the database to see recipes here.
+
     .sidebar
       .sidebar-card
-        h4 Recent Contributors
-        .contributor-item
-          .avatar-md.skeleton(style="color:transparent;")
-          .contributor-info(style="width: 100%;")
-            .skeleton.skeleton-text
-            .skeleton.skeleton-text.short
-        .contributor-item
-          .avatar-md.skeleton(style="color:transparent;")
-          .contributor-info(style="width: 100%;")
-            .skeleton.skeleton-text
-            .skeleton.skeleton-text.short
-        .contributor-item
-          .avatar-md.skeleton(style="color:transparent;")
-          .contributor-info(style="width: 100%;")
-            .skeleton.skeleton-text
-            .skeleton.skeleton-text.short
+        h4 Browse by Tag
+        .tags-wrap(style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;")
+          each tag in tags
+            span.tag(style="cursor:pointer;" data-tag=tag.name) #{tag.name}
 
       .sidebar-card
-        h4 Latest Reviews
-        .review-item
-          .skeleton.skeleton-text(style="height: 14px; width: 40%; margin-bottom: 0.75rem;")
-          .skeleton.skeleton-text(style="height: 10px; width: 100%;")
-          .skeleton.skeleton-text(style="height: 10px; width: 85%;")
-        .review-item
-          .skeleton.skeleton-text(style="height: 14px; width: 40%; margin-bottom: 0.75rem;")
-          .skeleton.skeleton-text(style="height: 10px; width: 100%;")
-          .skeleton.skeleton-text(style="height: 10px; width: 75%;")
-
-      .sidebar-card
-        h4 Trending Tags
-        .tags-wrap
-          span.tag.skeleton(style="width: 50px; color:transparent; border:none;") V
-          span.tag.skeleton(style="width: 60px; color:transparent; border:none;") I
-          span.tag.skeleton(style="width: 55px; color:transparent; border:none;") B
-          span.tag.skeleton(style="width: 40px; color:transparent; border:none;") G
-          span.tag.skeleton(style="width: 65px; color:transparent; border:none;") Q
-          span.tag.skeleton(style="width: 45px; color:transparent; border:none;") A
+        h4 Quick Stats
+        .stats-grid(style="margin-top:0.75rem; display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;")
+          .stat-item(style="text-align:center; background:var(--bg); border-radius:6px; padding:0.75rem;")
+            div(style="font-size:1.4rem; font-weight:800; color:var(--navy);") #{stats ? stats.recipe_count : 0}
+            div(style="font-size:0.75rem; color:var(--text-muted);") Recipes
+          .stat-item(style="text-align:center; background:var(--bg); border-radius:6px; padding:0.75rem;")
+            div(style="font-size:1.4rem; font-weight:800; color:var(--navy);") #{stats ? stats.user_count : 0}
+            div(style="font-size:0.75rem; color:var(--text-muted);") Cooks
 
 block scripts
+  script.
+    window.ALL_RECIPES = !{JSON.stringify(recipes || [])};
   script(src="/js/search.js")
