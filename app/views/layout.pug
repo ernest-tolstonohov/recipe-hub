@@ -22,7 +22,7 @@ html(lang="en")
                 .avatar-md-circle #{user.username.charAt(0).toUpperCase()}
                 span #{user.username}
               .dropdown-content
-                a(href="/users/" + user.user_id) My Profile
+                a(href="/users/" + user.id) My Profile
                 a(href="/logout") Logout
           else
             a.btn-login(href="/login") Login
@@ -37,12 +37,6 @@ html(lang="en")
           .footer-col.footer-brand
             h4 RecipeHub
             p Share Knowledge. Reduce Waste.
-            .social-links
-              a(href="#") Twitter
-              span  · 
-              a(href="#") Instagram
-              span  · 
-              a(href="#") GitHub
           .footer-col
             h4 Navigation
             ul

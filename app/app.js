@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const session = require("express-session");
 const path = require("path");
 
 var app = express();
@@ -10,13 +11,22 @@ app.set("views", path.join(__dirname, "views"));
 
 // Allow the app to read form data
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Add static files location
 app.use(express.static(path.join(__dirname, "../static")));
 
+// Session configuration
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'recipehub-dev-secret-2025',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hours
+}));
+
 // Make user available to ALL pages automatically
 app.use((req, res, next) => {
-    res.locals.user = req.session ? req.session.user || null : null;
+    res.locals.user = req.session.user || null;
     next();
 });
 
@@ -36,6 +46,20 @@ app.use('/', recipeRoutes);
 // Home route
 app.get("/", function(req, res) {
     res.render('index', { user: res.locals.user });
+});
+
+// 404 Handler
+app.use((req, res) => {
+    res.status(404).render('404', { user: res.locals.user });
+});
+
+// Generic Error Handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('error', {
+        message: err.message || 'Something went wrong.',
+        user: res.locals.user
+    });
 });
 
 // Start the server

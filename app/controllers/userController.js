@@ -1,50 +1,115 @@
 const db = require('../services/db');
 
+// GET /users/:id — user profile with their recipes
 async function show(req, res) {
     try {
         const userId = parseInt(req.params.id);
 
-        // Get user from database
         const users = await db.query(
-            `SELECT user_id, username, email, avatar_url, created_at 
-             FROM users 
-             WHERE user_id = ? AND is_active = 1`,
+            `SELECT id, username, email, created_at
+             FROM users
+             WHERE id = ? AND is_active = 1`,
             [userId]
         );
 
-        // If user not found or deactivated, show 404
         if (!users || users.length === 0) {
-            return res.status(404).render('error', { 
-                message: 'User not found.',
-                user: req.session.user 
-            });
+            return res.status(404).render('404', { user: req.session.user });
         }
 
         const profileUser = users[0];
 
-        // Get all recipes by this user
         const recipes = await db.query(
-            `SELECT recipe_id, title, description, difficulty, 
-                    prep_time, cook_time, image_url, created_at
-             FROM recipes 
-             WHERE user_id = ? 
+            `SELECT id, title, description, tags, created_at
+             FROM recipes
+             WHERE user_id = ?
              ORDER BY created_at DESC`,
             [userId]
         );
 
-        res.render('users/profile', { 
+        res.render('users/profile', {
             user: req.session.user,
-            profileUser: profileUser,
-            recipes: recipes
+            profileUser,
+            recipes
         });
-
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { 
+        res.status(500).render('error', {
             message: 'Something went wrong.',
-            user: req.session.user 
+            user: req.session.user
         });
     }
 }
 
-module.exports = { show };
+// POST /users/:id/saved/:rid — save a recipe
+async function save(req, res) {
+    try {
+        const userId = parseInt(req.params.id);
+        const recipeId = parseInt(req.params.rid);
+
+        // Only allow saving own bookmarks
+        if (!req.session.user || req.session.user.id !== userId) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        await db.query(
+            'INSERT IGNORE INTO saved_recipes (user_id, recipe_id) VALUES (?, ?)',
+            [userId, recipeId]
+        );
+
+        res.json({ saved: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Could not save recipe.' });
+    }
+}
+
+// DELETE /users/:id/saved/:rid — unsave a recipe
+async function unsave(req, res) {
+    try {
+        const userId = parseInt(req.params.id);
+        const recipeId = parseInt(req.params.rid);
+
+        if (!req.session.user || req.session.user.id !== userId) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        await db.query(
+            'DELETE FROM saved_recipes WHERE user_id = ? AND recipe_id = ?',
+            [userId, recipeId]
+        );
+
+        res.json({ saved: false });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Could not unsave recipe.' });
+    }
+}
+
+// GET /users/:id/saved — list saved recipes
+async function getSaved(req, res) {
+    try {
+        const userId = parseInt(req.params.id);
+
+        const recipes = await db.query(
+            `SELECT r.id, r.title, r.description, r.tags, r.image_url, r.created_at
+             FROM saved_recipes sr
+             JOIN recipes r ON r.id = sr.recipe_id
+             WHERE sr.user_id = ?
+             ORDER BY sr.saved_at DESC`,
+            [userId]
+        );
+
+        res.render('users/saved', {
+            user: req.session.user,
+            recipes
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).render('error', {
+            message: 'Could not load saved recipes.',
+            user: req.session.user
+        });
+    }
+}
+
+module.exports = { show, save, unsave, getSaved };

@@ -1,0 +1,27 @@
+extends ../layout.pug
+
+block content
+  .container
+    .main-layout(style="padding: 2rem 0;")
+      .content-area
+        h2.section-header Saved Recipes
+
+        if recipes.length === 0
+          .empty-state
+            p You haven't saved any recipes yet.
+            a.btn-green(href="/", style="display:inline-block; margin-top:1rem; padding:0.6rem 1.5rem;") Browse Recipes
+        else
+          .recipe-grid
+            each recipe in recipes
+              a.recipe-card(href='/recipes/' + recipe.id)
+                .card-img-wrapper
+                  if recipe.image_url
+                    img.card-img(src=recipe.image_url, alt=recipe.title)
+                  else
+                    .card-img-placeholder 🍽️
+                .card-body
+                  h3 #{recipe.title}
+                  p.card-desc #{recipe.description}
+                  .card-meta
+                    if recipe.tags
+                      span.tag.tag-green #{recipe.tags.split(',')[0]}

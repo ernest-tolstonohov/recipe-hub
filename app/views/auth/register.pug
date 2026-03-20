@@ -1,0 +1,18 @@
+extends ../layout.pug
+
+block content
+  .auth-container
+    h1 Create Account
+
+    if error
+      p.error #{error}
+
+    form(action='/register' method='POST')
+      input(type='text' name='username' placeholder='Username' required autocomplete='username' value=locals.username || '')
+      input(type='email' name='email' placeholder='Email address' required autocomplete='email' value=locals.emailVal || '')
+      input(type='password' name='password' placeholder='Password (min 6 characters)' required autocomplete='new-password')
+      button.btn-green(type='submit') Register
+
+    p Already have an account?
+      |  
+      a(href='/login') Login here

@@ -1,138 +1,108 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const input = document.querySelector('.ingredient-input-area input');
-    const chipContainer = document.querySelector('.ingredient-input-area');
-    const findBtn = document.querySelector('.btn-green');
-    const recipeGrid = document.querySelector('.recipe-grid');
-    
-    // Clear initial static chips
-    document.querySelectorAll('.chip').forEach(c => c.remove());
-    
-    let ingredients = [];
+/**
+ * search.js — tag-chip ingredient input + fetch search + grid re-render
+ */
+(function () {
+    const inputArea = document.querySelector('.ingredient-input-area');
+    const textInput = document.getElementById('ingredient-input');
+    const findBtn = document.getElementById('find-recipes-btn');
+    const grid = document.getElementById('recipe-grid');
+    const mealSelect = document.getElementById('filter-meal');
+    const diffSelect = document.getElementById('filter-difficulty');
 
-    function addChip(text) {
-        text = text.trim().toLowerCase();
-        if (text && !ingredients.includes(text)) {
-            ingredients.push(text);
-            
+    if (!textInput || !findBtn || !grid) return;
+
+    let ingredients = ['chicken', 'rice', 'garlic']; // pre-populated from UI
+
+    // Render chips from ingredients array
+    function renderChips() {
+        // Remove all existing chips
+        inputArea.querySelectorAll('.chip').forEach(c => c.remove());
+        // Insert chips before the text input
+        ingredients.forEach((ing, i) => {
             const chip = document.createElement('div');
             chip.className = 'chip';
-            chip.innerHTML = `<span>${text}</span><button>&times;</button>`;
-            
+            chip.innerHTML = `<span>${ing}</span><button type="button" data-i="${i}">×</button>`;
             chip.querySelector('button').addEventListener('click', () => {
-                ingredients = ingredients.filter(i => i !== text);
-                chip.remove();
+                ingredients.splice(i, 1);
+                renderChips();
             });
-            
-            chipContainer.insertBefore(chip, input);
-        }
-        input.value = '';
+            inputArea.insertBefore(chip, textInput);
+        });
     }
 
-    input.addEventListener('keydown', (e) => {
+    renderChips();
+
+    // Add ingredient on Enter or comma
+    textInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
-            addChip(input.value);
-        }
-    });
-
-    input.addEventListener('blur', () => {
-        if (input.value.trim() !== '') {
-            addChip(input.value);
-        }
-    });
-
-    findBtn.addEventListener('click', async () => {
-        try {
-            // 1. Inject skeleton loaders immediately
-            recipeGrid.innerHTML = '';
-            for (let i = 0; i < 3; i++) {
-                recipeGrid.innerHTML += `
-                    <div class="recipe-card">
-                        <div class="card-img-placeholder skeleton" style="border-radius: 4px 4px 0 0; border: none; background: transparent; color: transparent;"></div>
-                        <div class="card-body">
-                            <div class="skeleton skeleton-text" style="height: 16px; width: 85%; margin-bottom: 1rem;"></div>
-                            <div class="card-author" style="margin-bottom: 1rem;">
-                                <div class="avatar-xs skeleton" style="color:transparent; float:left;"></div>
-                                <div class="skeleton skeleton-text" style="height: 12px; width: 45%; margin-top: 4px; margin-left: 0.5rem; float:left;"></div>
-                                <div style="clear:both;"></div>
-                            </div>
-                            <div class="card-meta">
-                                <div class="skeleton skeleton-text" style="height: 12px; width: 35%; margin-top: auto;"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+            const val = textInput.value.trim().replace(/,$/, '');
+            if (val && !ingredients.includes(val.toLowerCase())) {
+                ingredients.push(val.toLowerCase());
+                renderChips();
             }
+            textInput.value = '';
+        }
+    });
 
-            // 2. Fetch results
-            const tags = Array.from(document.querySelectorAll('.filter-row select'))
-                .map(s => s.value)
-                .filter(v => v !== "");
+    // Build a recipe card HTML string
+    function buildCard(recipe) {
+        const matchBadge = recipe.match_count > 0
+            ? `<span class="match-badge">✓ ${recipe.match_count} of ${recipe.total_ingredients} ingredients matched</span>`
+            : '';
+        const img = recipe.image_url
+            ? `<img class="card-img" src="${recipe.image_url}" alt="${recipe.title}">`
+            : `<div class="card-img-placeholder">🍽️</div>`;
+        const tagsArr = recipe.tags ? recipe.tags.split(',').map(t => t.trim()) : [];
+        const tagHtml = tagsArr.slice(0, 1).map(t => `<span class="tag tag-green">${t}</span>`).join('');
 
-            const response = await fetch('/recipes/search', {
+        return `
+            <a class="recipe-card" href="/recipes/${recipe.id}">
+                <div class="card-img-wrapper">
+                    ${matchBadge}
+                    ${img}
+                </div>
+                <div class="card-body">
+                    <h3>${recipe.title}</h3>
+                    <div class="card-meta">
+                        ${tagHtml}
+                    </div>
+                </div>
+            </a>`;
+    }
+
+    // Fetch and render results
+    async function doSearch() {
+        const tags = [];
+        if (mealSelect && mealSelect.value) tags.push(mealSelect.value);
+        if (diffSelect && diffSelect.value) tags.push(diffSelect.value);
+
+        findBtn.textContent = 'Searching…';
+        findBtn.disabled = true;
+
+        try {
+            const res = await fetch('/recipes/search', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ingredients, tags })
             });
-            
-            if (!response.ok) throw new Error('Search failed');
-            
-            const data = await response.json();
-            
-            // 3. Render results (simulate minimal 500ms network delay to appreciate the skeleton effect)
-            setTimeout(() => {
-                renderRecipes(data.recipes);
-            }, 500);
-            
+
+            if (!res.ok) throw new Error('Search failed');
+            const data = await res.json();
+
+            if (!data.recipes || data.recipes.length === 0) {
+                grid.innerHTML = '<p style="color:#666; padding:2rem 0;">No recipes found matching your ingredients.</p>';
+            } else {
+                grid.innerHTML = data.recipes.map(buildCard).join('');
+            }
         } catch (err) {
             console.error(err);
-            alert('Failed to find recipes. Please try again.');
+            grid.innerHTML = '<p style="color:#b91c1c; padding:2rem 0;">Search failed. Please try again.</p>';
+        } finally {
+            findBtn.textContent = 'Find Recipes →';
+            findBtn.disabled = false;
         }
-    });
-
-    function renderRecipes(recipes) {
-        recipeGrid.innerHTML = '';
-        
-        if (recipes.length === 0) {
-            recipeGrid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
-                    <div class="emoji-placeholder" style="margin-bottom: 1rem;">🥣</div>
-                    <h3 style="color: var(--navy); margin-bottom: 0.5rem;">No recipes found</h3>
-                    <p style="color: var(--text-muted)">Try adding different ingredients!</p>
-                </div>
-            `;
-            return;
-        }
-
-        recipes.forEach(recipe => {
-            const hasMatch = ingredients.length > 0;
-            const matchBadge = hasMatch ? `<div class="match-badge">${recipe.match_percentage || 100}% Match</div>` : '';
-            
-            const card = document.createElement('div');
-            card.className = 'recipe-card';
-            card.onclick = () => window.location.href = `/recipes/${recipe.id}`;
-            
-            const imageHtml = recipe.image_url 
-                ? `<img src="${recipe.image_url}" alt="${recipe.title}" style="width:100%; height:100%; object-fit:cover;">`
-                : `<span style="font-size:3rem; color:#d1d5db;">🍽️</span>`;
-
-            card.innerHTML = `
-                ${matchBadge}
-                <div class="card-img-placeholder">
-                    ${imageHtml}
-                </div>
-                <div class="card-body">
-                    <h3>${recipe.title}</h3>
-                    <div class="card-author">
-                        <div class="avatar-xs">${recipe.author ? recipe.author.charAt(0).toUpperCase() : 'C'}</div>
-                        <span>@${recipe.author || 'chef'}</span>
-                    </div>
-                    <div class="card-meta">
-                        <span class="stars">★★★★★</span>
-                    </div>
-                </div>
-            `;
-            recipeGrid.appendChild(card);
-        });
     }
-});
+
+    findBtn.addEventListener('click', doSearch);
+})();

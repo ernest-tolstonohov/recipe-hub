@@ -57,7 +57,7 @@ block content
                     button#bookmark-btn.btn.btn-bookmark(
                         class=isSaved ? 'saved' : '', 
                         data-recipe-id=recipe.id, 
-                        data-user-id=user.user_id, 
+                        data-user-id=user.id, 
                         data-saved=isSaved ? 'true' : 'false'
                     )
                         span.label #{isSaved ? '🔖 Saved' : '⊞ Save'}
@@ -152,6 +152,7 @@ block content
                             a(href="#") [View Diff]
 
 block scripts
+    script(src="/js/bookmark.js")
     script.
         document.querySelectorAll('.ing-checkbox').forEach(cb => {
             cb.addEventListener('change', () => {

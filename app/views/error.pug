@@ -1,0 +1,11 @@
+extends layout.pug
+
+block content
+  .container
+    .error-layout
+      .error-card
+        .emoji-placeholder 🚨
+        h1 Something went wrong
+        .error-message
+          p= message || 'An unexpected error occurred.'
+        a.btn-green(href="/", style="display:inline-block; padding:0.6rem 1.5rem;") Back to Home

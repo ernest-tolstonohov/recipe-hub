@@ -9,6 +9,8 @@ block content
         h1 #{profileUser.username}
         p.joined Joined #{new Date(profileUser.created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'long' })}
         p.email #{profileUser.email}
+        if user && user.id === profileUser.id
+          a(href='/users/' + profileUser.id + '/saved', style="font-size:0.85rem; color:var(--green); font-weight:600;") View Saved Recipes →
 
     .profile-recipes
       h2 Recipes by #{profileUser.username}
@@ -19,11 +21,11 @@ block content
       else
         .recipe-grid
           each recipe in recipes
-            a.recipe-card(href='/recipes/' + recipe.recipe_id)
+            a.recipe-card(href='/recipes/' + recipe.id)
               .card-img-placeholder 🍽️
               .card-body
                 h3 #{recipe.title}
                 p.card-desc #{recipe.description}
                 .card-meta
-                  span.tag #{recipe.difficulty}
-                  span.text-muted #{recipe.prep_time + recipe.cook_time} mins
+                  if recipe.tags
+                    span.tag #{recipe.tags.split(',')[0]}
