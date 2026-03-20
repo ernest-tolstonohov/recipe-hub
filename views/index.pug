@@ -9,12 +9,12 @@ block content
       //- Chip input area
       .ingredient-input-area#ingredient-input-area
         span#chips-container
-        span#chips-placeholder(style="color:var(--text-muted);font-size:0.9rem;pointer-events:none;") Add ingredient...
+        span#chips-placeholder Add ingredient...
       //- Ingredient dropdown panel
-      .ingredient-panel#ingredient-panel(style="display:none;")
+      .ingredient-panel#ingredient-panel
         input#ing-search(type="text", placeholder="Search ingredients...", autocomplete="off")
         .ing-list#ing-list
-          p.ing-loading(style="color:var(--text-muted);font-size:0.9rem;padding:0.5rem;") Loading...
+          p.ing-loading Loading...
 
       .filter-row
         select#filter-meal
@@ -45,60 +45,57 @@ block content
 
   .container.main-layout
     .content-area
-      .results-bar(style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;")
-        h2#results-heading(style="color:var(--navy); margin:0;") All Recipes
-        span#results-count(style="font-size:0.85rem; color:var(--text-muted);") #{recipes ? recipes.length : 0} recipes
+      .results-bar
+        h2#results-heading All Recipes
+        span#results-count.results-count #{recipes ? recipes.length : 0} recipes
 
       //- Loading spinner (hidden by default)
-      .spinner-wrap#spinner(style="display:none; grid-column:1/-1; text-align:center; padding:3rem;")
+      .spinner-wrap#spinner
         .spinner
 
       .recipe-grid#recipe-grid
         each recipe in recipes
-          .recipe-card(
-            onclick=`window.location.href='/recipes/${recipe.id}'`,
-            style="cursor:pointer;"
-          )
+          .recipe-card(onclick=`window.location.href='/recipes/${recipe.id}'`)
             .card-img-placeholder
               if recipe.image_url
-                img(src=recipe.image_url, alt=recipe.title, style="width:100%;height:100%;object-fit:cover;")
+                img.card-img-fill(src=recipe.image_url, alt=recipe.title)
               else
-                span(style="font-size:3rem;color:#d1d5db;") 🍽️
+                span.placeholder-icon 🍽️
             .card-body
               h3 #{recipe.title}
               .card-author
                 .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'C'}
                 span @#{recipe.author || 'chef'}
               .card-meta
-                span(style="font-size:0.85rem;color:var(--text-muted);")
+                span.text-muted-sm
                   | ★ #{parseFloat(recipe.avg_rating) > 0 ? parseFloat(recipe.avg_rating).toFixed(1) : 'No reviews'}
                 span.difficulty-badge(class=`diff-${recipe.difficulty}`) #{recipe.difficulty}
-              .card-times(style="display:flex; gap:0.75rem; margin-top:0.5rem; font-size:0.8rem; color:var(--text-muted);")
+              .card-times
                 span ⏱ #{recipe.prep_time + recipe.cook_time} min
                 span 🍽 #{recipe.servings} servings
 
         if !recipes || recipes.length === 0
-          div(style="grid-column:1/-1;text-align:center;padding:4rem;")
-            span(style="font-size:3rem;display:block;margin-bottom:1rem;") 🥣
-            h3(style="color:var(--navy);margin-bottom:0.5rem;") No recipes yet
-            p(style="color:var(--text-muted);") Seed the database to see recipes here.
+          .empty-state.empty-state-grid
+            span.empty-icon 🥣
+            h3 No recipes yet
+            p Seed the database to see recipes here.
 
     .sidebar
       .sidebar-card
         h4 Browse by Tag
-        .tags-wrap(style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;")
+        .tags-wrap
           each tag in tags
-            span.tag(style="cursor:pointer;" data-tag=tag.name) #{tag.name}
+            span.tag(data-tag=tag.name) #{tag.name}
 
       .sidebar-card
         h4 Quick Stats
-        .stats-grid(style="margin-top:0.75rem; display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;")
-          .stat-item(style="text-align:center; background:var(--bg); border-radius:6px; padding:0.75rem;")
-            div(style="font-size:1.4rem; font-weight:800; color:var(--navy);") #{stats ? stats.recipe_count : 0}
-            div(style="font-size:0.75rem; color:var(--text-muted);") Recipes
-          .stat-item(style="text-align:center; background:var(--bg); border-radius:6px; padding:0.75rem;")
-            div(style="font-size:1.4rem; font-weight:800; color:var(--navy);") #{stats ? stats.user_count : 0}
-            div(style="font-size:0.75rem; color:var(--text-muted);") Cooks
+        .stats-grid
+          .stat-item
+            .stat-value #{stats ? stats.recipe_count : 0}
+            .stat-label Recipes
+          .stat-item
+            .stat-value #{stats ? stats.user_count : 0}
+            .stat-label Cooks
 
 block scripts
   script.

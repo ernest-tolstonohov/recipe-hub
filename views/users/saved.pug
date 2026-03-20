@@ -1,23 +1,23 @@
 extends ../layout
 
 block content
-    .container(style="padding-top:2rem; padding-bottom:3rem;")
+    .container.page-container
 
-        .section-header(style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:2px solid var(--navy);")
+        .section-header
             div
-                h1(style="color:var(--navy); font-size:1.8rem; font-weight:800; margin:0;") Saved Recipes
-                p(style="color:var(--text-muted); font-size:0.9rem; margin-top:0.25rem;") Your personal collection of favorites
+                h1 Saved Recipes
+                p Your personal collection of favorites
 
         if saved && saved.length > 0
             .recipe-grid
                 each recipe in saved
-                    .recipe-card(data-recipe-id=recipe.id, style="position: relative; cursor: default;")
-                        a.card-link(href=`/recipes/${recipe.id}`, style="display:block; text-decoration:none;")
+                    .recipe-card.recipe-card-relative
+                        a.card-link(href=`/recipes/${recipe.id}`)
                             .card-img-placeholder
                                 if recipe.image_url
-                                    img(src=recipe.image_url, style="width:100%; height:100%; object-fit:cover;")
+                                    img.card-img-fill(src=recipe.image_url, alt=recipe.title)
                                 else
-                                    span(style="font-size:3rem; color:#d1d5db;") 🍽️
+                                    span.placeholder-icon 🍽️
                             .card-body
                                 h3 #{recipe.title}
                                 .card-author
@@ -26,13 +26,13 @@ block content
                                 .card-meta
                                     span.stars ★★★★★
                         if user && user.id === profileUser.id
-                            button.btn.btn-unsave(data-recipe-id=recipe.id, data-user-id=user.id, style="position: absolute; top: 10px; right: 10px; background: white; border: 1px solid #ef4444; color: #ef4444; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; z-index: 10;") 🗑️ Remove
+                            button.btn-unsave.btn.btn-unsave(data-recipe-id=recipe.id, data-user-id=user.id) 🗑️ Remove
         else
-            .empty-state(style="text-align:center; padding:5rem 2rem; background:var(--white); border:1px dashed var(--border); border-radius:8px;")
-                span(style="font-size:4rem; display:block; margin-bottom:1rem;") 🍽️
-                h3(style="color:var(--navy); margin-bottom:0.5rem;") No saved recipes yet
-                p(style="color:var(--text-muted); margin-bottom:1.5rem;") Browse recipes and save your favorites!
-                a.btn-green(href="/" style="text-decoration:none; padding:0.6rem 1.5rem;") Explore Recipes
+            .empty-state
+                span.empty-icon 🍽️
+                h3 No saved recipes yet
+                p Browse recipes and save your favorites!
+                a.btn-green(href="/") Explore Recipes
 
 block scripts
     script(src="/js/bookmark.js")

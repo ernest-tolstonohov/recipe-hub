@@ -162,6 +162,15 @@ a {
   background-color: var(--green-hover);
 }
 
+.section-header .btn-green {
+  width: auto;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  font-size: 0.875rem;
+}
+
 /* --- Hero Section --- */
 .hero-section {
   height: 388px;
@@ -532,16 +541,17 @@ a {
 }
 
 .avatar-md {
-  width: 32px;
-  height: 32px;
-  background: #e5e7eb;
+  width: 72px;
+  height: 72px;
+  background: var(--navy);
+  color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--navy);
+  font-size: 2rem;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .contributor-info p {
@@ -676,6 +686,14 @@ footer {
   border: none;
   cursor: pointer;
   padding: 0.25rem;
+}
+
+.avatar-btn .avatar-xs {
+  width: 32px;
+  height: 32px;
+  font-size: 0.85rem;
+  background: var(--navy);
+  color: white;
 }
 
 .avatar-btn span {
@@ -1032,8 +1050,9 @@ footer {
 
 .progress-fill {
   height: 100%;
-  background: var(--green);
-  transition: width 0.3s;
+  width: 0%;
+  background: transparent;
+  transition: width 0.3s, background 0.3s;
 }
 
 .step-block {
@@ -1446,4 +1465,547 @@ details summary::-webkit-details-marker {
 .text-muted {
   color: var(--text-muted);
   font-size: 0.75rem;
+}
+
+/* ── Page containers ─────────────────────────────────── */
+.page-container {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.page-container-narrow {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  max-width: 900px;
+}
+
+/* ── Section header (title + action button row) ──────── */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--navy);
+}
+
+.section-header h1 {
+  color: var(--navy);
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.section-header p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* ── Recipe form (new / edit) ────────────────────────── */
+.form-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-section h2 {
+  color: var(--navy);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-row-single {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.form-row-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .form-row-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  outline: none;
+  background: var(--white);
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Ingredient rows ─────────────────────────────────── */
+.ingredient-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.ingredient-row input {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+}
+
+.btn-remove {
+  padding: 0.55rem 0.7rem;
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.btn-remove:hover {
+  background: #fef2f2;
+}
+
+.btn-add-row {
+  margin-top: 0.5rem;
+  background: none;
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  width: 100%;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-add-row:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+/* ── Instruction step rows ───────────────────────────── */
+.step-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  background: var(--navy);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.55rem;
+}
+
+.step-row textarea {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  outline: none;
+  resize: vertical;
+  width: 100%;
+}
+
+.btn-remove-step {
+  padding: 0.55rem 0.7rem;
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+  line-height: 1;
+}
+
+.btn-remove-step:hover {
+  background: #fef2f2;
+}
+
+/* ── Tag checkbox labels ─────────────────────────────── */
+.tag-group {
+  margin-bottom: 1rem;
+}
+
+.tag-group-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.tag-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.tag-checkbox-label:hover {
+  border-color: var(--navy);
+}
+
+.tag-checkbox-label input {
+  accent-color: var(--navy);
+}
+
+/* ── Form actions (cancel / submit row) ──────────────── */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.btn-cancel {
+  padding: 0.65rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  background: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.btn-cancel:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+/* ── Card actions (edit / delete row) ────────────────── */
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.btn-card-edit {
+  flex: 1;
+  text-align: center;
+  padding: 0.4rem;
+  border: 1px solid var(--navy);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: var(--navy);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.btn-card-edit:hover {
+  background: var(--navy);
+  color: white;
+}
+
+.btn-card-delete {
+  flex: 1;
+  padding: 0.4rem;
+  border: 1px solid #ef4444;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #ef4444;
+  background: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-card-delete:hover {
+  background: #fef2f2;
+}
+
+/* ── Unsave button on saved cards ────────────────────── */
+.btn-unsave {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.15s;
+}
+
+.btn-unsave:hover {
+  background: #fef2f2;
+}
+
+/* ── Recipe card with relative positioning ───────────── */
+.recipe-card-relative {
+  position: relative;
+  cursor: pointer;
+}
+
+/* ── Recipe card link wrapper ────────────────────────── */
+.card-link {
+  display: block;
+  text-decoration: none;
+}
+
+/* ── Recipes listing page heading ────────────────────── */
+.results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.results-bar h1,
+.results-bar h2 {
+  color: var(--navy);
+  margin: 0;
+}
+
+.results-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ── Inline author line on detail page ───────────────── */
+.author-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.author-line a {
+  font-weight: 500;
+}
+
+.author-line .date {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* ── Detail image ────────────────────────────────────── */
+.detail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* ── Placeholder text in detail/saved ───────────────── */
+.placeholder-icon {
+  font-size: 3rem;
+  color: #d1d5db;
+}
+
+.no-image-label {
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.5rem;
+}
+
+/* ── Empty state (shared) ────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: var(--white);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
+.empty-state .empty-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* ── Muted inline text ───────────────────────────────── */
+.text-muted-sm {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ── No-content paragraph ────────────────────────────── */
+.no-content {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+}
+
+/* ── Review stars inline ─────────────────────────────── */
+.review-stars {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+/* ── Profile page ────────────────────────────────────── */
+.profile-header {
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-meta-strip {
+  padding-top: 0;
+  margin-top: 0;
+  border: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.profile-recipes-heading {
+  margin-bottom: 1.5rem;
+  color: var(--navy);
+  font-size: 1.5rem;
+}
+
+/* ── Logout form in dropdown ─────────────────────────── */
+.logout-form {
+  display: inline;
+  width: 100%;
+}
+
+/* ── Card image fill ─────────────────────────────────── */
+.card-img-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Chips placeholder ───────────────────────────────── */
+#chips-placeholder {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+/* ── Ingredient panel hidden by default ──────────────── */
+.ingredient-panel {
+  display: none;
+}
+
+/* ── Ingredient loading text ─────────────────────────── */
+.ing-loading {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 0.5rem;
+}
+
+/* ── Spinner wrap ────────────────────────────────────── */
+.spinner-wrap {
+  display: none;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+}
+
+/* ── Card times row ──────────────────────────────────── */
+.card-times {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Empty state spanning full grid ─────────────────── */
+.empty-state-grid {
+  grid-column: 1 / -1;
+  padding: 4rem;
+  border: none;
+  background: none;
+}
+
+/* ── Stats grid ──────────────────────────────────────── */
+.stats-grid {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.stat-item {
+  text-align: center;
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
