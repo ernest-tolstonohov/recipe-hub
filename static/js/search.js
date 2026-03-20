@@ -43,16 +43,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     findBtn.addEventListener('click', async () => {
         try {
+            // 1. Inject skeleton loaders immediately
+            recipeGrid.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                recipeGrid.innerHTML += `
+                    <div class="recipe-card">
+                        <div class="card-img-placeholder skeleton" style="border-radius: 4px 4px 0 0; border: none; background: transparent; color: transparent;"></div>
+                        <div class="card-body">
+                            <div class="skeleton skeleton-text" style="height: 16px; width: 85%; margin-bottom: 1rem;"></div>
+                            <div class="card-author" style="margin-bottom: 1rem;">
+                                <div class="avatar-xs skeleton" style="color:transparent; float:left;"></div>
+                                <div class="skeleton skeleton-text" style="height: 12px; width: 45%; margin-top: 4px; margin-left: 0.5rem; float:left;"></div>
+                                <div style="clear:both;"></div>
+                            </div>
+                            <div class="card-meta">
+                                <div class="skeleton skeleton-text" style="height: 12px; width: 35%; margin-top: auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 2. Fetch results
+            const tags = Array.from(document.querySelectorAll('.filter-row select'))
+                .map(s => s.value)
+                .filter(v => v !== "");
+
             const response = await fetch('/recipes/search', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ingredients })
+                body: JSON.stringify({ ingredients, tags })
             });
             
             if (!response.ok) throw new Error('Search failed');
             
             const data = await response.json();
-            renderRecipes(data.recipes);
+            
+            // 3. Render results (simulate minimal 500ms network delay to appreciate the skeleton effect)
+            setTimeout(() => {
+                renderRecipes(data.recipes);
+            }, 500);
+            
         } catch (err) {
             console.error(err);
             alert('Failed to find recipes. Please try again.');
@@ -75,8 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         recipes.forEach(recipe => {
             const hasMatch = ingredients.length > 0;
-            // Simplified match percentage display
-            const matchBadge = hasMatch ? `<div class="match-badge">Matching Ingredients</div>` : '';
+            const matchBadge = hasMatch ? `<div class="match-badge">${recipe.match_percentage || 100}% Match</div>` : '';
             
             const card = document.createElement('div');
             card.className = 'recipe-card';

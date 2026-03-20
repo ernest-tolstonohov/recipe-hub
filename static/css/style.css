@@ -1188,7 +1188,66 @@ details summary::-webkit-details-marker {
 .skeleton-text.short {
   width: 60%;
 }
-/* Profile Page */
+/* ============================
+   ERROR VIEWS FALLBACK
+   ============================ */
+.error-layout {
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 1rem;
+}
+
+.error-card {
+  max-width: 500px;
+  margin: 0 auto;
+  background: var(--white);
+  padding: 3rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+}
+
+.error-card .emoji-placeholder {
+  margin-bottom: 1rem;
+}
+
+.error-card h1 {
+  color: #b91c1c;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.error-card h1.error-404-code {
+  color: var(--navy);
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.error-404-title {
+  color: var(--text-main);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  border-left: 4px solid #f87171;
+  padding: 1rem;
+  text-align: left;
+  background: #fee2e2;
+  border-radius: 4px;
+}
+
+.error-fallback {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+/* ============================
+   PROFILE PAGE (REMOTE ORIGIN)
+   ============================ */
 .profile-header {
   display: flex;
   align-items: center;

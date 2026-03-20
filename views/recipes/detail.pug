@@ -15,13 +15,13 @@ block content
                 
                 h1 #{recipe.title}
                 
-                .card-author
-                    .avatar-xs
-                    span By @#{recipe.author || 'chef_guest'}
-                    span &bull; Published 12 Jan 2025
+                .card-author(style="margin-bottom: 1rem;")
+                    .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'U'}
+                    span by @#{recipe.author || 'guest'}
+                    span.text-muted(style="font-size:0.8rem; margin-left:0.5rem; color: #999;") &bull; Published 12 Jan 2025
                 
                 .status-badges
-                    span.history-badge Last improved 3 days ago &bull; View history
+                    span.history-badge ⟲ Last improved 3 days ago &bull; View history
                 
                 .meta-strip
                     .meta-item
@@ -47,60 +47,121 @@ block content
                 if recipe.image_url
                     img(src=recipe.image_url, alt=recipe.title)
                 else
-                    span.emoji-placeholder 🥘
+                    span.emoji-placeholder 📷
+                    span(style="position:absolute; bottom:10px; right:10px; font-size:0.7rem; color:#999;") Recipe Image - 16:9
 
-        .action-bar(style="border-top: 2px solid #eee; border-bottom: 2px solid #eee; padding: 1rem 0; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;")
-            h3(style="font-size: 1rem; color: #555;") #{recipe.title}
-            .action-buttons(style="display: flex; gap: 1rem; align-items: center;")
+        .action-bar
+            h3 #{recipe.title}
+            .action-buttons
                 if user
                     button#bookmark-btn.btn.btn-bookmark(
                         class=isSaved ? 'saved' : '', 
                         data-recipe-id=recipe.id, 
                         data-user-id=user.id, 
-                        data-saved=isSaved ? 'true' : 'false',
-                        style="padding: 0.4rem 1rem; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer;"
+                        data-saved=isSaved ? 'true' : 'false'
                     )
-                        span.icon #{isSaved ? '🔖' : '☆'}
-                        span.label #{isSaved ? ' Save' : ' Save'}
-                span.stars(style="color: #fcc419;") ★★★★★
-                button.btn-suggest(style="padding: 0.4rem 1rem; border: 1px solid var(--secondary); color: var(--secondary); background: white; border-radius: 4px; cursor: pointer; font-weight: 600;") Suggest an Edit
+                        span.icon #{isSaved ? '🔖' : '⊞'}
+                        span.label #{isSaved ? ' Saved' : ' Save'}
+                span.stars ★★★★★
+                button.btn-suggest - Suggest an Edit
 
         .recipe-info
             .ingredients
+                h3.zone-badge TWO-COLUMN BODY
                 h2 Ingredients
-                p Servings: 
-                    button(style="width: 24px;") -
-                    span(style="margin: 0 0.5rem; font-weight: bold;") 4
-                    button(style="width: 24px;") +
-                pre(style="margin-top: 1rem;") #{recipe.ingredients}
+                .servings-stepper
+                    span Servings:
+                    button -
+                    span.count 4
+                    button +
+                
+                ul.ingredient-list
+                    - var ingredientsList = recipe.ingredients ? recipe.ingredients.split(',') : []
+                    each item in ingredientsList
+                        li.ingredient-item
+                            label
+                                input.ing-checkbox(type="checkbox")
+                                span.ing-text= item.trim()
+                
+                .progress-wrapper
+                    span.progress-text You have 0 of #{ingredientsList.length} ingredients
+                    .progress-bar
+                        .progress-fill(style="width: 0%;")
             
             .instructions
                 h2 Instructions
-                pre #{recipe.instructions}
+                .instruction-steps
+                    - var stepsList = recipe.instructions ? recipe.instructions.split('\n') : []
+                    each step, index in stepsList
+                        if step.trim()
+                            .step-block
+                                .step-number= index + 1
+                                p= step.replace(/^\d+\.\s*/, '').trim()
 
-        .reviews-section(style="margin-top: 4rem; padding-top: 2rem; border-top: 2px solid #eee;")
-            .review-header(style="display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem;")
-                span(style="font-size: 3rem; font-weight: 800; color: var(--navy);") 4.2
+        .reviews-section
+            h3.zone-badge REVIEWS SECTION
+            .review-header
+                span.rating-score 4.2
                 .rating-info
-                    span.stars(style="color: #fcc419; font-size: 1.5rem;") ★★★★☆
-                    p(style="font-size: 0.8rem; color: #666;") Based on 38 reviews
-            
-            .review-grid(style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;")
-                .review-card
-                    .card-author
-                        .avatar-xs
-                        span @lucy_halls
-                    span.stars ★★★★★
-                    p "Really easy to follow for a beginner. Turned out creamy and delicious first try."
-                    p(style="font-size: 0.7rem; color: #999; margin-top: 0.5rem;") 3 days ago
-                .review-card
-                    .card-author
-                        .avatar-xs
-                        span @tom_budget
                     span.stars ★★★★☆
+                    p Based on 38 reviews
+            
+            .review-grid
+                .review-card
+                    .card-author
+                        .avatar-xs L
+                        span @lucy_halls
+                    span.stars(style="display:block; margin: 0.5rem 0;") ★★★★★
+                    p "Really easy to follow for a beginner. Turned out creamy and delicious first try."
+                    p.review-date 3 days ago
+                .review-card
+                    .card-author
+                        .avatar-xs T
+                        span @tom_budget
+                    span.stars(style="display:block; margin: 0.5rem 0;") ★★★★☆
                     p "Halved the recipe for one person, worked perfectly. Used bacon instead of pancetta."
-                    p(style="font-size: 0.7rem; color: #999; margin-top: 0.5rem;") 1 week ago
+                    p.review-date 1 week ago
+
+            .write-review-box
+                h4 Write a Review
+                .stars-input ☆ ☆ ☆ ☆ ☆
+                textarea(placeholder="Share your experience with this recipe...")
+                button.btn-submit Submit Review
+
+        .edit-history
+            h3.zone-badge(style="background: var(--green);") EDIT HISTORY
+            details
+                summary 
+                    span ⟲ Version History & Contributor Credits (6 edits)
+                    span.collapsed-text ▼ collapsed by default
+                .history-list
+                    .history-item
+                        .card-author
+                            .avatar-xs A
+                            span @alex_cooks - Updated cooking time from 30 to 20 min
+                        .history-meta
+                            span.badge-applied applied
+                            span 3 days ago
+                            a(href="#") [View Diff]
+                    .history-item
+                        .card-author
+                            .avatar-xs S
+                            span @sara_vegan - Added GF substitution note to step 1
+                        .history-meta
+                            span.badge-applied applied
+                            span 1 week ago
+                            a(href="#") [View Diff]
 
 block scripts
     script(src="/js/bookmark.js")
+    script.
+        document.querySelectorAll('.ing-checkbox').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const total = document.querySelectorAll('.ing-checkbox').length;
+                const checked = document.querySelectorAll('.ing-checkbox:checked').length;
+                document.querySelector('.progress-fill').style.width = \`\${(checked/total)*100}%\`;
+                document.querySelector('.progress-text').innerText = \`You have \${checked} of \${total} ingredients\`;
+                cb.closest('.ingredient-item').classList.toggle('checked', cb.checked);
+            });
+        });
 

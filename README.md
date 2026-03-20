@@ -78,6 +78,30 @@ Make sure no other containers are running (`docker ps`), then:
 docker compose up -d --build
 ```
 
+### Database persistence & seeding (important)
+
+This project persists MySQL data between container restarts.
+
+- `docker compose up` does NOT delete the database.
+- In [docker-compose.yml](docker-compose.yml) we use a bind mount: `./db:/var/lib/mysql`, so the data is stored on disk in the project’s `db/` folder.
+
+The database will only be removed if you:
+
+- delete the `db/` folder manually, or
+- run SQL containing `DROP TABLE ...` (there is a drop section in [sd2-db.sql](sd2-db.sql)), or
+- intentionally wipe Docker storage/volumes.
+
+How new (demo) data appears:
+
+1. First create the tables (for example by importing [sd2-db.sql](sd2-db.sql) via phpMyAdmin).
+2. Then run the seed script (demo data):
+
+```bash
+docker compose exec web node scripts/seed.js
+```
+
+Important: `scripts/seed.js` is not run automatically during `docker compose up` — it only runs when you execute it.
+
 This will set up:
 
 - MySQL database server
@@ -98,10 +122,12 @@ npm start
 ### Database Credentials
 
 - Host: localhost
-- Port: 3306
+- Port: 3308 (from your host machine; published as `3308:3306`)
 - Database: recipehub
 - Username: recipehub_user
 - Password: recipehub_pass
+
+Note: inside the Docker network (container-to-container), the DB host is `db` on port `3306`.
 
 ## Database Service
 

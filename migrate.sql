@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+    is_active BOOLEAN DEFAULT TRUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -28,8 +29,17 @@ CREATE TABLE IF NOT EXISTS recipes (
     ingredients TEXT,
     instructions TEXT,
     image_url VARCHAR(512),
+    tags TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 2.5 Recipe Ingredients Junction
+CREATE TABLE IF NOT EXISTS recipe_ingredients (
+    recipe_id INT NOT NULL,
+    ingredient_name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (recipe_id, ingredient_name),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 3. Saved Recipes Table (Composite PK)
@@ -47,10 +57,10 @@ CREATE TABLE IF NOT EXISTS saved_recipes (
 -- user: $2a$12$R9h/LIPzKuRZyjSpz6uvCOu9f13PP9v.qUyXG8v14Mv9G5G6.U9K.
 -- admin: $2a$12$R9h/LIPzKuRZyjSpz6uvCOu9f13PP9v.qUyXG8v14Mv9G5G6.U9K.
 
-INSERT IGNORE INTO users (username, email, password_hash, role) VALUES
-('student_cook', 'user@recipehub.com', '$2a$12$R9h/LIPzKuRZyjSpz6uvCOu9f13PP9v.qUyXG8v14Mv9G5G6.U9K.', 'user'),
-('head_chef', 'admin@recipehub.com', '$2a$12$R9h/LIPzKuRZyjSpz6uvCOu9f13PP9v.qUyXG8v14Mv9G5G6.U9K.', 'admin');
+-- INSERT IGNORE INTO users (username, email, password_hash, role) VALUES
+-- ('student_cook', 'user@recipehub.com', '$2a$12$R9h/LIPzKuRZyjSpz6uvCOu9f13PP9v.qUyXG8v14Mv9G5G6.U9K.', 'user'),
+-- ('head_chef', 'admin@recipehub.com', '$2a$12$R9h/LIPzKuRZyjSpz6uvCOu9f13PP9v.qUyXG8v14Mv9G5G6.U9K.', 'admin');
 
-INSERT IGNORE INTO recipes (user_id, title, description, ingredients, instructions, image_url) VALUES
-(1, 'Quick Student Pasta', 'A simple and affordable pasta dish for busy nights.', 'Pasta, Garlic, Olive Oil, Chili Flakes, Parmesan', '1. Boil pasta.\n2. Sauté garlic and chili in oil.\n3. Toss pasta with oil and cheese.', 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&q=80&w=800'),
-(2, 'Gourmet Mushroom Risotto', 'Rich and creamy risotto with fresh herbs.', 'Arborio Rice, Mushrooms, Vegetable Stock, Onion, White Wine, Butter, Thyme', '1. Sauté onions and mushrooms.\n2. Add rice and toast.\n3. Gradually add stock until creamy.', 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?auto=format&fit=crop&q=80&w=800');
+-- INSERT IGNORE INTO recipes (user_id, title, description, ingredients, instructions, image_url) VALUES
+-- (1, 'Quick Student Pasta', 'A simple and affordable pasta dish for busy nights.', 'Pasta, Garlic, Olive Oil, Chili Flakes, Parmesan', '1. Boil pasta.\n2. Sauté garlic and chili in oil.\n3. Toss pasta with oil and cheese.', 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&q=80&w=800'),
+-- (2, 'Gourmet Mushroom Risotto', 'Rich and creamy risotto with fresh herbs.', 'Arborio Rice, Mushrooms, Vegetable Stock, Onion, White Wine, Butter, Thyme', '1. Sauté onions and mushrooms.\n2. Add rice and toast.\n3. Gradually add stock until creamy.', 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?auto=format&fit=crop&q=80&w=800');

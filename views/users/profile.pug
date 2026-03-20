@@ -1,34 +1,41 @@
-extends ../layout
+extends ../layout.pug
 
 block content
-    .hero-section
-        h1 #{profileUser.username}'s Profile
-        p.subtitle Member since #{new Date(profileUser.created_at).toLocaleDateString()}
-        if user && user.id === profileUser.id
-            p.email Email: #{profileUser.email}
-            p.role Role: #{profileUser.role}
+  .container.main-layout
+    .content-area
+      // Profile Header
+      .detail-header(style="align-items: center; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border);")
+        .avatar-md(style="width: 80px; height: 80px; font-size: 2.5rem; background: var(--navy); color: var(--white);") #{profileUser.username.charAt(0).toUpperCase()}
+        .recipe-title-section
+          h1 @#{profileUser.username}
+          .meta-strip(style="padding-top: 0; margin-top: 0; border: none; display: flex; gap: 2rem;")
+            .meta-item
+              span.meta-val #{recipes ? recipes.length : 0}
+              span.meta-label Recipes Published
+            .meta-item
+              span.meta-val #{profileUser.role.toUpperCase()}
+              span.meta-label Account Role
 
-    section.profile-saved
-        h2 Saved Recipes
+      // Published Recipes Feed
+      h2(style="margin-bottom: 1.5rem; color: var(--navy); font-size: 1.5rem;") Published Recipes
+      if recipes && recipes.length > 0
         .recipe-grid
-            each recipe in saved
-                .recipe-card-wrapper(data-recipe-id=recipe.id)
-                    article.recipe-card
-                        a.card-link(href=`/recipes/${recipe.id}`)
-                            .card-image-box
-                                img(src=recipe.image_url || 'https://via.placeholder.com/400x250?text=No+Image', alt=recipe.title)
-                            .card-content
-                                h2 #{recipe.title}
-                                p.author By #{recipe.author}
-                        
-                        if user && user.id === profileUser.id
-                            .card-actions
-                                button.btn.btn-unsave(data-recipe-id=recipe.id, data-user-id=user.id) 🗑️ Remove
-            else
-                .empty-state
-                    p No saved recipes yet.
-                    if user && user.id === profileUser.id
-                        a.btn.btn-primary(href="/") Explore Recipes
-
-block scripts
-    script(src="/js/bookmark.js")
+          each recipe in recipes
+            .recipe-card(onclick=`window.location.href='/recipes/${recipe.id}'`)
+              .card-img-placeholder
+                if recipe.image_url
+                  img(src=recipe.image_url alt=recipe.title style="width:100%; height:100%; object-fit:cover;")
+                else
+                  span(style="font-size:3rem; color:#d1d5db;") 🍽️
+              .card-body
+                h3 #{recipe.title}
+                .card-author
+                  .avatar-xs(style="margin-right: 0.5rem;") #{profileUser.username.charAt(0).toUpperCase()}
+                  span @#{profileUser.username}
+                .card-meta(style="margin-top: 1rem;")
+                  span.stars ★★★★★
+      else
+        div(style="text-align: center; padding: 4rem; background: var(--white); border: 1px dashed var(--border); border-radius: 8px;")
+          .emoji-placeholder(style="margin-bottom: 1rem; font-size: 3rem;") 👨‍🍳
+          h3(style="color: var(--navy); margin-bottom: 0.5rem;") No recipes yet
+          p(style="color: var(--text-muted)") @#{profileUser.username} hasn't published any recipes to the community.
