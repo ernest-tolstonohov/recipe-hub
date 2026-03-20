@@ -1,11 +1,45 @@
-html
+doctype html
+html(lang="en")
   head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title RecipeHub
-    link(rel='stylesheet', href='/css/style.css')
+    link(rel="stylesheet", href="/css/style.css")
   body
-    include partials/navbar.pug
+    nav.navbar
+      .container
+        a.brand(href="/") RecipeHub
+        ul.nav-links
+          li: a(href="/") Home
+          li: a(href="/users/my-recipes") My Recipes
+        .auth-links
+          if user
+            .avatar-dropdown
+              button.avatar-btn
+                span #{user.username}
+              .dropdown-content
+                a(href="/users/" + user.user_id) My Profile
+                a(href="/logout") Logout
+          else
+            a.btn-login(href="/login") Login
+            a.btn-register(href="/register") Register
     
     main
       block content
     
-    include partials/footer.pug
+    footer
+      .container
+        .footer-grid
+          .footer-col
+            h4 RecipeHub
+            p Share Knowledge. Reduce Waste.
+          .footer-col
+            h4 Navigation
+            ul
+              li: a(href="/") Home
+              li: a(href="/users/my-recipes") My Recipes
+          .footer-col
+            h4 Community Commitment
+            p We believe in reducing food waste through shared knowledge and community cooking.
+    
+    block scripts
