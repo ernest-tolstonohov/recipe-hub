@@ -1188,7 +1188,6 @@ details summary::-webkit-details-marker {
 .skeleton-text.short {
   width: 60%;
 }
-
 /* ============================
    ERROR VIEWS FALLBACK
    ============================ */
@@ -1244,4 +1243,79 @@ details summary::-webkit-details-marker {
 .error-fallback {
   color: var(--text-muted);
   margin-bottom: 2rem;
+}
+
+/* ============================
+   PROFILE PAGE (REMOTE ORIGIN)
+   ============================ */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 3rem 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 3rem;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  background-color: var(--navy);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+
+.profile-info h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.profile-info .joined {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.profile-info .email {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.profile-recipes h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  background: #f9fafb;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-muted {
+  color: var(--text-muted);
+  font-size: 0.75rem;
 }
