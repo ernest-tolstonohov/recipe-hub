@@ -9,10 +9,12 @@ html(lang="en")
         nav.navbar
             .container
                 a.brand(href="/")
-                    img(src="/images/logo.png", alt="RecipeHub Logo")
+                    img(src="/images/logo.svg", alt="RecipeHub Logo")
                 ul.nav-links
                     li: a(href="/") Home
                     li: a(href="/users/my-recipes") My Recipes
+                    if user
+                        li: a(href=`/users/${user.id}/saved`) Saved Recipes
                 .auth-links
                     if user
                         .avatar-dropdown
@@ -22,7 +24,8 @@ html(lang="en")
                             .dropdown-content
                                 a(href=`/users/${user.id}`) My Profile
                                 a(href=`/users/${user.id}/saved`) Saved Recipes
-                                a(href="/admin") Admin Panel
+                                if user.role === 'admin'
+                                    a(href="/admin") Admin Panel
                                 form(method="POST", action="/logout", style="display:inline")
                                     button.btn-logout(type="submit", style="width: 100%; text-align: left;") Logout
                     else

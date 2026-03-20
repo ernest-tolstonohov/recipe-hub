@@ -3,10 +3,10 @@ const router = express.Router();
 const UserController = require('../controllers/userController');
 const { requireAuth } = require('../middleware/auth');
 
-// Protect all user routes
-router.use(requireAuth);
+// my-recipes must come before /:id to avoid being caught by the param route
+router.get('/my-recipes', requireAuth, UserController.getMyRecipes);
 
-router.get('/my-recipes', UserController.getMyRecipes);
+// Public profile page
 router.get('/:id', UserController.show);
 router.get('/:id/saved', UserController.getSaved);
 router.post('/:id/saved/:rid', UserController.save);
