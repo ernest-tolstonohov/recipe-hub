@@ -40,84 +40,56 @@ block content
 
   .container.main-layout
     .content-area
-      .section-header
-        span Popular This Week
-        
-      .recipe-grid
-        .recipe-card(onclick="window.location.href='/recipes/1'")
-          .match-badge 4 of 5 ingredients matched
-          .card-img-placeholder
-            span(style="font-size:3rem; color:#d1d5db;") 🍽️
-          .card-body
-            h3 Creamy Garlic Chicken Pasta
-            .card-author
-              .avatar-xs J
-              span @jamie_cooks
-            .card-meta
-              span.stars ★★★★★
-              span.tag.tag-green Vegetarian
-              
-        .recipe-card(onclick="window.location.href='/recipes/2'")
-          .card-img-placeholder
-            span(style="font-size:3rem; color:#d1d5db;") 🍽️
-          .card-body
-            h3 Simple Fried Rice Bowl
-            .card-author
-              .avatar-xs S
-              span @student_eats
-            .card-meta
-              span.stars ★★★★☆
-              span.tag Easy
-              
-        .recipe-card(onclick="window.location.href='/recipes/3'")
-          .card-img-placeholder
-            span(style="font-size:3rem; color:#d1d5db;") 🍽️
-          .card-body
-            h3 Lemon Herb Baked Salmon
-            .card-author
-              .avatar-xs M
-              span @uni_kitchen
-            .card-meta
-              span.stars ★★★★★
-              span.tag.tag-green GF
-
+      .recipe-grid(style="margin-top: 2rem;")
+        - for (let i = 0; i < 3; i++)
+          .recipe-card
+            .card-img-placeholder.skeleton(style="border-radius: 4px 4px 0 0; border: none; background: transparent; color: transparent;")
+            .card-body
+              .skeleton.skeleton-text(style="height: 16px; width: 85%; margin-bottom: 1rem;")
+              .card-author(style="margin-bottom: 1rem;")
+                .avatar-xs.skeleton(style="color:transparent;")
+                .skeleton.skeleton-text(style="height: 12px; width: 45%; margin-top: 4px; margin-left: 0.5rem;")
+              .card-meta
+                .skeleton.skeleton-text(style="height: 12px; width: 35%; margin-top: auto;")
     .sidebar
       .sidebar-card
         h4 Recent Contributors
         .contributor-item
-          .avatar-md A
-          .contributor-info
-            p @alex_budget
-            span 2 hours ago
+          .avatar-md.skeleton(style="color:transparent;")
+          .contributor-info(style="width: 100%;")
+            .skeleton.skeleton-text
+            .skeleton.skeleton-text.short
         .contributor-item
-          .avatar-md S
-          .contributor-info
-            p @sara_vegan
-            span 5 hours ago
+          .avatar-md.skeleton(style="color:transparent;")
+          .contributor-info(style="width: 100%;")
+            .skeleton.skeleton-text
+            .skeleton.skeleton-text.short
         .contributor-item
-          .avatar-md M
-          .contributor-info
-            p @mike_dorm
-            span Yesterday
+          .avatar-md.skeleton(style="color:transparent;")
+          .contributor-info(style="width: 100%;")
+            .skeleton.skeleton-text
+            .skeleton.skeleton-text.short
 
       .sidebar-card
         h4 Latest Reviews
         .review-item
-          .stars ★★★★★
-          p "Really easy to follow, perfect for a busy weeknight..."
+          .skeleton.skeleton-text(style="height: 14px; width: 40%; margin-bottom: 0.75rem;")
+          .skeleton.skeleton-text(style="height: 10px; width: 100%;")
+          .skeleton.skeleton-text(style="height: 10px; width: 85%;")
         .review-item
-          .stars ★★★★☆
-          p "Halved the ingredients and it still turned out great..."
+          .skeleton.skeleton-text(style="height: 14px; width: 40%; margin-bottom: 0.75rem;")
+          .skeleton.skeleton-text(style="height: 10px; width: 100%;")
+          .skeleton.skeleton-text(style="height: 10px; width: 75%;")
 
       .sidebar-card
         h4 Trending Tags
         .tags-wrap
-          span.tag.tag-green Vegan
-          span.tag Italian
-          span.tag Budget
-          span.tag.tag-green GF
-          span.tag.tag-green Quick
-          span.tag Asian
+          span.tag.skeleton(style="width: 50px; color:transparent; border:none;") V
+          span.tag.skeleton(style="width: 60px; color:transparent; border:none;") I
+          span.tag.skeleton(style="width: 55px; color:transparent; border:none;") B
+          span.tag.skeleton(style="width: 40px; color:transparent; border:none;") G
+          span.tag.skeleton(style="width: 65px; color:transparent; border:none;") Q
+          span.tag.skeleton(style="width: 45px; color:transparent; border:none;") A
 
 block scripts
   script(src="/js/search.js")

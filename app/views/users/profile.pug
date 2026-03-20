@@ -1,0 +1,29 @@
+extends ../layout.pug
+
+block content
+  .container
+    .profile-header
+      .avatar-circle
+        span #{profileUser.username.charAt(0).toUpperCase()}
+      .profile-info
+        h1 #{profileUser.username}
+        p.joined Joined #{new Date(profileUser.created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'long' })}
+        p.email #{profileUser.email}
+
+    .profile-recipes
+      h2 Recipes by #{profileUser.username}
+      
+      if recipes.length === 0
+        .empty-state
+          p #{profileUser.username} hasn't posted any recipes yet.
+      else
+        .recipe-grid
+          each recipe in recipes
+            a.recipe-card(href='/recipes/' + recipe.recipe_id)
+              .card-img-placeholder 🍽️
+              .card-body
+                h3 #{recipe.title}
+                p.card-desc #{recipe.description}
+                .card-meta
+                  span.tag #{recipe.difficulty}
+                  span.text-muted #{recipe.prep_time + recipe.cook_time} mins

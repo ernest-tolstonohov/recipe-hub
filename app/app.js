@@ -5,17 +5,13 @@ const session = require("express-session");
 
 var app = express();
 
-// Tell the app to use Pug for pages
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "../views"));
 
-// Allow the app to read form data
 app.use(express.urlencoded({ extended: true }));
-
-// Add static files location (CSS, images)
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "../static")));
 
-// Set up sessions (this is how the app remembers who is logged in)
 app.use(session({
     secret: 'recipehub-secret-key',
     resave: false,
@@ -23,25 +19,36 @@ app.use(session({
     cookie: { secure: false }
 }));
 
-// Get the database
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 const db = require('./services/db');
 
-// Import routes
 const authRoutes = require('../routes/auth');
 const recipeRoutes = require('../routes/recipes');
 const userRoutes = require('../routes/users');
 
-// Use routes
 app.use('/', authRoutes);
 app.use('/recipes', recipeRoutes);
 app.use('/users', userRoutes);
 
-// Home route
 app.get("/", function(req, res) {
     res.render('index', { user: req.session.user });
 });
 
-// Start the server
+app.use((req, res, next) => {
+    res.status(404).render('404');
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('error', { 
+        message: 'Something went wrong on our end. Please try again later.' 
+    });
+});
+
 app.listen(3000, function() {
     console.log("Server running on port 3000");
 });

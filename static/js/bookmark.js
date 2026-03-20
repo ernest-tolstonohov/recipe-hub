@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', async (e) => {
             const userId = btn.dataset.userId;
             const recipeId = btn.dataset.recipeId;
-            const wrapper = btn.closest('.recipe-card-wrapper');
+            const wrapper = btn.closest('.recipe-card');
             
             if (!confirm('Are you sure you want to remove this recipe?')) return;
             

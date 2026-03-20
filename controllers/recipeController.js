@@ -3,19 +3,6 @@ const SavedRecipe = require('../models/savedRecipe');
 
 class RecipeController {
     /**
-     * Show all recipes.
-     */
-    static async index(req, res) {
-        try {
-            const recipes = await Recipe.findAll();
-            res.render('recipes/index', { recipes });
-        } catch (err) {
-            console.error(err);
-            res.status(500).render('error', { message: 'Failed to fetch recipes.' });
-        }
-    }
-
-    /**
      * Show recipe details.
      */
     static async detail(req, res) {
@@ -44,15 +31,8 @@ class RecipeController {
      */
     static async search(req, res) {
         try {
-            const { ingredients } = req.body;
-            let recipes = [];
-            
-            if (ingredients && Array.isArray(ingredients) && ingredients.length > 0) {
-                recipes = await Recipe.searchByIngredients(ingredients);
-            } else {
-                recipes = await Recipe.findAll();
-            }
-
+            const { ingredients = [], tags = [] } = req.body;
+            const recipes = await Recipe.search(ingredients, tags);
             res.json({ recipes });
         } catch (err) {
             console.error('Search error:', err);
