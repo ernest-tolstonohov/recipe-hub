@@ -10,14 +10,20 @@ block content
         p.joined Joined #{new Date(profileUser.created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'long' })}
         p.email #{profileUser.email}
         if user && user.id === profileUser.id
-          a(href='/users/' + profileUser.id + '/saved', style="font-size:0.85rem; color:var(--green); font-weight:600;") View Saved Recipes →
+          a.saved-link(href='/users/' + profileUser.id + '/saved') View Saved Recipes →
 
     .profile-recipes
       h2 Recipes by #{profileUser.username}
-      
+
       if recipes.length === 0
-        .empty-state
-          p #{profileUser.username} hasn't posted any recipes yet.
+        //- Facebook-style empty state
+        .create-post-prompt
+          .create-post-avatar
+            span #{profileUser.username.charAt(0).toUpperCase()}
+          .create-post-box
+            p #{profileUser.username} hasn't shared any recipes yet.
+            if user && user.id === profileUser.id
+              a.btn-create-post(href='/recipes/new') + Create a New Post
       else
         .recipe-grid
           each recipe in recipes

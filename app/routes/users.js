@@ -3,6 +3,11 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const { requireAuth } = require('../middleware/auth');
 
+// My Recipes — redirect to own profile (protected)
+router.get('/users/my-recipes', requireAuth, (req, res) => {
+    res.redirect('/users/' + req.session.user.id);
+});
+
 // User profile
 router.get('/users/:id', userController.show);
 

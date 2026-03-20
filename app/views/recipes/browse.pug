@@ -1,0 +1,74 @@
+extends ../layout.pug
+
+block content
+  .container
+    .browse-page
+      //- Search + Filter Bar
+      form.browse-form(action='/browse' method='GET')
+        .search-row
+          .search-field
+            input(
+              type='text'
+              name='q'
+              id='browse-q'
+              placeholder='Search recipes by name, ingredient…'
+              value=q || ''
+              autocomplete='off'
+            )
+          select(name='difficulty')
+            option(value='' selected=(difficulty === '')) Any Difficulty
+            option(value='Easy' selected=(difficulty === 'Easy')) Easy
+            option(value='Medium' selected=(difficulty === 'Medium')) Medium
+            option(value='Hard' selected=(difficulty === 'Hard')) Hard
+          select(name='tags')
+            option(value='' selected=(tags === '')) Any Tag
+            option(value='Vegan' selected=(tags === 'Vegan')) Vegan
+            option(value='Vegetarian' selected=(tags === 'Vegetarian')) Vegetarian
+            option(value='GF' selected=(tags === 'GF')) Gluten-Free
+            option(value='Budget' selected=(tags === 'Budget')) Budget
+            option(value='Quick' selected=(tags === 'Quick')) Quick
+            option(value='Italian' selected=(tags === 'Italian')) Italian
+            option(value='Asian' selected=(tags === 'Asian')) Asian
+          button.btn-search(type='submit') Search
+
+      //- Results header
+      .results-header
+        if q || tags || difficulty
+          p.results-count
+            | Showing results
+            if q
+              |  for "
+              strong #{q}
+              | "
+            if tags
+              |  tagged 
+              strong #{tags}
+            if difficulty
+              |  · 
+              strong #{difficulty}
+        else
+          p.results-count All Recipes
+
+      //- Results grid
+      if recipes.length === 0
+        .empty-browse
+          .empty-icon 🔍
+          h3 No recipes found
+          p Try a different search term or remove some filters.
+          a.btn-green(href='/browse') Clear Search
+      else
+        .recipe-grid
+          each recipe in recipes
+            a.recipe-card(href='/recipes/' + recipe.id)
+              .card-img-wrapper
+                if recipe.image_url
+                  img.card-img(src=recipe.image_url alt=recipe.title)
+                else
+                  .card-img-placeholder 🍽️
+              .card-body
+                h3 #{recipe.title}
+                p.card-desc #{recipe.description}
+                .card-meta
+                  if recipe.tags
+                    each tag in recipe.tags.split(',').slice(0,2)
+                      span.tag.tag-green #{tag.trim()}

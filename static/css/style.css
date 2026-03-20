@@ -1421,3 +1421,177 @@ details summary::-webkit-details-marker {
   color: var(--text-muted);
   font-size: 0.75rem;
 }
+
+/* ============================
+   BROWSE / SEARCH PAGE
+   ============================ */
+.browse-page {
+  padding: 2.5rem 0;
+}
+
+.browse-form {
+  margin-bottom: 2rem;
+}
+
+.search-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 1 1 300px;
+}
+
+.search-field input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-field input:focus {
+  border-color: var(--green);
+}
+
+.browse-form select {
+  padding: 0.7rem 0.9rem;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: white;
+  cursor: pointer;
+}
+
+.btn-search {
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.6rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-search:hover {
+  background: var(--green-dark);
+}
+
+.results-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.results-count {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.results-count strong {
+  color: var(--navy);
+}
+
+.empty-browse {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.empty-browse .empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-browse h3 {
+  font-size: 1.25rem;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.empty-browse a {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.5rem;
+  background: var(--green);
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ============================
+   CREATE POST EMPTY STATE
+   ============================ */
+.create-post-prompt {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  max-width: 600px;
+}
+
+.create-post-avatar {
+  width: 48px;
+  height: 48px;
+  background: var(--navy);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.create-post-box {
+  flex: 1;
+}
+
+.create-post-box p {
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.btn-create-post {
+  display: inline-block;
+  background: var(--green);
+  color: white;
+  padding: 0.55rem 1.2rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-create-post:hover {
+  background: var(--green-dark);
+}
+
+.saved-link {
+  font-size: 0.85rem;
+  color: var(--green);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.saved-link:hover {
+  text-decoration: underline;
+}
