@@ -105,15 +105,28 @@ block content
                             if review.body
                                 p "#{review.body}"
                             p.review-date #{new Date(review.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})}
+                            if user && (user.id === review.user_id || user.role === 'admin')
+                                .review-actions
+                                    button.btn-edit-review(data-review-id=review.review_id, data-body=review.body, data-rating=review.rating, title="Edit review") Edit
+                                    button.btn-delete-review(data-review-id=review.review_id, title="Delete review") Delete
 
             .write-review-box
-                h4 Write a Review
-                .stars-input ☆ ☆ ☆ ☆ ☆
-                textarea(placeholder="Share your experience with this recipe...")
-                button.btn-submit Submit Review
+                if user
+                    h4 Write a Review
+                    form#review-form
+                        .stars-input
+                            each star, index in [1,2,3,4,5]
+                                span.star(data-rating=star) ☆
+                        textarea(name="body", placeholder="Share your experience with this recipe...", required)
+                        button.btn-submit(type="submit") Submit Review
+                else
+                    p.login-prompt
+                        a(href="/login") Log in
+                        |  to write a review
 
 block scripts
     script(src="/js/bookmark.js")
+    script(src="/js/review.js")
     script.
         // ── Servings stepper ─────────────────────────────
         const srvCount  = document.getElementById('srv-count');
