@@ -1,135 +1,145 @@
-// Review functionality for recipe detail page
-document.addEventListener('DOMContentLoaded', function() {
-    const stars = document.querySelectorAll('.star');
-    const reviewForm = document.getElementById('review-form');
+document.addEventListener('DOMContentLoaded', function () {
+    // ── Write review: star rating ──────────────────────────────
+    const stars = document.querySelectorAll('.stars-input .star');
     let selectedRating = 0;
 
-    // Star rating selection for new review
     stars.forEach(star => {
-        star.addEventListener('click', function() {
+        star.addEventListener('click', function () {
             selectedRating = parseInt(this.dataset.rating);
-            updateStars(selectedRating);
+            updateWriteStars(selectedRating);
         });
-
-        star.addEventListener('mouseover', function() {
-            const rating = parseInt(this.dataset.rating);
-            updateStars(rating);
+        star.addEventListener('mouseover', function () {
+            updateWriteStars(parseInt(this.dataset.rating));
         });
-
-        star.addEventListener('mouseout', function() {
-            updateStars(selectedRating);
+        star.addEventListener('mouseout', function () {
+            updateWriteStars(selectedRating);
         });
     });
 
-    function updateStars(rating) {
-        stars.forEach((star, index) => {
-            star.textContent = index < rating ? '★' : '☆';
+    function updateWriteStars(rating) {
+        stars.forEach((star, i) => {
+            star.textContent = i < rating ? '★' : '☆';
         });
     }
 
-    // Submit new review
+    // ── Submit new review ──────────────────────────────────────
+    const reviewForm = document.getElementById('review-form');
     if (reviewForm) {
-        reviewForm.addEventListener('submit', async function(e) {
+        reviewForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+            if (selectedRating === 0) return alert('Please select a star rating.');
 
-            if (selectedRating === 0) {
-                alert('Please select a rating.');
-                return;
-            }
-
-            const body = this.body.value.trim();
+            const body = this.querySelector('textarea[name="body"]').value.trim();
             const recipeId = window.location.pathname.split('/').pop();
 
-            try {
-                const response = await fetch(`/reviews/recipe/${recipeId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ rating: selectedRating, body }),
-                });
+            const res = await fetch(`/reviews/recipe/${recipeId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: selectedRating, body }),
+            });
 
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    const error = await response.json();
-                    alert('Error: ' + error.error);
-                }
-            } catch (err) {
-                console.error('Error submitting review:', err);
-                alert('Failed to submit review. Please try again.');
+            if (res.ok) {
+                location.reload();
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Failed to submit review.');
             }
         });
     }
 
-    // Edit and delete reviews
-    document.querySelectorAll('.btn-edit').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const reviewId = this.dataset.reviewId;
+    // ── Edit review ────────────────────────────────────────────
+    document.querySelectorAll('.btn-edit-review').forEach(btn => {
+        btn.addEventListener('click', function () {
             const card = this.closest('.review-card');
-            const bodyP = card.querySelector('p');
-            const starsSpan = card.querySelector('.review-stars');
+            if (card.querySelector('.review-edit-form')) return; // already open
 
-            // Simple inline edit: replace text with input
-            const currentBody = bodyP.textContent.replace(/"/g, '');
-            const currentRating = starsSpan.textContent.split('★').length - 1;
+            const reviewId = this.dataset.reviewId;
+            const currentBody = this.dataset.body || '';
+            const currentRating = parseInt(this.dataset.rating) || 0;
 
-            bodyP.innerHTML = `<textarea>${currentBody}</textarea>`;
-            starsSpan.innerHTML = Array(5).fill().map((_, i) => `<span class="edit-star" data-rating="${i+1}">${i < currentRating ? '★' : '☆'}</span>`).join('');
+            // Hide existing content
+            card.querySelectorAll('p, .review-stars, .review-actions').forEach(el => el.style.display = 'none');
 
-            this.textContent = 'Save';
-            this.classList.add('saving');
+            // Build inline edit form
+            const form = document.createElement('div');
+            form.className = 'review-edit-form';
 
-            // Handle star selection for edit
-            card.querySelectorAll('.edit-star').forEach(star => {
-                star.addEventListener('click', function() {
-                    const rating = parseInt(this.dataset.rating);
-                    card.querySelectorAll('.edit-star').forEach((s, idx) => {
-                        s.textContent = idx < rating ? '★' : '☆';
+            const starsRow = document.createElement('div');
+            starsRow.className = 'review-edit-stars';
+            let editRating = currentRating;
+
+            for (let i = 1; i <= 5; i++) {
+                const s = document.createElement('span');
+                s.className = 'edit-star';
+                s.textContent = i <= currentRating ? '★' : '☆';
+                s.dataset.rating = i;
+                s.addEventListener('click', () => {
+                    editRating = i;
+                    starsRow.querySelectorAll('.edit-star').forEach((st, idx) => {
+                        st.textContent = idx < i ? '★' : '☆';
                     });
                 });
+                s.addEventListener('mouseover', () => {
+                    starsRow.querySelectorAll('.edit-star').forEach((st, idx) => {
+                        st.textContent = idx < i ? '★' : '☆';
+                    });
+                });
+                s.addEventListener('mouseout', () => {
+                    starsRow.querySelectorAll('.edit-star').forEach((st, idx) => {
+                        st.textContent = idx < editRating ? '★' : '☆';
+                    });
+                });
+                starsRow.appendChild(s);
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = currentBody;
+            textarea.placeholder = 'Update your review...';
+
+            const actions = document.createElement('div');
+            actions.className = 'review-edit-actions';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'btn-save-review';
+            saveBtn.textContent = 'Save';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'btn-cancel-review';
+            cancelBtn.textContent = 'Cancel';
+
+            cancelBtn.addEventListener('click', () => {
+                form.remove();
+                card.querySelectorAll('p, .review-stars, .review-actions').forEach(el => el.style.display = '');
             });
 
-            this.onclick = async function() {
-                const newBody = card.querySelector('textarea').value.trim();
-                const newRating = Array.from(card.querySelectorAll('.edit-star')).filter(s => s.textContent === '★').length;
-
-                try {
-                    const response = await fetch(`/reviews/${reviewId}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ rating: newRating, body: newBody }),
-                    });
-
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('Error updating review.');
-                    }
-                } catch (err) {
+            saveBtn.addEventListener('click', async () => {
+                const res = await fetch(`/reviews/${reviewId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rating: editRating, body: textarea.value.trim() }),
+                });
+                if (res.ok) {
+                    location.reload();
+                } else {
                     alert('Failed to update review.');
                 }
-            };
+            });
+
+            actions.append(saveBtn, cancelBtn);
+            form.append(starsRow, textarea, actions);
+            card.appendChild(form);
         });
     });
 
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            if (!confirm('Are you sure you want to delete this review?')) return;
+    // ── Delete review ──────────────────────────────────────────
+    document.querySelectorAll('.btn-delete-review').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            if (!confirm('Delete this review?')) return;
 
-            const reviewId = this.dataset.reviewId;
-
-            try {
-                const response = await fetch(`/reviews/${reviewId}`, {
-                    method: 'DELETE',
-                });
-
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    alert('Error deleting review.');
-                }
-            } catch (err) {
+            const res = await fetch(`/reviews/${this.dataset.reviewId}`, { method: 'DELETE' });
+            if (res.ok) {
+                location.reload();
+            } else {
                 alert('Failed to delete review.');
             }
         });

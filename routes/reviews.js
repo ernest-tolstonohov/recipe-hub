@@ -7,12 +7,12 @@ const auth = require('../middleware/auth');
 router.get('/recipe/:recipeId', reviewController.getReviewsByRecipe);
 
 // Add a review (requires authentication)
-router.post('/recipe/:recipeId', auth, reviewController.addReview);
+router.post('/recipe/:recipeId', auth.requireAuth, reviewController.addReview);
 
 // Update a review (requires authentication)
-router.put('/:reviewId', auth, reviewController.updateReview);
+router.put('/:reviewId', auth.requireAuth, reviewController.updateReview);
 
 // Delete a review (requires authentication)
-router.delete('/:reviewId', auth, reviewController.deleteReview);
+router.delete('/:reviewId', auth.requireAuth, reviewController.deleteReview);
 
 module.exports = router;

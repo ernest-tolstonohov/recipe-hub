@@ -4,6 +4,14 @@ class Review {
     /**
      * Get all reviews for a recipe, newest first.
      */
+    static async findById(reviewId) {
+        const rows = await db.query(
+            'SELECT review_id, user_id, recipe_id, rating, body FROM reviews WHERE review_id = ?',
+            [reviewId]
+        );
+        return rows[0] || null;
+    }
+
     static async findByRecipe(recipeId) {
         const rows = await db.query(`
             SELECT rv.review_id, rv.rating, rv.body, rv.created_at,
@@ -40,10 +48,10 @@ class Review {
     /**
      * Update a review (only by the user who wrote it).
      */
-    static async updateReview(reviewId, userId, rating, body) {
-        const result = await db.query(
-            `UPDATE reviews SET rating = ?, body = ? WHERE review_id = ? AND user_id = ?`,
-            [rating, body, reviewId, userId]
+    static async updateReview(reviewId, rating, body) {
+        await db.query(
+            `UPDATE reviews SET rating = ?, body = ? WHERE review_id = ?`,
+            [rating, body, reviewId]
         );
 
         // Get recipe_id from the review
@@ -65,16 +73,16 @@ class Review {
     /**
      * Delete a review (only by the user who wrote it).
      */
-    static async deleteReview(reviewId, userId) {
+    static async deleteReview(reviewId) {
         // Get recipe_id before deleting
-        const review = await db.query('SELECT recipe_id FROM reviews WHERE review_id = ? AND user_id = ?', [reviewId, userId]);
+        const review = await db.query('SELECT recipe_id FROM reviews WHERE review_id = ?', [reviewId]);
         if (review.length === 0) return false;
 
         const recipeId = review[0].recipe_id;
 
         await db.query(
-            `DELETE FROM reviews WHERE review_id = ? AND user_id = ?`,
-            [reviewId, userId]
+            `DELETE FROM reviews WHERE review_id = ?`,
+            [reviewId]
         );
 
         // Update the recipe's average rating and review count
