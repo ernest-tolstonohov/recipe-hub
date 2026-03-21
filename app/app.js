@@ -46,10 +46,12 @@ const db = require('./services/db');
 const authRoutes = require('../routes/auth');
 const recipeRoutes = require('../routes/recipes');
 const userRoutes = require('../routes/users');
+const reviewRoutes = require('../routes/reviews');
 
 app.use('/', authRoutes);
 app.use('/recipes', recipeRoutes);
 app.use('/users', userRoutes);
+app.use('/reviews', reviewRoutes);
 
 app.get("/", async function(req, res) {
     try {
