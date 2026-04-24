@@ -78,6 +78,10 @@ app.use((req, res, next) => {
 
 const db = require('./services/db');
 
+db.query("CREATE INDEX idx_recipes_title ON recipes(title)").catch(err => {
+    if (err.code !== 'ER_DUP_KEYNAME') console.error('Index creation warning:', err);
+});
+
 const authRoutes = require('../routes/auth');
 const recipeRoutes = require('../routes/recipes');
 const userRoutes = require('../routes/users');
@@ -89,6 +93,18 @@ app.use('/recipes', recipeRoutes);
 app.use('/users', userRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/system-control', adminRoutes);
+
+app.get('/search/autocomplete', async (req, res) => {
+    const q = req.query.q || '';
+    if (!q.trim()) return res.json([]);
+    
+    try {
+        const results = await require('../models/recipe').autocomplete(q);
+        res.json(results);
+    } catch(err) {
+        res.status(500).json({ error: 'Failed search' });
+    }
+});
 
 app.get('/media/:filename', (req, res) => {
     const safePath = path.join(__dirname, '../secure_uploads', path.basename(req.params.filename));
