@@ -37,6 +37,19 @@ class Recipe {
     }
 
     /**
+     * Search recipes by autocomplete title matching.
+     * @param {string} query
+     * @returns {Promise<Array>}
+     */
+    static async autocomplete(query) {
+        const rows = await db.query(
+            "SELECT recipe_id AS id, title, COALESCE(image_url, '/images/default-recipe.svg') AS image_url FROM recipes WHERE title LIKE ? LIMIT 8",
+            [`%${query}%`]
+        );
+        return rows;
+    }
+
+    /**
      * Search recipes by ingredients and tags using JOIN.
      * @param {Array<string>} ingredients
      * @param {Array<string>} tags

@@ -21,7 +21,8 @@ class RecipeController {
      * Create a new recipe.
      */
     static async create(req, res) {
-        const { title, description, prep_time, cook_time, servings, difficulty, image_url } = req.body;
+        const { title, description, prep_time, cook_time, servings, difficulty } = req.body;
+        const image_url = req.file ? `/media/${req.file.filename}` : null;
         const fields = { title, description, prep_time, cook_time, servings, difficulty, image_url };
 
         if (!title || !prep_time || !cook_time || !servings || !difficulty) {
@@ -175,7 +176,8 @@ class RecipeController {
      * Update a recipe.
      */
     static async update(req, res) {
-        const { title, description, prep_time, cook_time, servings, difficulty, image_url } = req.body;
+        const { title, description, prep_time, cook_time, servings, difficulty, existing_image_url } = req.body;
+        const image_url = req.file ? `/media/${req.file.filename}` : (existing_image_url || null);
         const recipeId = req.params.id;
 
         if (title && title.length > 255) return res.status(400).render('error', { message: 'Title is too long.' });

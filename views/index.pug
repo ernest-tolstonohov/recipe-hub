@@ -98,6 +98,5 @@ block content
             .stat-label Cooks
 
 block scripts
-  script.
-    window.ALL_RECIPES = !{JSON.stringify(recipes || [])};
+  div#recipes-data(data-recipes=JSON.stringify(recipes || []), style="display:none;")
   script(src="/js/search.js")

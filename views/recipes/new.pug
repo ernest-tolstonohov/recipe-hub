@@ -11,7 +11,7 @@ block content
         if error
             .error-banner #{error}
 
-        form(method="POST" action="/recipes/new")
+        form(method="POST" action="/recipes/new" enctype="multipart/form-data")
             input(type="hidden" name="_csrf" value=csrfToken)
 
             //- ── BASIC INFO ──────────────────────────────────
@@ -28,8 +28,8 @@ block content
                         textarea#description(name="description" rows="3" placeholder="Short description of the recipe...") #{fields.description || ''}
 
                     .form-group
-                        label(for="image_url") Image URL
-                        input#image_url(type="url" name="image_url" value=fields.image_url placeholder="https://...")
+                        label(for="recipe_image") Upload Image (JPG, PNG, WEBP)
+                        input#recipe_image(type="file" name="recipe_image" accept=".jpg,.jpeg,.png,.webp")
 
                 .form-row-4
                     .form-group
