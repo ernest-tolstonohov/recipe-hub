@@ -12,6 +12,7 @@ block content
             .error-banner #{error}
 
         form(method="POST" action="/recipes/new")
+            input(type="hidden" name="_csrf" value=csrfToken)
 
             //- ── BASIC INFO ──────────────────────────────────
             .form-section

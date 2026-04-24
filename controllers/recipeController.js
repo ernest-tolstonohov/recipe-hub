@@ -28,6 +28,16 @@ class RecipeController {
             const tags = await db.query('SELECT tag_id, name, type FROM tags ORDER BY type, name');
             return res.render('recipes/new', { tags, error: 'Please fill in all required fields.', fields });
         }
+        
+        if (title.length > 255) {
+            const tags = await db.query('SELECT tag_id, name, type FROM tags ORDER BY type, name');
+            return res.render('recipes/new', { tags, error: 'Title is too long.', fields });
+        }
+        
+        if (isNaN(parseInt(prep_time)) || isNaN(parseInt(cook_time)) || isNaN(parseInt(servings)) || parseInt(prep_time) < 0 || parseInt(cook_time) < 0 || parseInt(servings) < 1) {
+            const tags = await db.query('SELECT tag_id, name, type FROM tags ORDER BY type, name');
+            return res.render('recipes/new', { tags, error: 'Time and servings must be valid positive numbers.', fields });
+        }
 
         try {
             // Build instructions array from numbered inputs
@@ -167,6 +177,11 @@ class RecipeController {
     static async update(req, res) {
         const { title, description, prep_time, cook_time, servings, difficulty, image_url } = req.body;
         const recipeId = req.params.id;
+
+        if (title && title.length > 255) return res.status(400).render('error', { message: 'Title is too long.' });
+        if (isNaN(parseInt(prep_time)) || isNaN(parseInt(cook_time)) || isNaN(parseInt(servings)) || parseInt(prep_time) < 0 || parseInt(cook_time) < 0 || parseInt(servings) < 1) {
+            return res.status(400).render('error', { message: 'Time and servings must be valid numbers.' });
+        }
 
         try {
             const recipe = await Recipe.findById(recipeId);

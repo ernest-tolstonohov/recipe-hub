@@ -62,22 +62,6 @@ async function seed() {
 
   try {
     // ----------------------------------------------------------
-    // RESET — wipe all data in correct FK order before re-seeding
-    // ----------------------------------------------------------
-    console.log('Resetting tables...');
-    await db.execute('SET FOREIGN_KEY_CHECKS = 0');
-    await db.execute('TRUNCATE TABLE saved_recipes');
-    await db.execute('TRUNCATE TABLE reviews');
-    await db.execute('TRUNCATE TABLE recipe_tags');
-    await db.execute('TRUNCATE TABLE recipe_ingredients');
-    await db.execute('TRUNCATE TABLE recipes');
-    await db.execute('TRUNCATE TABLE tags');
-    await db.execute('TRUNCATE TABLE ingredients');
-    await db.execute('TRUNCATE TABLE users');
-    await db.execute('SET FOREIGN_KEY_CHECKS = 1');
-    console.log('  Done.\n');
-
-    // ----------------------------------------------------------
     // USERS
     // All demo users share the password: password123
     // In real life every user would have their own password.
@@ -187,7 +171,6 @@ async function seed() {
           'Add hot pasta to the pancetta pan off the heat. Pour egg mixture over, tossing quickly. Add pasta water gradually to create a silky sauce. Serve immediately.',
         ],
         prep_time: 10, cook_time: 20, servings: 4, difficulty: 'medium',
-        image_url: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&auto=format&fit=crop&q=80',
       },
       {
         user_id:     3, // ethan_budget
@@ -200,20 +183,18 @@ async function seed() {
           'Add soy sauce and toss everything together for 2 minutes. Serve hot.',
         ],
         prep_time: 5, cook_time: 15, servings: 2, difficulty: 'easy',
-        image_url: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&auto=format&fit=crop&q=80',
       },
       {
         user_id:     5, // buni_kitchen
         title:       'Lemon Herb Baked Salmon',
         description: 'Light and healthy baked salmon with a lemon and garlic topping.',
-        instructions: [
+          instructions: [
           'Preheat oven to 200°C (180°C fan). Line a baking tray with foil.',
           'Place salmon fillets on the tray. Season with salt and pepper.',
           'Squeeze lemon juice over the fillets. Top each with butter and minced garlic.',
           'Bake for 15–18 minutes until the fish flakes easily. Serve with steamed vegetables.',
         ],
         prep_time: 5, cook_time: 18, servings: 2, difficulty: 'easy',
-        image_url: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&auto=format&fit=crop&q=80',
       },
       {
         user_id:     4, // lara_vegan
@@ -227,7 +208,6 @@ async function seed() {
           'Serve with fresh fruit or maple syrup.',
         ],
         prep_time: 5, cook_time: 15, servings: 8, difficulty: 'easy',
-        image_url: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=800&auto=format&fit=crop&q=80',
       },
       {
         user_id:     6, // mike_dorm
@@ -240,7 +220,6 @@ async function seed() {
           'Cut open, add butter and a generous handful of grated cheddar. Serve immediately.',
         ],
         prep_time: 5, cook_time: 60, servings: 1, difficulty: 'easy',
-        image_url: 'https://images.unsplash.com/photo-1585325701165-e3dea3c4ca1e?w=800&auto=format&fit=crop&q=80',
       },
       {
         user_id:     3, // ethan_budget
@@ -254,7 +233,6 @@ async function seed() {
           'Season to taste. Serve with rice or bread.',
         ],
         prep_time: 10, cook_time: 30, servings: 4, difficulty: 'easy',
-        image_url: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop&q=80',
       },
       {
         user_id:     2, // alice_cooks
@@ -267,20 +245,18 @@ async function seed() {
           'Squeeze lemon juice over the top. Serve with your choice of sides.',
         ],
         prep_time: 5, cook_time: 20, servings: 2, difficulty: 'medium',
-        image_url: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&auto=format&fit=crop&q=80',
       },
     ];
 
     for (const r of recipes) {
       await db.execute(
-        `INSERT INTO recipes
-           (user_id, title, description, instructions, prep_time, cook_time, servings, difficulty, image_url)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT IGNORE INTO recipes
+           (user_id, title, description, instructions, prep_time, cook_time, servings, difficulty)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           r.user_id, r.title, r.description,
-          JSON.stringify(r.instructions),
+          JSON.stringify(r.instructions), // FIX 1 — store as JSON
           r.prep_time, r.cook_time, r.servings, r.difficulty,
-          r.image_url || null,
         ]
       );
     }
@@ -345,7 +321,7 @@ async function seed() {
 
     for (const ri of recipeIngredients) {
       await db.execute(
-        `INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit)
+        `INSERT IGNORE INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit)
          VALUES (?, ?, ?, ?)`,
         [ri.recipe_id, ri.ingredient_id, ri.quantity, ri.unit]
       );
@@ -380,7 +356,7 @@ async function seed() {
 
     for (const rt of recipeTags) {
       await db.execute(
-        `INSERT INTO recipe_tags (recipe_id, tag_id) VALUES (?, ?)`,
+        `INSERT IGNORE INTO recipe_tags (recipe_id, tag_id) VALUES (?, ?)`,
         [rt.recipe_id, rt.tag_id]
       );
     }
@@ -412,7 +388,7 @@ async function seed() {
 
     for (const r of reviews) {
       await db.execute(
-        `INSERT INTO reviews (recipe_id, user_id, rating, body) VALUES (?, ?, ?, ?)`,
+        `INSERT IGNORE INTO reviews (recipe_id, user_id, rating, body) VALUES (?, ?, ?, ?)`,
         [r.recipe_id, r.user_id, r.rating, r.body]
       );
     }
