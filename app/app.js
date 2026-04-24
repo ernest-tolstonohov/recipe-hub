@@ -90,6 +90,13 @@ app.use('/users', userRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/system-control', adminRoutes);
 
+app.get('/media/:filename', (req, res) => {
+    const safePath = path.join(__dirname, '../secure_uploads', path.basename(req.params.filename));
+    res.sendFile(safePath, err => {
+        if (err) res.status(404).end();
+    });
+});
+
 app.get("/", async function(req, res) {
     try {
         const Recipe = require('../models/recipe');
