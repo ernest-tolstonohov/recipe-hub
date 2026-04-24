@@ -9,25 +9,24 @@ html(lang="en")
         nav.navbar
             .container
                 a.brand(href="/")
-                    img(src="/images/logo.svg", alt="RecipeHub Logo")
+                    img(src="/images/logo.png", alt="RecipeHub Logo")
+                    span.brand-text RecipeHub
                 ul.nav-links
-                    li: a(href="/") Home
+                    li: a(href="/browse") Browse
                     li: a(href="/users/my-recipes") My Recipes
-                    if user
-                        li: a(href=`/users/${user.id}/saved`) Saved Recipes
+                    li: a(href="/community") Community
                 .auth-links
                     if user
                         .avatar-dropdown
                             button.avatar-btn
-                                .avatar-xs #{user.username.charAt(0).toUpperCase()}
+                                .avatar-md-circle #{user.username.charAt(0).toUpperCase()}
                                 span #{user.username}
                             .dropdown-content
                                 a(href=`/users/${user.id}`) My Profile
                                 a(href=`/users/${user.id}/saved`) Saved Recipes
-                                if user.role === 'admin'
-                                    a(href="/admin") Admin Panel
-                                form.logout-form(method="POST", action="/logout")
-                                    button.btn-logout(type="submit") Logout
+                                a(href="/admin") Admin Panel
+                                form(method="POST", action="/logout", style="display:inline")
+                                    button.btn-logout(type="submit", style="width: 100%; text-align: left;") Logout
                     else
                         a.btn-login(href="/login") Login
                         a.btn-register(href="/register") Register
@@ -41,14 +40,20 @@ html(lang="en")
                     .footer-col.footer-brand
                         h4 RecipeHub
                         p Share Knowledge. Reduce Waste.
+                        .social-links
+                            a(href="#") Twitter
+                            span  · 
+                            a(href="#") Instagram
+                            span  · 
+                            a(href="#") GitHub
                     .footer-col
                         h4 Navigation
                         ul
-                            li: a(href="/") Home
+                            li: a(href="/browse") Browse Recipes
                             li: a(href="/users/my-recipes") My Recipes
+                            li: a(href="/community") Community
                     .footer-col
                         h4 Community Commitment
                         p We believe in reducing food waste through shared knowledge and community cooking.
             
         block scripts
-

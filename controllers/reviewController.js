@@ -15,7 +15,16 @@ exports.getReviewsByRecipe = async (req, res) => {
 exports.addReview = async (req, res) => {
     try {
         const { recipeId } = req.params;
-        const { rating, body } = req.body;
+        let { rating, body } = req.body;
+        
+        rating = parseInt(rating);
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Rating must be an integer between 1 and 5' });
+        }
+        if (body && body.length > 500) {
+            return res.status(400).json({ error: 'Review body must be under 500 characters' });
+        }
+
         const userId = req.session.user.id;
         const result = await Review.addReview(recipeId, userId, rating, body);
         res.status(201).json(result);
@@ -32,7 +41,16 @@ exports.addReview = async (req, res) => {
 exports.updateReview = async (req, res) => {
     try {
         const { reviewId } = req.params;
-        const { rating, body } = req.body;
+        let { rating, body } = req.body;
+
+        rating = parseInt(rating);
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Rating must be an integer between 1 and 5' });
+        }
+        if (body && body.length > 500) {
+            return res.status(400).json({ error: 'Review body must be under 500 characters' });
+        }
+
         const currentUser = req.session.user;
 
         const review = await Review.findById(reviewId);
