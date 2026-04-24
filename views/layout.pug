@@ -24,7 +24,8 @@ html(lang="en")
                             .dropdown-content
                                 a(href=`/users/${user.id}`) My Profile
                                 a(href=`/users/${user.id}/saved`) Saved Recipes
-                                a(href="/admin") Admin Panel
+                                if user.role === 'admin'
+                                    a(href="/system-control") Admin Panel
                                 form(method="POST", action="/logout", style="display:inline")
                                     button.btn-logout(type="submit", style="width: 100%; text-align: left;") Logout
                     else

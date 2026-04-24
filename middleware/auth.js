@@ -25,9 +25,8 @@ function requireAdmin(req, res, next) {
         return next();
     }
     
-    res.status(403).render('error', { 
-        message: 'Admins only. Access Denied.' 
-    });
+    // Redirect unauthorized users to /login instead of exposing the route
+    res.redirect('/login');
 }
 
 module.exports = {
