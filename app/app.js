@@ -8,7 +8,19 @@ var app = express();
 const helmet = require("helmet");
 const csrf = require("csurf");
 
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+            "default-src": ["'self'"],
+            "script-src": ["'self'"],
+            "img-src": ["'self'"], 
+        }
+    },
+    frameguard: {
+        action: 'deny'
+    }
+}));
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "../views"));
