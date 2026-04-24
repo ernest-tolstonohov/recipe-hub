@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // If no ingredients or tags — filter ALL_RECIPES client-side
         if (!hasFilters) {
-            let recipes = window.ALL_RECIPES;
+            let recipes = JSON.parse(document.getElementById('recipes-data').dataset.recipes || '[]');
             if (difficulty) recipes = recipes.filter(r => r.difficulty === difficulty);
             heading.textContent = difficulty
                 ? `${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Recipes`
@@ -143,7 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const res = await fetch('/recipes/search', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
                 body: JSON.stringify({ ingredients, tags: filterTags, matchMode })
             });
             if (!res.ok) throw new Error();

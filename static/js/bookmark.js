@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                     }
                 });
                 
@@ -59,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                     }
                 });
                 
