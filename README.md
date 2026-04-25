@@ -10,69 +10,86 @@ University students often face limited cooking skills, food waste, tight budgets
 
 ## Core Objectives
 
-- Encourage knowledge sharing among students.
-- Reduce food waste with ingredient-based search.
-- Protect recipe ownership through approval-based edits.
-- Promote community building via ratings, comments, and collaboration.
+- **Knowledge Exchange**: Encourage students to share budget-friendly and easy-to-cook recipes.
+- **Waste Reduction**: Implement ingredient-based search to help students cook with what they have.
+- **Ownership & Attribution**: Maintain a robust history of recipe edits and attribution.
+- **Community Support**: Integrated rating and review system for recipe validation.
 
 ## Key Features
 
-- **User Management**: Registration, login, profiles, and dashboards.
-- **Recipe Management**: Full CRUD with categories, ingredients, and instructions.
-- **Ingredient-based search**: Advanced filtering with dietary tags.
-- **Reviews and ratings**: Community feedback with average score display.
-- **Collaborative Editing**: Approval workflow with attribution history.
-- **Search Autocomplete**: Real-time suggestions for recipes and ingredients.
-- **Secure File Uploads**: Sanitized and renamed image uploads stored outside public root.
+- **User Management**: Secure registration and login with session persistence and role-based access.
+- **Recipe Management**: Comprehensive CRUD operations, including ingredient tag building and multi-step instructions.
+- **Advanced Search**: 
+    - Real-time autocomplete suggestions for recipe titles.
+    - Dynamic ingredient filtering with "Tag Builder" UI.
+- **Social Integration**: Review system, rating analytics, and community-driven category management.
+- **Security Hardened**:
+    - **CSRF Protection**: Prevents cross-site request forgery on all POST operations.
+    - **CSP Enforcement**: Strict Content Security Policy protects against XSS.
+    - **Password Security**: Bcryptjs hashing (12 rounds) and rate-limited login routes.
+    - **Secure Uploads**: Multer-based image handling with UUID renaming and off-root storage.
 
-## Technical Architecture
+## Technical Stack
 
-- **Frontend**: HTML, CSS, Vanilla JavaScript, Pug.
-- **Backend**: Node.js (Latest), Express.js.
-- **Database**: MySQL 8.0 (Relational) with indexing for search performance.
-- **Security**: 
-    - CSRF Protection (csurf module).
-    - Security Headers (helmet module).
-    - Rate Limiting (express-rate-limit).
-    - Password Hashing (bcryptjs).
-    - Session Inactivity Timeouts (2 hours HttpOnly/Secure cookies).
-- **DevOps**: Docker, Docker Compose, Git.
+- **Frontend**: HTML5, Vanilla JavaScript, CSS3 (Custom Modules), Pug Templating.
+- **Backend**: Node.js (Latest), Express.js framework.
+- **Database**: MySQL 8.0 with relational normalization and performance indexing.
+- **Infrastructure**: Docker & Docker Compose for consistent environment orchestration.
+
+## Project Structure
+
+```text
+recipe-hub/
+├── app/                    # Backend Logic
+│   ├── controllers/        # Route handlers
+│   ├── models/             # Database models (Recipe, Ingredient, User)
+│   ├── routes/             # Express route definitions
+│   └── services/           # Database connection and utilities
+├── views/                  # Pug Template files
+├── static/                 # Client-side assets
+│   ├── css/                # Global and component stylesheets
+│   └── js/                 # Autocomplete and form logic
+├── middleware/             # CSRF, Auth, and Security middleware
+├── secure_uploads/        # Non-public directory for user images
+├── Dockerfile              # Container configuration
+└── docker-compose.yml      # Multi-container orchestration
+```
 
 ## Setup Instructions
 
 ### 1. Environment Configuration
 
-Copy `env-sample` to `.env` and fill in your credentials.
+Copy `env-sample` to `.env` and configure your database and session secret keys.
 
-### 2. Start Application (Docker)
+### 2. Deployment via Docker
 
 ```bash
+# Rebuild and start containers in detached mode
 docker compose up --build -d
 ```
 
-### 3. Setup Database (First Run Only)
+### 3. Database Initialization
 
-Import `sd2-db.sql` via PHPMyAdmin (http://localhost:8081).
-Then seed the demo data:
-```bash
-docker compose exec web node scripts/seed.js
-```
+1. Access **PHPMyAdmin** at `http://localhost:8081`.
+2. Import the `sd2-db.sql` schema.
+3. (Optional) Seed demo data via the command line:
+   ```bash
+   docker compose exec web node scripts/seed.js
+   ```
 
-## Security Implementation Notes
+## Development Commands
 
-- **Password Hashing**: Uses bcryptjs with a salt factor of 12 for high entropy protection.
-- **Rate Limit**: Login routes are restricted to 5 attempts per 15 minutes to prevent brute forcing.
-- **CORS & CSP**: Controlled Content Security Policy prevents XSS and unauthorized frame embedding.
-- **Database Security**: All queries are parameterized to prevent SQL Injection.
+- **Start App**: `npm start` (Runs via `supervisor` for hot-reloading).
+- **Stop Containers**: `docker compose down`.
+- **View Logs**: `docker compose logs -f web`.
 
-## Advanced Search & Autocomplete
+## License
 
-- **Debounced Fetch**: Frontend search inputs are debounced at 300ms to optimize server load.
-- **Tag Builder**: Ingredient inputs in the recipe form use a dynamic tag-pills system for better UX.
+This project is developed as part of the SD2 2026 Core Module. All rights reserved.
 
 ## Authors
 
-- Ernest Tolstonohov Z23608695
-- Matenin Dosso A00017688
-- Hajar Natiq A00024033
-- Baburam Bastola A00022220
+- **Ernest Tolstonohov** - Z23608695
+- **Matenin Dosso** - A00017688
+- **Hajar Natiq** - A00024033
+- **Baburam Bastola** - A00022220
