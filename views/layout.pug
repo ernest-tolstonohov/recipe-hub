@@ -7,6 +7,7 @@ html(lang="en")
             meta(name="csrf-token", content=csrfToken)
         title RecipeHub
         link(rel="stylesheet", href="/css/style.css")
+        link(rel="stylesheet", href="/css/autocomplete.css")
     body
         nav.navbar
             .container
@@ -60,3 +61,4 @@ html(lang="en")
                         p We believe in reducing food waste through shared knowledge and community cooking.
             
         block scripts
+        script(src="/js/autocomplete-nav.js")

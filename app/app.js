@@ -14,7 +14,7 @@ app.use(helmet({
         directives: {
             "default-src": ["'self'"],
             "script-src": ["'self'"],
-            "img-src": ["'self'"], 
+            "img-src": ["'self'", "https://images.unsplash.com"], 
         }
     },
     frameguard: {

@@ -1,177 +1,55 @@
-# Recipe HUB
+# Recipe Hub
 
-## Project Overview
+A full-stack web application for sharing, discovering, and managing recipes.
+Built with HTML, CSS, JavaScript, Pug templates, and Node.js/Express.
 
-RecipeHub is a student-focused, database-driven web app for sharing and discovering recipes. It supports the 2026 module theme of “Sharing, exchange and building community” by enabling knowledge exchange, collaboration, and community support around cooking.
+## Features
 
-## Problem Statement
+- **User Accounts and Profiles**: Secure registration, login, and personalized recipe management.
+- **Recipe Uploads with Images**: Capability to create recipes with detailed steps, images, and ingredients.
+- **Comments and Ratings**: Community-driven feedback system for recipe validation.
+- **Admin Dashboard**: Centralized control for system management and content moderation.
+- **Autocomplete Search and Ingredient Input**: Real-time suggestions for searching recipes and building ingredient lists.
 
-University students often face limited cooking skills, food waste, tight budgets, and social isolation. Existing recipe sites lack structured collaboration, student-focused features, and ingredient-based search that helps reduce waste.
+## Tech Stack
 
-## Core Objectives
+- **Frontend**: HTML, CSS, Vanilla JavaScript, Pug Templates
+- **Backend**: Node.js, Express
+- **Database**: MySQL (Normalized relational structure)
+- **Session**: express-session with MySQL store for persistent login states
 
-- Encourage knowledge sharing among students.
-- Reduce food waste with ingredient-based search.
-- Protect recipe ownership through approval-based edits.
-- Promote community building via ratings, comments, and collaboration.
+## Security
 
-## Key Features
+- **Password Hashing**: Passwords securely hashed with bcrypt (12 salt rounds).
+- **Session Management**: Session timeout after 2 hours of inactivity; HttpOnly, Secure, and SameSite cookies.
+- **Rate Limiting**: Protection on the login route (max 5 attempts per 15 minutes).
+- **CSRF Protection**: Native protection implemented on all state-changing forms.
+- **Security Headers**: Hardened HTTP headers via Helmet implementation.
+- **File Upload Security**: Strict validation, UUID renaming, and storage outside the public root.
+- **Access Control**: Role-based admin access control for sensitive system operations.
 
-- User management: registration, login, profiles, and dashboards.
-- Recipe management: full CRUD with categories, ingredients, and instructions.
-- Ingredient-based search with dietary filters.
-- Reviews and ratings with average score display.
-- Collaborative editing system with approval workflow and attribution history.
+## Getting Started
 
-## Technical Architecture
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/ernest-tolstonohov/recipe-hub.git
+   ```
 
-- Frontend: HTML, CSS, JavaScript, Pug.
-- Backend: Node.js, Express.js, RESTful routes.
-- Database: MySQL (normalized, relational) with MySQL2 package for Node.js compatibility.
-- DevOps: Docker, Git, GitHub Actions.
-- Development: Node.js runs with supervisor for automatic rebuild on file changes.
-- Security: Environment variables managed via .env file (dotenv package).
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Project Structure
+3. **Copy env example and fill in your values**
+   ```bash
+   cp .env.example .env
+   ```
 
-```
-recipe-hub/
-├── backend/
-│   ├── server.js
-│   └── public/
-│       ├── index.html
-│       ├── css/
-│       └── images/
-├── docker/
-│   └── mysql/
-│       └── Dockerfile
-├── docker-compose.yml
-└── package.json
-```
+4. **Start the app**
+   ```bash
+   npm start
+   ```
 
-## System Requirements
+---
 
-If running on your own computer (not Azure labs):
-
-- [Node.js](https://nodejs.org/en/download/) (for Windows)
-- [Docker Desktop](https://docs.docker.com/desktop/windows/install/) (for Windows, includes Linux Subsystem for Windows)
-
-## Setup Instructions
-
-### 1. Environment Configuration
-
-For security, this project uses a `.env` file for credentials. A sample is provided in the `env-sample` file.
-
-**Important:** Copy `env-sample` to `.env` before first run. Do NOT commit the `.env` file to your repository (it's already in .gitignore).
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Start MySQL Database (Docker)
-
-Make sure no other containers are running (`docker ps`), then:
-
-```bash
-docker compose up -d --build
-```
-
-### Database persistence & seeding (important)
-
-This project persists MySQL data between container restarts.
-
-- `docker compose up` does NOT delete the database.
-- In [docker-compose.yml](docker-compose.yml) we use a bind mount: `./db:/var/lib/mysql`, so the data is stored on disk in the project’s `db/` folder.
-
-The database will only be removed if you:
-
-- delete the `db/` folder manually, or
-- run SQL containing `DROP TABLE ...` (there is a drop section in [sd2-db.sql](sd2-db.sql)), or
-- intentionally wipe Docker storage/volumes.
-
-How new (demo) data appears:
-
-1. First create the tables (for example by importing [sd2-db.sql](sd2-db.sql) via phpMyAdmin).
-2. Then run the seed script (demo data):
-
-```bash
-docker compose exec web node scripts/seed.js
-```
-
-Important: `scripts/seed.js` is not run automatically during `docker compose up` — it only runs when you execute it.
-
-This will set up:
-
-- MySQL database server
-- PHPMyAdmin (web-based database management)
-- Node.js application with auto-restart on file changes
-
-### 4. Start the Server
-
-```bash
-npm start
-```
-
-### 5. Access the Application
-
-- **Express App:** http://localhost:3000
-- **PHPMyAdmin:** http://localhost:8081/
-
-### Database Credentials
-
-- Host: localhost
-- Port: 3308 (from your host machine; published as `3308:3306`)
-- Database: recipehub
-- Username: recipehub_user
-- Password: recipehub_pass
-
-Note: inside the Docker network (container-to-container), the DB host is `db` on port `3306`.
-
-## Database Service
-
-The project includes a `db.js` service file (`app/services/db.js`) that handles all database connections using credentials from the `.env` file. It provides a `query()` function for sending queries to the database.
-
-To use the database service in your code:
-
-```javascript
-const db = require("./services/db");
-```
-
-## What's Included
-
-- **Docker Setup:** Preconfigured MySQL, PHPMyAdmin, and Node.js environment where all components can communicate.
-- **Database Service:** Ready-to-use database connection module with query functionality.
-- **Environment Configuration:** Secure credential management via `.env` file.
-- **Auto-Restart:** File changes automatically trigger app rebuild during development.
-- **Volume Mounting:** Local files are mounted into containers for seamless development.
-
-## Useful Commands
-
-### Access Container Shell
-
-```bash
-docker exec -it <container name> bash -l
-```
-
-### MySQL CLI Access
-
-Once inside the database container:
-
-```bash
-mysql -uroot -p<password>
-```
-
-### View Running Containers
-
-```bash
-docker ps
-```
-
-## Author
-
-- Ernest Tolstonohov Z23608695
-- Matenin Dosso A00017688
-- Hajar Natiq A00024033
-- Baburam Bastola A00022220
+*This project was developed as a collaboration by Ernest Tolstonohov, Matenin Dosso, Hajar Natiq, and Baburam Bastola.*

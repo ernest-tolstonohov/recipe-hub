@@ -60,15 +60,15 @@ block content
             .form-section
                 h2 Ingredients
 
-                #ingredients-list
-                    each ing in ingredients
-                        .ingredient-row
-                            input(type="text" name="ing_name" value=ing.name)
-                            input(type="number" name="ing_qty" value=ing.quantity min="0" step="0.01")
-                            input(type="text" name="ing_unit" value=ing.unit)
-                            button.btn-remove(type="button") ✕
-
-                button#add-ingredient.btn-add-row(type="button") + Add Ingredient
+                .ingredient-tag-builder
+                    .ingredient-tags-container#ingredient-tags-container
+                        each ing in ingredients
+                            span.ingredient-pill #{ing.name}
+                                input(type="hidden" name="ing_name" value=ing.name)
+                                button(type="button" class="remove-pill" onclick="this.parentElement.remove()") ✕
+                    .autocomplete-wrapper
+                        input#ingredient-autocomplete(type="text" placeholder="Add ingredient..." autocomplete="off")
+                        ul#ingredient-dropdown.autocomplete-dropdown
 
             //- ── INSTRUCTIONS ────────────────────────────────
             .form-section
@@ -122,3 +122,4 @@ block content
 
 block scripts
     script(src="/js/recipe-form.js")
+    script(src="/js/autocomplete-ingredients.js")

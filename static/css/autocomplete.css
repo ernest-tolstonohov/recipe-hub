@@ -1,0 +1,109 @@
+/* Autocomplete Dropdown Styles */
+.nav-search-wrapper {
+    position: relative;
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.autocomplete-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    display: none;
+}
+
+.autocomplete-dropdown.active {
+    display: block;
+}
+
+.autocomplete-dropdown li {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #111827;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.autocomplete-dropdown li:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-dropdown li:hover,
+.autocomplete-dropdown li.selected {
+    background-color: #f3f4f6;
+    color: #2a6b3b;
+}
+
+.autocomplete-dropdown li.no-results {
+    color: #6b7280;
+    cursor: default;
+}
+.autocomplete-dropdown li.no-results:hover {
+    background-color: transparent;
+    color: #6b7280;
+}
+
+/* Nav Search Bar Styling */
+.nav-search-input {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    width: 100%;
+    font-size: 0.9rem;
+}
+.nav-search-input:focus {
+    outline: 2px solid #2a6b3b;
+}
+
+/* Ingredient Tags (Rounded Pills) */
+.ingredient-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.ingredient-pill {
+    display: inline-flex;
+    align-items: center;
+    background-color: #2a6b3b;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ingredient-pill .remove-pill {
+    background: none;
+    border: none;
+    color: #ffffff;
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.ingredient-pill .remove-pill:hover {
+    opacity: 1;
+}
