@@ -1,14 +1,82 @@
 extends layout.pug
 
 block content
-  h1 Welcome to RecipeHub
-  p Share Knowledge. Reduce Waste. Cook Together.
-  
-  if user
-    h2 Welcome back, #{user.username}!
-  else
-    p
-      a(href='/register') Register
-      |  or 
-      a(href='/login') Login
-      |  to get started!
+  .hero-section
+    h1 What's in your fridge?
+    p Find recipes using what you already have - reduce waste, save money.
+
+    .search-widget
+      //- Chip input area
+      .ingredient-input-area#ingredient-input-area
+        span#chips-container
+        span#chips-placeholder Add ingredient...
+      //- Ingredient dropdown panel
+      .ingredient-panel#ingredient-panel
+        input#ing-search(type="text", placeholder="Search ingredients...", autocomplete="off")
+        .ing-list#ing-list
+          p.ing-loading Loading...
+
+      .filter-row
+        select#filter-meal
+          option(value="") Meal Type
+          option(value="breakfast") Breakfast
+          option(value="lunch") Lunch
+          option(value="dinner") Dinner
+          option(value="snack") Snack
+        select#filter-dietary
+          option(value="") Dietary
+          option(value="vegan") Vegan
+          option(value="vegetarian") Vegetarian
+          option(value="gluten-free") Gluten Free
+          option(value="high-protein") High Protein
+        select#filter-difficulty
+          option(value="") Difficulty
+          option(value="easy") Easy
+          option(value="medium") Medium
+          option(value="hard") Hard
+      .match-mode-row
+        label.match-radio
+          input(type="radio", name="match_mode", value="any", checked)
+          span Match Any
+        label.match-radio
+          input(type="radio", name="match_mode", value="all")
+          span Match All
+      button#find-btn.btn-green Find Recipes &rarr;
+
+  .container.main-layout
+    .content-area
+      .results-bar
+        h2#results-heading All Recipes
+        span#results-count.results-count #{recipes ? recipes.length : 0} recipes
+
+      //- Loading spinner (hidden by default)
+      .spinner-wrap#spinner
+        .spinner
+
+      .recipe-grid#recipe-grid
+        if !recipes || recipes.length === 0
+          .empty-state.empty-state-grid
+            span.empty-icon 🥣
+            h3 No recipes yet
+            p Seed the database to see recipes here.
+
+    .sidebar
+      .sidebar-card
+        h4 Browse by Tag
+        .tags-wrap
+          each tag in tags
+            span.tag(data-tag=tag.name) #{tag.name}
+
+      .sidebar-card
+        h4 Quick Stats
+        .stats-grid
+          .stat-item
+            .stat-value #{stats ? stats.recipe_count : 0}
+            .stat-label Recipes
+          .stat-item
+            .stat-value #{stats ? stats.user_count : 0}
+            .stat-label Cooks
+
+block scripts
+  div#recipes-data(data-recipes=JSON.stringify(recipes || []), style="display:none;")
+  script(src="/js/search.js")

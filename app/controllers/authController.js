@@ -1,60 +1,112 @@
-const db = require('../services/db');
 const bcrypt = require('bcrypt');
-const SALT_ROUNDS = 12;
+const User = require('../models/user');
 
-// Show login page
-function showLogin(req, res) {
-    const user = req.session ? req.session.user : null;
-    res.render('auth/login', { user: user });
-}
+class AuthController {
+    /**
+     * Show registration form.
+     */
+    static getRegister(req, res) {
+        if (req.session.user) return res.redirect('/');
+        res.render('auth/register', { error: null, fields: {} });
+    }
 
-// Handle login form
-async function login(req, res) {
-    const { email, password } = req.body;
-    try {
-        const users = await db.query(
-            'SELECT * FROM users WHERE email = ?', [email]
-        );
-        if (users.length === 0) {
-            return res.render('auth/login', { 
-                error: 'Invalid email or password!',
-                user: null
-            });
+    /**
+     * Process registration.
+     */
+    static async postRegister(req, res) {
+        const { username, email, password, confirmPassword } = req.body;
+        const fields = { username, email };
+
+        // 1. Validation
+        if (!username || username.length < 2) {
+            return res.render('auth/register', { error: 'Username must be at least 2 characters.', fields });
         }
-        const user = users[0];
-        if (!user.is_active) {
-            return res.render('auth/login', { 
-                error: 'This account has been deactivated.',
-                user: null
-            });
+        if (!email || !email.includes('@')) {
+            return res.render('auth/register', { error: 'Please enter a valid email address.', fields });
         }
-        const match = await bcrypt.compare(password, user.password_hash);
-        if (!match) {
-            return res.render('auth/login', { 
-                error: 'Invalid email or password!',
-                user: null
-            });
+        if (!password || password.length < 8) {
+            return res.render('auth/register', { error: 'Password must be at least 8 characters.', fields });
         }
-        req.session.user = { 
-            user_id: user.user_id, 
-            username: user.username,
-            email: user.email,
-            role: user.role
-        };
-        res.redirect('/');
-    } catch (err) {
-        console.error(err);
-        res.render('auth/login', { 
-            error: 'Something went wrong, try again.',
-            user: null
+        if (password !== confirmPassword) {
+            return res.render('auth/register', { error: 'Passwords do not match.', fields });
+        }
+
+        try {
+            // 2. Check for duplicate email
+            const existingUser = await User.findByEmail(email);
+            if (existingUser) {
+                return res.render('auth/register', { error: 'Email already in use.', fields });
+            }
+
+            // 3. Hash password and create user
+            const passwordHash = await bcrypt.hash(password, 12);
+            const result = await User.create({ username, email, passwordHash });
+
+            // 4. Set session
+            req.session.user = { 
+                id: result.insertId, 
+                username, 
+                email, 
+                role: 'user' 
+            };
+            res.redirect('/');
+        } catch (err) {
+            console.error(err);
+            res.render('auth/register', { error: 'An error occurred. Please try again.', fields });
+        }
+    }
+
+    /**
+     * Show login form.
+     */
+    static getLogin(req, res) {
+        if (req.session.user) return res.redirect('/');
+        res.render('auth/login', { error: null, fields: {} });
+    }
+
+    /**
+     * Process login.
+     */
+    static async postLogin(req, res) {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.render('auth/login', { error: 'All fields are required.', fields: { email } });
+        }
+
+        try {
+            const user = await User.findByEmail(email);
+            if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+                return res.render('auth/login', { error: 'Invalid email or password.', fields: { email } });
+            }
+            if (!user.is_active) {
+                return res.render('auth/login', { error: 'This account has been deactivated.', fields: { email } });
+            }
+
+            req.session.user = { 
+                id: user.id, 
+                username: user.username, 
+                email: user.email, 
+                role: user.role 
+            };
+
+            const returnTo = req.session.returnTo || '/';
+            delete req.session.returnTo;
+            res.redirect(returnTo);
+        } catch (err) {
+            console.error(err);
+            res.render('auth/login', { error: 'An error occurred. Please try again.', fields: { email } });
+        }
+    }
+
+    /**
+     * Process logout.
+     */
+    static logout(req, res) {
+        req.session.destroy(() => {
+            res.redirect('/login');
         });
     }
 }
 
-// Handle logout
-function logout(req, res) {
-    req.session.destroy();
-    res.redirect('/');
-}
-
-module.exports = { showLogin, login, logout };
+module.exports = AuthController;
