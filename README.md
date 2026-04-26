@@ -84,6 +84,20 @@ The application has undergone a comprehensive security hardening audit:
    docker compose up --build -d
    ```
 
+## Maintenance & Deployment
+
+### Push changes to GitHub
+```bash
+git add .
+git commit -m "Your descriptive commit message"
+git push origin feature-autocomplete
+```
+
+### Pull latest changes
+```bash
+git pull origin feature-autocomplete
+```
+
 ## Contributors
 
 - **Ernest Tolstonohov**
