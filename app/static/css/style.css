@@ -2110,6 +2110,12 @@ details summary::-webkit-details-marker {
   background: #fef2f2;
 }
 
+#btn-delete-recipe {
+  flex: none;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+}
+
 /* ── Unsave button on saved cards ────────────────────── */
 .btn-unsave {
   position: absolute;
@@ -2346,4 +2352,359 @@ details summary::-webkit-details-marker {
 .stat-label {
   font-size: 0.75rem;
   color: var(--text-muted);
+}
+
+/* ============================
+   ADMIN PANEL
+   ============================ */
+
+/* Tab navigation */
+.admin-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.admin-tab-link {
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.admin-tab-link:hover,
+.admin-tab-link.active {
+  color: var(--navy);
+  border-bottom-color: var(--navy);
+}
+
+.admin-section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.admin-section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0;
+}
+
+.admin-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.admin-empty {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  padding: 2rem 0;
+}
+
+/* Admin table */
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 0.65rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border);
+  background: #f9fafb;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.admin-table tr.row-blocked td {
+  opacity: 0.55;
+}
+
+.td-username {
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.td-email {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.status-active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-blocked {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Role badges */
+.role-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #f3f4f6;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.role-badge.role-admin {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.self-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Toggle button */
+.btn-toggle-user {
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.btn-toggle-user:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.btn-toggle-user:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Recipe admin cards */
+.admin-recipe-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.recipe-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #f9fafb;
+  border-bottom: 1px solid var(--border);
+}
+
+.recipe-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.recipe-title {
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 0.95rem;
+}
+
+.recipe-author {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.recipe-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.review-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.btn-delete-recipe {
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  background: transparent;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.btn-delete-recipe:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.btn-delete-recipe:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Reviews toggle button (next to recipe title) */
+.reviews-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.toggle-icon {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  display: inline-block;
+  transition: color 0.15s;
+}
+
+.reviews-toggle:hover .toggle-icon {
+  color: var(--navy);
+}
+
+/* Reviews panel (collapsed by default) */
+.reviews-panel {
+  display: none;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.reviews-panel.open {
+  display: block;
+}
+
+.reviews-list {
+  padding-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-review-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.review-left {
+  min-width: 0;
+  flex: 1;
+}
+
+.review-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.review-meta strong {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.review-stars {
+  color: var(--navy);
+}
+
+.review-date {
+  color: #9ca3af;
+}
+
+.review-body {
+  font-size: 0.85rem;
+  color: var(--text-main);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.btn-delete-review {
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  background: transparent;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.btn-delete-review:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.btn-delete-review:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .recipe-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Admin block button on profile page */
+.admin-profile-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
 }

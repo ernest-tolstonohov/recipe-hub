@@ -13,6 +13,13 @@ block content
           .meta-item
             span.meta-val #{profileUser.role.toUpperCase()}
             span.meta-label Account Role
+        if user && user.role === 'admin' && user.id !== profileUser.id
+          .admin-profile-actions
+            span#profile-status.status-badge(class=profileUser.is_active ? 'status-active' : 'status-blocked') #{profileUser.is_active ? 'Active' : 'Blocked'}
+            button#btn-block-user.btn-toggle-user(
+              data-user-id=profileUser.id,
+              data-active=profileUser.is_active ? '1' : '0'
+            ) #{profileUser.is_active ? 'Block User' : 'Unblock User'}
 
     h2.profile-recipes-heading Published Recipes
 
@@ -39,3 +46,7 @@ block content
         span.empty-icon 👨‍🍳
         h3 No recipes yet
         p @#{profileUser.username} hasn't published any recipes yet.
+
+block scripts
+  if user && user.role === 'admin' && user.id !== profileUser.id
+    script(src="/js/profile-admin.js")

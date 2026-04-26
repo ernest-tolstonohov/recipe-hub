@@ -15,6 +15,8 @@ block content
                         )
                             span.icon #{isSaved ? '♥' : '♡'}
                             span.label #{isSaved ? ' Saved' : ' Save'}
+                    if user && (user.id === recipe.user_id || user.role === 'admin')
+                        button#btn-delete-recipe.btn-card-delete(data-recipe-id=recipe.id) Delete Recipe
 
                 .author-line
                     .avatar-xs #{recipe.author ? recipe.author.charAt(0).toUpperCase() : 'U'}
@@ -107,7 +109,6 @@ block content
                             p.review-date #{new Date(review.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})}
                             if user && (user.id === review.user_id || user.role === 'admin')
                                 .review-actions
-                                    button.btn-edit-review(data-review-id=review.review_id, data-body=review.body, data-rating=review.rating, title="Edit review") Edit
                                     button.btn-delete-review(data-review-id=review.review_id, title="Delete review") Delete
 
             .write-review-box

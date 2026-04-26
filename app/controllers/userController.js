@@ -57,8 +57,7 @@ class UserController {
                 return res.status(404).render('error', { message: 'User not found.' });
             }
 
-            // Sprint 3 requirement: check is_active
-            if (!user.is_active) {
+            if (!user.is_active && (!req.session.user || req.session.user.role !== 'admin')) {
                 return res.status(403).render('error', { message: 'This user profile is no longer active.' });
             }
 

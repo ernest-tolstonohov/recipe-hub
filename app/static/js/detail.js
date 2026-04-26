@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ── Delete recipe (admin / owner) ─────────────────
+    const deleteRecipeBtn = document.getElementById('btn-delete-recipe');
+    if (deleteRecipeBtn) {
+        deleteRecipeBtn.addEventListener('click', async () => {
+            if (!confirm('Delete this recipe? This cannot be undone.')) return;
+            deleteRecipeBtn.disabled = true;
+            const res = await fetch(`/recipes/${deleteRecipeBtn.dataset.recipeId}`, { method: 'DELETE' });
+            if (res.ok) {
+                window.location.href = '/';
+            } else {
+                alert('Failed to delete recipe.');
+                deleteRecipeBtn.disabled = false;
+            }
+        });
+    }
+
     // ── Servings stepper ─────────────────────────────
     const srvCount = document.getElementById('srv-count');
     const srvMinus = document.getElementById('srv-minus');

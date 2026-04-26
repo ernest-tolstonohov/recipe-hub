@@ -29,7 +29,7 @@ class User {
 
     /**
      * Create a new user.
-     * @param {Object} userData 
+     * @param {Object} userData
      * @returns {Promise<Object>}
      */
     static async create({ username, email, passwordHash, role = 'user' }) {
@@ -38,6 +38,20 @@ class User {
             [username, email, passwordHash, role]
         );
         return result;
+    }
+
+    static async findAll() {
+        const rows = await db.query(
+            'SELECT user_id AS id, username, email, role, is_active, created_at FROM users ORDER BY created_at DESC'
+        );
+        return rows;
+    }
+
+    static async setActive(userId, isActive) {
+        await db.query(
+            'UPDATE users SET is_active = ? WHERE user_id = ?',
+            [isActive ? 1 : 0, userId]
+        );
     }
 }
 
