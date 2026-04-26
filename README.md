@@ -77,10 +77,7 @@ The application has undergone a comprehensive security hardening audit:
    ```
 
 3. **Configure Environment**
-   Copy `env-sample` to `.env` and provide a unique `SESSION_SECRET`.
-   ```bash
-   cp .env.example .env
-   ```
+   Open `.env` and fill in your unique `SESSION_SECRET`.
 
 4. **Launch with Docker**
    ```bash
