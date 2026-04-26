@@ -1,59 +1,68 @@
 # Recipe Hub
 
-A professional, student-focused full-stack web application designed for sharing, discovering, and collaboratively managing cooking recipes. Built with a focus on community building and food waste reduction.
+RecipeHub is a professional, student-focused, database-driven web application for sharing and discovering recipes. It supports the 2026 module theme of “Sharing, exchange and building community” by enabling knowledge exchange, collaboration, and community support around student cooking.
 
-## Folder Structure
+## Problem Statement
+
+University students often face limited cooking skills, high food waste, tight budgets, and social isolation. Existing recipe sites often lack structured collaboration, student-focused features, and efficient ingredient-based search tools that help reduce waste.
+
+## Core Objectives
+
+- **Knowledge Sharing**: Encourage the exchange of budget-friendly and easy-to-cook recipes among students.
+- **Waste Reduction**: Implementation of advanced ingredient-based search to help students cook with what they currently have.
+- **Recipe Ownership**: Protection of recipe integrity through approval-based collaborative edits and clear attribution.
+- **Community Building**: Promoting social interaction via ratings, comments, and collaborative content creation.
+
+## Key Features
+
+- **Advanced Search & Autocomplete**:
+  - Real-time **debounced (300ms)** autocomplete for the global search bar.
+  - Specialized **Ingredient Tag Builder** with removable light-green rounded pills.
+- **User Management**: Secure registration, login profiles, and role-based access control (User/Admin).
+- **Recipe Ecosystem**: Full CRUD operations with dynamic category management and multi-step instructions.
+- **Community interaction**: Integrated rating system with average score analytics and review sections.
+- **Collaborative Editing**: Structured workflow for recipe improvements with full attribution history.
+
+## Technical Architecture
+
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript, Pug Templating |
+| **Backend** | Node.js (Latest), Express.js framework |
+| **Database** | MySQL 8.0 (Normalized, Relational) |
+| **Security** | BCrypt, csurf, helmet, rate-limit |
+| **Infrastructure** | Docker, Docker Compose |
+
+## Project Organization
 
 ```text
 recipe-hub/
-├── app/                    # Backend Core (Inner Stack)
-│   ├── controllers/        # Logic for parallel stack
-│   ├── models/             # Shared DB models
-│   ├── routes/             # Authentication & API routes
-│   └── services/           # DB connection provider
+├── app/                    # Inner Controller Stack (Core API)
+│   ├── controllers/        # Logical handlers for app stack
+│   ├── models/             # Shared database models
+│   ├── routes/             # Authentication and internal routes
+│   └── services/           # DB connection and utility providers
 ├── controllers/            # Primary Controller Stack
 ├── routes/                 # Primary Route Stack
-├── middleware/             # Security & Logging Middlewares
-│   ├── adminLogger.js      # CSV-based activity auditor
-│   ├── auth.js             # RBAC authentication
-│   └── upload.js           # Multer configuration
-├── models/                 # Primary Model definitions
-├── views/                  # Pug Template engine source
-├── static/                 # Public assets (CSS, JS, Images)
-├── secure_uploads/        # Non-public image repository
-├── logs/                   # System and Admin audit logs
-├── .env.example            # Environment template
-└── docker-compose.yml      # Orchestration config
+├── middleware/             # Hardened security & logging layers
+├── static/                 # Front-end assets (CSS, JS, Images)
+├── views/                  # Pug Template source files
+├── secure_uploads/        # Non-public directory for user images
+├── logs/                   # System audit and admin activity logs
+├── .env.example            # Environment variable template
+└── CHANGELOG.md           # Implementation history (April 2026)
 ```
 
-## Features
+## Security Posture
 
-- **Personalized Accounts**: Complete RBAC system with secure login/registration.
-- **Recipe Collaboration**: CRUD operations with approval workflows and edit history.
-- **Real-time Search**: Debounced autocomplete for recipes and ingredient tagging.
-- **Community Interaction**: Rating system and moderation-ready review sections.
-- **Advanced UI**: CSS-driven "Tag Builder" for ingredients and responsive layouts.
-
-## Tech Stack
-
-| Component | Technology |
-| :--- | :--- |
-| **Frontend** | HTML5, CSS3, Vanilla JS, Pug |
-| **Backend** | Node.js, Express.js |
-| **Database** | MySQL 8.0 (Normalized) |
-| **Security** | BCrypt, csurf, helmet, rate-limit |
-| **DevOps** | Docker, Docker Compose |
-
-## Security Implementation
-
-The platform has been hardened with the following enterprise-grade security protocols:
-- **Identity Protection**: Passwords hashed with **BCrypt (12 rounds)**.
-- **Session Safety**: 2-hour inactivity timeout with HttpOnly/Strict cookies.
-- **Brute Force Prevention**: 5-attempt rate limit per 15 mins on login routes.
-- **Integrity**: CSRF token protection on every state-changing transaction.
-- **XSS/Clickjacking**: Rigorous Content Security Policy and X-Frame-Options via Helmet.
-- **Storage isolation**: Uploaded files are renamed via UUID and stored outside the web root.
-- **Obfuscation**: Administrative panels use non-obvious endpoint names.
+The application has undergone a comprehensive security hardening audit:
+- **Identity Security**: All passwords are hashed using **BCrypt (12 salt rounds)**.
+- **Session Protection**: 2-hour inactivity timeouts with HttpOnly, Strict, and Secure cookie flags.
+- **Anti-Brute Force**: Express-rate-limit active on all login points (max 5 attempts per 15 min).
+- **Integrity Management**: Native CSRF token protection on all state-changing forms.
+- **Content Policy**: Strict CSP, X-Frame-Options: DENY, and Referrer policies via Helmet.
+- **Input Sanitization**: Server-side validation for all forms (Titles, Descriptions, Ratings).
+- **Obfuscation**: Administrative panels moved to non-obvious paths (e.g., `/management-console`).
 
 ## Getting Started
 
@@ -62,30 +71,21 @@ The platform has been hardened with the following enterprise-grade security prot
    git clone https://github.com/ernest-tolstonohov/recipe-hub.git
    ```
 
-2. **Install local dependencies**
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
 3. **Configure Environment**
+   Copy `env-sample` to `.env` and provide a unique `SESSION_SECRET`.
    ```bash
    cp .env.example .env
-   # Open .env and fill in your unique SESSION_SECRET
    ```
 
 4. **Launch with Docker**
    ```bash
    docker compose up --build -d
    ```
-
-## Environment Variables
-
-> [!NOTE]
-> The `.env` file is excluded from version control for security. Refer to `.env.example` for the required keys.
-
-- `SESSION_SECRET`: Cryptographically strong string for session signing.
-- `MYSQL_ROOT_PASSWORD`: Password for the containerized DB.
-- `NODE_ENV`: Set to `production` to enable Secure cookie flags.
 
 ## Contributors
 
