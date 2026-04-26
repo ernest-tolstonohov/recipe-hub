@@ -55,6 +55,26 @@ app.use(session({
     }
 }));
 
+const User = require('./models/User');
+
+// Re-validate session user against DB on every request.
+// Destroys the session if the user was deleted or deactivated since login.
+app.use(async (req, res, next) => {
+    if (req.session.user) {
+        try {
+            const user = await User.findById(req.session.user.id);
+            if (!user || !user.is_active) {
+                return req.session.destroy(() => res.redirect('/login'));
+            }
+            // Keep role fresh in case an admin changed it since login
+            req.session.user.role = user.role;
+        } catch (err) {
+            return next(err);
+        }
+    }
+    next();
+});
+
 // Inactivity timeout middleware
 app.use((req, res, next) => {
     if (req.session.user) {
