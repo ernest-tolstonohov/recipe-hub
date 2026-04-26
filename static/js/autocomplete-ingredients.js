@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Apply 300ms debouncing logic before querying the database
         debounceTimer = setTimeout(async () => {
             try {
-                // Fetch existing ingredients from the /ingredients API filter
-                const res = await fetch(`/ingredients?q=${encodeURIComponent(query)}`);
+                // Fetch existing ingredients from the specialized autocomplete API
+                const res = await fetch(`/ingredients/autocomplete?q=${encodeURIComponent(query)}`);
                 if (!res.ok) throw new Error('Network query was not ok');
                 const ingredients = await res.json();
                 

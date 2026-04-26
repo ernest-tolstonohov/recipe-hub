@@ -1,55 +1,98 @@
 # Recipe Hub
 
-A full-stack web application for sharing, discovering, and managing recipes.
-Built with HTML, CSS, JavaScript, Pug templates, and Node.js/Express.
+A professional, student-focused full-stack web application designed for sharing, discovering, and collaboratively managing cooking recipes. Built with a focus on community building and food waste reduction.
+
+## Folder Structure
+
+```text
+recipe-hub/
+├── app/                    # Backend Core (Inner Stack)
+│   ├── controllers/        # Logic for parallel stack
+│   ├── models/             # Shared DB models
+│   ├── routes/             # Authentication & API routes
+│   └── services/           # DB connection provider
+├── controllers/            # Primary Controller Stack
+├── routes/                 # Primary Route Stack
+├── middleware/             # Security & Logging Middlewares
+│   ├── adminLogger.js      # CSV-based activity auditor
+│   ├── auth.js             # RBAC authentication
+│   └── upload.js           # Multer configuration
+├── models/                 # Primary Model definitions
+├── views/                  # Pug Template engine source
+├── static/                 # Public assets (CSS, JS, Images)
+├── secure_uploads/        # Non-public image repository
+├── logs/                   # System and Admin audit logs
+├── .env.example            # Environment template
+└── docker-compose.yml      # Orchestration config
+```
 
 ## Features
 
-- **User Accounts and Profiles**: Secure registration, login, and personalized recipe management.
-- **Recipe Uploads with Images**: Capability to create recipes with detailed steps, images, and ingredients.
-- **Comments and Ratings**: Community-driven feedback system for recipe validation.
-- **Admin Dashboard**: Centralized control for system management and content moderation.
-- **Autocomplete Search and Ingredient Input**: Real-time suggestions for searching recipes and building ingredient lists.
+- **Personalized Accounts**: Complete RBAC system with secure login/registration.
+- **Recipe Collaboration**: CRUD operations with approval workflows and edit history.
+- **Real-time Search**: Debounced autocomplete for recipes and ingredient tagging.
+- **Community Interaction**: Rating system and moderation-ready review sections.
+- **Advanced UI**: CSS-driven "Tag Builder" for ingredients and responsive layouts.
 
 ## Tech Stack
 
-- **Frontend**: HTML, CSS, Vanilla JavaScript, Pug Templates
-- **Backend**: Node.js, Express
-- **Database**: MySQL (Normalized relational structure)
-- **Session**: express-session with MySQL store for persistent login states
+| Component | Technology |
+| :--- | :--- |
+| **Frontend** | HTML5, CSS3, Vanilla JS, Pug |
+| **Backend** | Node.js, Express.js |
+| **Database** | MySQL 8.0 (Normalized) |
+| **Security** | BCrypt, csurf, helmet, rate-limit |
+| **DevOps** | Docker, Docker Compose |
 
-## Security
+## Security Implementation
 
-- **Password Hashing**: Passwords securely hashed with bcrypt (12 salt rounds).
-- **Session Management**: Session timeout after 2 hours of inactivity; HttpOnly, Secure, and SameSite cookies.
-- **Rate Limiting**: Protection on the login route (max 5 attempts per 15 minutes).
-- **CSRF Protection**: Native protection implemented on all state-changing forms.
-- **Security Headers**: Hardened HTTP headers via Helmet implementation.
-- **File Upload Security**: Strict validation, UUID renaming, and storage outside the public root.
-- **Access Control**: Role-based admin access control for sensitive system operations.
+The platform has been hardened with the following enterprise-grade security protocols:
+- **Identity Protection**: Passwords hashed with **BCrypt (12 rounds)**.
+- **Session Safety**: 2-hour inactivity timeout with HttpOnly/Strict cookies.
+- **Brute Force Prevention**: 5-attempt rate limit per 15 mins on login routes.
+- **Integrity**: CSRF token protection on every state-changing transaction.
+- **XSS/Clickjacking**: Rigorous Content Security Policy and X-Frame-Options via Helmet.
+- **Storage isolation**: Uploaded files are renamed via UUID and stored outside the web root.
+- **Obfuscation**: Administrative panels use non-obvious endpoint names.
 
 ## Getting Started
 
-1. **Clone the repo**
+1. **Clone the repository**
    ```bash
    git clone https://github.com/ernest-tolstonohov/recipe-hub.git
    ```
 
-2. **Install dependencies**
+2. **Install local dependencies**
    ```bash
    npm install
    ```
 
-3. **Copy env example and fill in your values**
+3. **Configure Environment**
    ```bash
    cp .env.example .env
+   # Open .env and fill in your unique SESSION_SECRET
    ```
 
-4. **Start the app**
+4. **Launch with Docker**
    ```bash
-   npm start
+   docker compose up --build -d
    ```
+
+## Environment Variables
+
+> [!NOTE]
+> The `.env` file is excluded from version control for security. Refer to `.env.example` for the required keys.
+
+- `SESSION_SECRET`: Cryptographically strong string for session signing.
+- `MYSQL_ROOT_PASSWORD`: Password for the containerized DB.
+- `NODE_ENV`: Set to `production` to enable Secure cookie flags.
+
+## Contributors
+
+- **Ernest Tolstonohov**
+- **Matenin Dosso**
+- **Hajar Natiq**
+- **Baburam Bastola**
 
 ---
-
-*This project was developed as a collaboration by Ernest Tolstonohov, Matenin Dosso, Hajar Natiq, and Baburam Bastola.*
+*Developed for the SD2 2026 Core Module.*

@@ -81,9 +81,8 @@ app.use((req, res, next) => {
 
 const db = require('./services/db');
 
-db.query("CREATE INDEX idx_recipes_title ON recipes(title)").catch(err => {
-    if (err.code !== 'ER_DUP_KEYNAME') console.error('Index creation warning:', err);
-});
+db.query("CREATE INDEX idx_recipes_title ON recipes(title)").catch(() => {});
+db.query("CREATE INDEX idx_ingredients_name ON ingredients(name)").catch(() => {});
 
 const authRoutes = require('../routes/auth');
 const recipeRoutes = require('../routes/recipes');
@@ -99,13 +98,28 @@ app.use('/management-console', adminRoutes);
 
 app.get('/search/autocomplete', async (req, res) => {
     const q = req.query.q || '';
-    if (!q.trim()) return res.json([]);
+    if (q.trim().length < 2) return res.json([]);
     
     try {
         const results = await require('../models/recipe').autocomplete(q);
         res.json(results);
     } catch(err) {
         res.status(500).json({ error: 'Failed search' });
+    }
+});
+
+app.get('/ingredients/autocomplete', async (req, res) => {
+    const q = req.query.q || '';
+    if (q.trim().length < 2) return res.json([]);
+    
+    try {
+        const ingredients = await db.query(
+            'SELECT ingredient_id AS id, name FROM ingredients WHERE name LIKE ? LIMIT 8',
+            [`%${q}%`]
+        );
+        res.json(ingredients);
+    } catch (err) {
+        res.status(500).json([]);
     }
 });
 
@@ -133,7 +147,6 @@ app.get("/", async function(req, res) {
 
 app.get("/ingredients", async function(req, res) {
     try {
-        const db = require('./services/db');
         const ingredients = await db.query(
             'SELECT ingredient_id AS id, name FROM ingredients ORDER BY name ASC'
         );
