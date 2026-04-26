@@ -6,7 +6,6 @@ const MySQLStore = require("express-mysql-session")(session);
 
 var app = express();
 const helmet = require("helmet");
-const csrf = require("csurf");
 
 app.use(helmet({
     contentSecurityPolicy: {
@@ -14,7 +13,8 @@ app.use(helmet({
         directives: {
             "default-src": ["'self'"],
             "script-src": ["'self'"],
-            "img-src": ["'self'", "https://images.unsplash.com"], 
+            "script-src-attr": ["'unsafe-inline'"],
+            "img-src": ["'self'", "https://images.unsplash.com"],
         }
     },
     frameguard: {
@@ -23,11 +23,11 @@ app.use(helmet({
 }));
 
 app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "../views"));
+app.set("views", path.join(__dirname, "views"));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../static")));
+app.use(express.static(path.join(__dirname, "static")));
 
 const sessionStore = new MySQLStore({
     host: process.env.DB_CONTAINER,
@@ -67,12 +67,8 @@ app.use((req, res, next) => {
     next();
 });
 
-const csrfProtection = csrf({ cookie: false });
-app.use(csrfProtection);
-
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
-    res.locals.csrfToken = req.csrfToken();
     next();
 });
 
@@ -82,11 +78,11 @@ db.query("CREATE INDEX idx_recipes_title ON recipes(title)").catch(err => {
     if (err.code !== 'ER_DUP_KEYNAME') console.error('Index creation warning:', err);
 });
 
-const authRoutes = require('../routes/auth');
-const recipeRoutes = require('../routes/recipes');
-const userRoutes = require('../routes/users');
-const reviewRoutes = require('../routes/reviews');
-const adminRoutes = require('../routes/admin');
+const authRoutes = require('./routes/auth');
+const recipeRoutes = require('./routes/recipes');
+const userRoutes = require('./routes/users');
+const reviewRoutes = require('./routes/reviews');
+const adminRoutes = require('./routes/admin');
 
 app.use('/', authRoutes);
 app.use('/recipes', recipeRoutes);
@@ -99,7 +95,7 @@ app.get('/search/autocomplete', async (req, res) => {
     if (!q.trim()) return res.json([]);
     
     try {
-        const results = await require('../models/recipe').autocomplete(q);
+        const results = await require('./models/recipe').autocomplete(q);
         res.json(results);
     } catch(err) {
         res.status(500).json({ error: 'Failed search' });
@@ -115,7 +111,7 @@ app.get('/media/:filename', (req, res) => {
 
 app.get("/", async function(req, res) {
     try {
-        const Recipe = require('../models/recipe');
+        const Recipe = require('./models/recipe');
         const [recipes, tags, [stats]] = await Promise.all([
             Recipe.findAll(),
             db.query('SELECT tag_id, name, type FROM tags ORDER BY type, name'),
@@ -131,9 +127,13 @@ app.get("/", async function(req, res) {
 app.get("/ingredients", async function(req, res) {
     try {
         const db = require('./services/db');
-        const ingredients = await db.query(
-            'SELECT ingredient_id AS id, name FROM ingredients ORDER BY name ASC'
-        );
+        const q = (req.query.q || '').trim();
+        const ingredients = q
+            ? await db.query(
+                "SELECT ingredient_id AS id, name FROM ingredients WHERE LOWER(name) LIKE ? ORDER BY name ASC LIMIT 10",
+                [`%${q.toLowerCase()}%`]
+              )
+            : await db.query('SELECT ingredient_id AS id, name FROM ingredients ORDER BY name ASC');
         res.json(ingredients);
     } catch (err) {
         res.status(500).json([]);

@@ -1,29 +1,41 @@
 extends ../layout.pug
 
 block content
-  .container
-    .profile-header
-      .avatar-circle
-        span #{profileUser.username.charAt(0).toUpperCase()}
-      .profile-info
-        h1 #{profileUser.username}
-        p.joined Joined #{new Date(profileUser.created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'long' })}
-        p.email #{profileUser.email}
+  .container.page-container
+    .detail-header.profile-header
+      .avatar-md #{profileUser.username.charAt(0).toUpperCase()}
+      .recipe-title-section
+        h1 @#{profileUser.username}
+        .meta-strip.profile-meta-strip
+          .meta-item
+            span.meta-val #{recipes ? recipes.length : 0}
+            span.meta-label Recipes Published
+          .meta-item
+            span.meta-val #{profileUser.role.toUpperCase()}
+            span.meta-label Account Role
 
-    .profile-recipes
-      h2 Recipes by #{profileUser.username}
-      
-      if recipes.length === 0
-        .empty-state
-          p #{profileUser.username} hasn't posted any recipes yet.
-      else
-        .recipe-grid
-          each recipe in recipes
-            a.recipe-card(href='/recipes/' + recipe.recipe_id)
-              .card-img-placeholder 🍽️
-              .card-body
-                h3 #{recipe.title}
-                p.card-desc #{recipe.description}
-                .card-meta
-                  span.tag #{recipe.difficulty}
-                  span.text-muted #{recipe.prep_time + recipe.cook_time} mins
+    h2.profile-recipes-heading Published Recipes
+
+    if recipes && recipes.length > 0
+      .recipe-grid
+        each recipe in recipes
+          .recipe-card(onclick=`window.location.href='/recipes/${recipe.id}'`)
+            .card-img-placeholder
+              if recipe.image_url
+                img.card-img-fill(src=recipe.image_url, alt=recipe.title)
+              else
+                span.placeholder-icon 🍽️
+            .card-body
+              h3 #{recipe.title}
+              .card-author
+                .avatar-xs #{profileUser.username.charAt(0).toUpperCase()}
+                span @#{profileUser.username}
+              .card-meta
+                span.stars
+                  - var r = Math.round(parseFloat(recipe.avg_rating) || 0)
+                  | #{Array(r).fill('★').join('')}#{Array(5-r).fill('☆').join('')}
+    else
+      .empty-state
+        span.empty-icon 👨‍🍳
+        h3 No recipes yet
+        p @#{profileUser.username} hasn't published any recipes yet.

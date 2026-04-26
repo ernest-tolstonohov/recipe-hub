@@ -1,11 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
-
-// Show login page
-router.get('/login', authController.showLogin);
-
 const rateLimit = require('express-rate-limit');
+const AuthController = require('../controllers/authController');
 
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -15,10 +11,11 @@ const loginLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-// Handle login form
-router.post('/login', loginLimiter, authController.login);
-
-// Handle logout
-router.post('/logout', authController.logout);
+router.get('/register', AuthController.getRegister);
+router.post('/register', AuthController.postRegister);
+router.get('/login', AuthController.getLogin);
+router.post('/login', loginLimiter, AuthController.postLogin);
+router.get('/logout', AuthController.logout);
+router.post('/logout', AuthController.logout);
 
 module.exports = router;
