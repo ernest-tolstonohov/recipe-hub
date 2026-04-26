@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const Recipe = require('../models/Recipe');
+const Recipe = require('../models/recipe');
 const Review = require('../models/review');
 
 async function getRecipesWithReviews() {

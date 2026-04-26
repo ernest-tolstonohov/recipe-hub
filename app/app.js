@@ -151,8 +151,13 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(3000, function() {
-    console.log("Server running on port 3000");
+sessionStore.onReady().then(() => {
+    app.listen(3000, function() {
+        console.log("Server running on port 3000");
+    });
+}).catch(err => {
+    console.error('Session store failed to initialize:', err);
+    process.exit(1);
 });
 
 module.exports = app;
