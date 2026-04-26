@@ -14,12 +14,15 @@ app.use(helmet({
         directives: {
             "default-src": ["'self'"],
             "script-src": ["'self'"],
-            "img-src": ["'self'", "https://images.unsplash.com"], 
+            "img-src": ["'self'", "data:", "https://images.unsplash.com", "/media/"],
+            "style-src": ["'self'", "'unsafe-inline'"],
         }
     },
-    frameguard: {
-        action: 'deny'
-    }
+    frameguard: { action: 'deny' },
+    referrerPolicy: { policy: 'no-referrer' },
+    hidePoweredBy: true,
+    hsts: { maxAge: 31536000, includeSubDomains: true },
+    noSniff: true
 }));
 
 app.set("view engine", "pug");
@@ -41,7 +44,7 @@ const sessionStore = new MySQLStore({
     createDatabaseTable: true,        // auto-creates `sessions` table if missing
 });
 
-const SESSION_TIMEOUT = 2 * 60 * 60 * 1000; // 2 hours
+const SESSION_TIMEOUT = 7200000; // 2 hours in ms
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -49,9 +52,9 @@ app.use(session({
     store: sessionStore,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',       // set true if using HTTPS
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: SESSION_TIMEOUT     // 2 hours in ms
+        maxAge: SESSION_TIMEOUT
     }
 }));
 
@@ -92,7 +95,7 @@ app.use('/', authRoutes);
 app.use('/recipes', recipeRoutes);
 app.use('/users', userRoutes);
 app.use('/reviews', reviewRoutes);
-app.use('/system-control', adminRoutes);
+app.use('/management-console', adminRoutes);
 
 app.get('/search/autocomplete', async (req, res) => {
     const q = req.query.q || '';

@@ -11,10 +11,8 @@ const logFilePath = path.join(logDir, 'admin.log');
 module.exports = (req, res, next) => {
     const timestamp = new Date().toISOString();
     const user = req.session.user ? req.session.user.username : 'Unknown';
-    const method = req.method;
-    const url = req.originalUrl;
-
-    const logEntry = `[${timestamp}] User: ${user} | Action: ${method} ${url}\n`;
+    const action = `${req.method} ${req.originalUrl}`;
+    const logEntry = `${user}, ${action}, ${timestamp}\n`;
 
     fs.appendFile(logFilePath, logEntry, (err) => {
         if (err) console.error('Failed to write to admin log:', err);

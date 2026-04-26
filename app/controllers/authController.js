@@ -1,5 +1,5 @@
 const db = require('../services/db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const SALT_ROUNDS = 12;
 
 // Show login page

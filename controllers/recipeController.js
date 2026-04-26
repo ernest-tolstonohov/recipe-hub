@@ -32,7 +32,12 @@ class RecipeController {
         
         if (title.length > 255) {
             const tags = await db.query('SELECT tag_id, name, type FROM tags ORDER BY type, name');
-            return res.render('recipes/new', { tags, error: 'Title is too long.', fields });
+            return res.render('recipes/new', { tags, error: 'Title must be under 255 characters.', fields });
+        }
+
+        if (description && description.length > 2000) {
+            const tags = await db.query('SELECT tag_id, name, type FROM tags ORDER BY type, name');
+            return res.render('recipes/new', { tags, error: 'Description must be under 2000 characters.', fields });
         }
         
         if (isNaN(parseInt(prep_time)) || isNaN(parseInt(cook_time)) || isNaN(parseInt(servings)) || parseInt(prep_time) < 0 || parseInt(cook_time) < 0 || parseInt(servings) < 1) {
