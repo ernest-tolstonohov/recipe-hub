@@ -144,8 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('/recipes/search', {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json',
-                    'CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ ingredients, tags: filterTags, matchMode })
             });

@@ -6,7 +6,6 @@ const MySQLStore = require("express-mysql-session")(session);
 
 var app = express();
 const helmet = require("helmet");
-const csrf = require("csurf");
 
 app.use(helmet({
     contentSecurityPolicy: {
@@ -67,12 +66,8 @@ app.use((req, res, next) => {
     next();
 });
 
-const csrfProtection = csrf({ cookie: false });
-app.use(csrfProtection);
-
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
-    res.locals.csrfToken = req.csrfToken();
     next();
 });
 

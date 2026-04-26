@@ -49,7 +49,6 @@ The application has been hardened against modern web vulnerabilities:
   - Automatic **2-hour inactivity session destruction**.
   - Secure, HttpOnly, and SameSite (Strict) cookie management.
 - **Inbound Protection**:
-  - **CSRF Tokenization**: Active on all state-altering POST/PUT/DELETE forms.
   - **Rate Limiting**: Protection against brute force on login routes (5 attempts / 15 mins).
 - **Content Security**:
   - **Helmet.js Implementation**: Strict CSP, X-Frame-Options (DENY), and Referrer Policy.
@@ -68,7 +67,7 @@ The application has been hardened against modern web vulnerabilities:
 | **Logic Layer** | Node.js (Latest LTS), Express.js |
 | **Data Layer** | MySQL 8.0 (Normalized Relational Schema) |
 | **Presentation** | Pug (Jade) Templates, Vanilla JavaScript, CSS3 |
-| **Security** | BCrypt, csurf, helmet, express-rate-limit |
+| **Security** | BCrypt, helmet, express-rate-limit |
 | **Orchestration** | Docker, Docker Compose |
 
 ---

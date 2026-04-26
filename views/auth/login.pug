@@ -8,7 +8,6 @@ block content
       p.error #{error}
     
     form(action='/login' method='POST')
-      input(type="hidden" name="_csrf" value=csrfToken)
       input(type='email' name='email' placeholder='Email' required)
       input(type='password' name='password' placeholder='Password' required)
       button.btn.btn-green(type='submit') Login

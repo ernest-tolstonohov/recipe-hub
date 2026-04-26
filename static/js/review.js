@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
-    const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
-
     // ── Write review: star rating ──────────────────────────────
     const stars = document.querySelectorAll('.stars-input .star');
     let selectedRating = 0;
@@ -38,8 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const res = await fetch(`/reviews/recipe/${recipeId}`, {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json',
-                    'CSRF-Token': csrfToken
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ rating: selectedRating, body }),
             });
@@ -122,8 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const res = await fetch(`/reviews/${reviewId}`, {
                     method: 'PUT',
                     headers: { 
-                        'Content-Type': 'application/json',
-                        'CSRF-Token': csrfToken
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ rating: editRating, body: textarea.value.trim() }),
                 });
@@ -146,10 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!confirm('Delete this review?')) return;
 
             const res = await fetch(`/reviews/${this.dataset.reviewId}`, { 
-                method: 'DELETE',
-                headers: {
-                    'CSRF-Token': csrfToken
-                }
+                method: 'DELETE'
             });
             if (res.ok) {
                 location.reload();

@@ -12,7 +12,6 @@ block content
             .error-banner #{error}
 
         form(method="POST" action=`/recipes/${recipe.id}/edit` enctype="multipart/form-data")
-            input(type="hidden" name="_csrf" value=csrfToken)
 
             //- ── BASIC INFO ──────────────────────────────────
             .form-section
