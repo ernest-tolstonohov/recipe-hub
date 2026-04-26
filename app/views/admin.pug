@@ -1,16 +1,87 @@
 extends layout
 
 block content
-    .hero-section
-        h1 Admin Dashboard
-        p.subtitle Management area for RecipeHub admins.
+    .container.page-container
+        .section-header
+            div
+                h1 Admin Dashboard
+                p Manage users and content
 
-    .admin-content
-        .alert.alert-info
-            p This is a restricted area. Only admins can see this page.
-        
-        .admin-stats
-            p Welcome, #{user.username}! You have administrative privileges.
+        nav.admin-tabs
+            a.admin-tab-link(href="/system-control/?tab=users", class=tab==='users' ? 'active' : '') Users
+            a.admin-tab-link(href="/system-control/?tab=recipes", class=tab==='recipes' ? 'active' : '') Recipes
+
+        if tab === 'users'
+            .admin-section-header
+                h2 Users
+                span.admin-count #{users.length} total
+
+            if users.length === 0
+                .admin-empty No users found.
+            else
+                .admin-table-wrap
+                    table.admin-table
+                        thead
+                            tr
+                                th Username
+                                th Email
+                                th Role
+                                th Status
+                                th Joined
+                                th Action
+                        tbody
+                            each u in users
+                                tr(data-user-id=u.id, class=u.is_active ? '' : 'row-blocked')
+                                    td.td-username #{u.username}
+                                    td.td-email #{u.email}
+                                    td
+                                        span.role-badge(class=u.role === 'admin' ? 'role-admin' : '') #{u.role}
+                                    td
+                                        span.status-badge(class=u.is_active ? 'status-active' : 'status-blocked') #{u.is_active ? 'Active' : 'Blocked'}
+                                    td #{new Date(u.created_at).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'})}
+                                    td
+                                        if u.id !== user.id
+                                            button.btn-toggle-user(
+                                                data-id=u.id,
+                                                data-active=u.is_active ? '1' : '0'
+                                            ) #{u.is_active ? 'Block' : 'Unblock'}
+                                        else
+                                            span.self-label (you)
+
+        else if tab === 'recipes'
+            .admin-section-header
+                h2 Recipes
+                span.admin-count #{recipes.length} total
+
+            if recipes.length === 0
+                .admin-empty No recipes found.
+            else
+                each recipe in recipes
+                    .admin-recipe-card(data-recipe-id=recipe.id)
+                        .recipe-card-header
+                            .recipe-card-title
+                                if recipe.reviews.length > 0
+                                    button.reviews-toggle(data-target=`reviews-${recipe.id}`)
+                                        span.toggle-icon ▶
+                                span.recipe-title #{recipe.title}
+                                span.recipe-author  — by #{recipe.author}
+                            .recipe-card-actions
+                                if recipe.reviews.length > 0
+                                    span.review-count #{recipe.reviews.length} review(s)
+                                button.btn-delete-recipe(data-id=recipe.id) Delete Recipe
+
+                        if recipe.reviews.length > 0
+                            .reviews-panel(id=`reviews-${recipe.id}`)
+                                .reviews-list
+                                    each review in recipe.reviews
+                                        .admin-review-item(data-review-id=review.review_id)
+                                            .review-left
+                                                .review-meta
+                                                    strong #{review.username}
+                                                    span.review-stars  #{'★'.repeat(review.rating)}#{'☆'.repeat(5 - review.rating)}
+                                                    span.review-date  · #{new Date(review.created_at).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'})}
+                                                p.review-body #{review.body || '(no text)'}
+                                            button.btn-delete-review(data-id=review.review_id) Delete
 
 block scripts
-    // Add admin specific scripts here if needed
+    script(src="/js/admin.js")

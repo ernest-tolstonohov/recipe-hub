@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { requireAdmin } = require('../middleware/auth');
 const adminLogger = require('../middleware/adminLogger');
+const { getDashboard, toggleUserStatus, deleteRecipe, deleteReview } = require('../controllers/adminController');
 
-// Apply strictly enforced admin authorization and logging to all routes under this path
 router.use(requireAdmin);
 router.use(adminLogger);
 
-router.get('/', (req, res) => {
-    res.render('admin', { user: req.session.user });
-});
+router.get('/', getDashboard);
+router.post('/users/:id/toggle', toggleUserStatus);
+router.delete('/recipes/:id', deleteRecipe);
+router.delete('/reviews/:id', deleteReview);
 
 module.exports = router;
