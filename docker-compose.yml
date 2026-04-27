@@ -30,8 +30,8 @@ services:
       test: ["CMD-SHELL", "mysql -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD -e 'USE $$MYSQL_DATABASE; SELECT 1' 2>/dev/null"]
       interval: 5s
       timeout: 5s
-      retries: 20
-      start_period: 30s
+      retries: 30
+      start_period: 60s
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
