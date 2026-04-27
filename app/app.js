@@ -41,6 +41,10 @@ const sessionStore = new MySQLStore({
     createDatabaseTable: true,        // auto-creates `sessions` table if missing
 });
 
+sessionStore.on('error', (err) => {
+    console.error('Session store error:', err.message);
+});
+
 const SESSION_TIMEOUT = 2 * 60 * 60 * 1000; // 2 hours
 app.use(session({
     secret: process.env.SESSION_SECRET,

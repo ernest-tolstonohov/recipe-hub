@@ -6,6 +6,7 @@ html(lang="en")
         title RecipeHub
         link(rel="stylesheet", href="/css/style.css")
         link(rel="stylesheet", href="/css/autocomplete.css")
+        link(rel="icon", type="image/png", href="/images/logo.png")
     body
         nav.navbar
             .container
@@ -41,14 +42,12 @@ html(lang="en")
             .container
                 .footer-grid
                     .footer-col.footer-brand
+                        a.footer-logo(href="/")
+                            img(src="/images/logo.png", alt="RecipeHub Logo")
                         h4 RecipeHub
                         p Share Knowledge. Reduce Waste.
                         .social-links
-                            a(href="#") Twitter
-                            span  · 
-                            a(href="#") Instagram
-                            span  · 
-                            a(href="#") GitHub
+                            a(href="https://github.com/ernest-tolstonohov/recipe-hub") GitHub
                     .footer-col
                         h4 Navigation
                         ul
