@@ -136,12 +136,18 @@ app.get('/media/:filename', (req, res) => {
 app.get("/", async function(req, res) {
     try {
         const Recipe = require('./models/recipe');
-        const [recipes, tags, [stats]] = await Promise.all([
+        const [recipes, tags, [stats], topIngredients] = await Promise.all([
             Recipe.findAll(),
             db.query('SELECT tag_id, name, type FROM tags ORDER BY type, name'),
             db.query('SELECT (SELECT COUNT(*) FROM recipes) AS recipe_count, (SELECT COUNT(*) FROM users) AS user_count'),
+            db.query(`SELECT i.name, COUNT(ri.recipe_id) AS recipe_count
+                      FROM ingredients i
+                      JOIN recipe_ingredients ri ON i.ingredient_id = ri.ingredient_id
+                      GROUP BY i.ingredient_id, i.name
+                      ORDER BY recipe_count DESC
+                      LIMIT 10`),
         ]);
-        res.render('index', { user: req.session.user, recipes, tags, stats });
+        res.render('index', { user: req.session.user, recipes, tags, stats, topIngredients });
     } catch (err) {
         console.error(err);
         res.render('index', { user: req.session.user, recipes: [], tags: [], stats: { recipe_count: 0, user_count: 0 } });

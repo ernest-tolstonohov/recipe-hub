@@ -77,6 +77,18 @@ block content
             .stat-value #{stats ? stats.user_count : 0}
             .stat-label Cooks
 
+      if topIngredients && topIngredients.length
+        .sidebar-card
+          h4 Ingredient Breakdown
+          .ing-breakdown
+            - const maxCount = topIngredients[0].recipe_count
+            each ing in topIngredients
+              .ing-breakdown-row
+                span.ing-breakdown-name #{ing.name}
+                .ing-breakdown-bar-wrap
+                  .ing-breakdown-bar(style=`width: ${Math.round(ing.recipe_count / maxCount * 100)}%`)
+                span.ing-breakdown-count #{ing.recipe_count}
+
 block scripts
   div#recipes-data(data-recipes=JSON.stringify(recipes || []), style="display:none;")
   script(src="/js/search.js")
