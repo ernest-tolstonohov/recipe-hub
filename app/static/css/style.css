@@ -118,6 +118,8 @@ margin-bottom: 0.5rem; font-family: 'Playfair Display', Georgia, serif; position
 /* Footer */
 footer { background: #3D2B1A; color: #E8D5BC; padding: 4rem 0 3rem; margin-top: 3rem; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 3rem; }
+.footer-logo { display: inline-block; margin-bottom: 0.75rem; }
+.footer-logo img { height: 48px; width: auto; }
 .footer-brand h4 { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Playfair Display', Georgia, serif; color: #F5EAD7; }
 .footer-brand p { color: rgba(232,213,188,0.7); font-size: 0.9rem; margin-bottom: 1rem; }
 .social-links a { color: rgba(232,213,188,0.7); font-size: 0.85rem; }
