@@ -27,10 +27,10 @@ services:
       - ./db:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
-      interval: 10s
+      test: ["CMD-SHELL", "mysql -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD -e 'USE $$MYSQL_DATABASE; SELECT 1' 2>/dev/null"]
+      interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 20
       start_period: 30s
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
