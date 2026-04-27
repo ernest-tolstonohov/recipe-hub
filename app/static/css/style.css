@@ -50,7 +50,13 @@ a { color: inherit; text-decoration: none; }
 
 .hero-section { height: 388px; background: linear-gradient(135deg, #F5EAD7 0%, #EAD9C0 60%, #E2CCB0 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 1rem; border-bottom: 1px solid var(--border-dark); position: relative; overflow: hidden; }
 .hero-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(193,68,14,0.06) 0%, transparent 65%); pointer-events: none; }
-.hero-section h1 { font-size: 2.5rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; font-family: 'Playfair Display', Georgia, serif; position: relative; z-index: 1; }
+.hero-section h1 { font-size: 2.5rem; font-weight: 800; color: var(--navy); .hero-section h1 em {
+  color: #E07A4B;
+  font-style: italic;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+}
+margin-bottom: 0.5rem; font-family: 'Playfair Display', Georgia, serif; position: relative; z-index: 1; }
 .hero-section p { font-size: 1.125rem; color: var(--text-muted); margin-bottom: 2rem; position: relative; z-index: 1; }
 
 .search-widget { background: var(--white); border: 2px solid var(--border-dark); border-radius: 16px; padding: 1.5rem; max-width: 700px; width: 100%; box-shadow: var(--shadow-hard); position: relative; text-align: left; z-index: 1; }
@@ -437,3 +443,41 @@ details summary::-webkit-details-marker { display: none; }
 .btn-delete-review:disabled { opacity: 0.5; cursor: not-allowed; }
 @media (max-width: 640px) { .recipe-card-header { flex-direction: column; align-items: flex-start; } }
 .admin-profile-actions { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem; }
+/* ── UI Improvements ─────────────────────────────────── */
+
+/* Login/Register card — warmer */
+.auth-container {
+  background: linear-gradient(145deg, #FFFDF9 0%, #FDF0E6 100%);
+  border: 1.5px solid var(--border-dark);
+  box-shadow: 0 8px 32px rgba(193,68,14,0.10), 0 2px 8px rgba(42,38,34,0.06);
+}
+
+/* Profile header — more visual weight */
+.profile-header {
+  background: linear-gradient(135deg, #F5EAD7 0%, #EAD9C0 100%);
+  border-radius: 16px;
+  padding: 2.5rem !important;
+  border: 1px solid var(--border-dark);
+  border-bottom: 1px solid var(--border-dark) !important;
+  box-shadow: 0 4px 16px rgba(42,38,34,0.07);
+}
+
+.avatar-circle {
+  width: 88px;
+  height: 88px;
+  font-size: 2.25rem;
+  box-shadow: 0 4px 20px rgba(193,68,14,0.35);
+}
+
+/* Recipe card placeholder — warmer */
+.card-img-placeholder {
+  background: linear-gradient(135deg, #F0E0C8 0%, #E8D0B0 100%);
+  color: #B8906A;
+}
+
+/* Search widget — softer */
+.search-widget {
+  border: 1.5px solid var(--border-dark);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(193,68,14,0.12);
+}

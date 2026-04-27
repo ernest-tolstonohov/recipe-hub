@@ -30,10 +30,6 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const mysql  = require('mysql2/promise');
 
-// =============================================================
-// DB CONNECTION
-// Reads from your .env file. Make sure these match docker-compose.yml
-// =============================================================
 async function getConnection() {
   return mysql.createConnection({
     host:     process.env.DB_CONTAINER || process.env.MYSQL_HOST || 'localhost',
@@ -45,27 +41,15 @@ async function getConnection() {
   });
 }
 
-// =============================================================
-// HELPERS
-// =============================================================
 async function hash(password) {
-  // bcrypt rounds=10 is standard. Higher = slower but more secure.
   return bcrypt.hash(password, 10);
 }
 
-// =============================================================
-// SEED
-// =============================================================
 async function seed() {
   const db = await getConnection();
   console.log('Connected to MySQL.\n');
 
   try {
-    // ----------------------------------------------------------
-    // USERS
-    // All demo users share the password: password123
-    // In real life every user would have their own password.
-    // ----------------------------------------------------------
     console.log('Seeding users...');
     const passwordHash = await hash('password123');
 
@@ -88,27 +72,20 @@ async function seed() {
     }
     console.log(`  ${users.length} users inserted.\n`);
 
-    // ----------------------------------------------------------
-    // TAGS
-    // type controls which dropdown the tag appears in on the UI.
-    // ----------------------------------------------------------
     console.log('Seeding tags...');
     const tags = [
-      // dietary
       { name: 'Vegan',        type: 'dietary'   },
       { name: 'Vegetarian',   type: 'dietary'   },
       { name: 'Gluten-Free',  type: 'dietary'   },
       { name: 'Dairy-Free',   type: 'dietary'   },
       { name: 'Nut-Free',     type: 'dietary'   },
       { name: 'High-Protein', type: 'dietary'   },
-      // meal type
       { name: 'Breakfast',    type: 'meal_type' },
       { name: 'Lunch',        type: 'meal_type' },
       { name: 'Dinner',       type: 'meal_type' },
       { name: 'Dessert',      type: 'meal_type' },
       { name: 'Snack',        type: 'meal_type' },
       { name: 'Quick',        type: 'meal_type' },
-      // cuisine
       { name: 'Italian',      type: 'cuisine'   },
       { name: 'Asian',        type: 'cuisine'   },
       { name: 'Mexican',      type: 'cuisine'   },
@@ -127,11 +104,6 @@ async function seed() {
     }
     console.log(`  ${tags.length} tags inserted.\n`);
 
-    // ----------------------------------------------------------
-    // INGREDIENTS
-    // Global shared list. Each ingredient exists only once.
-    // recipe_ingredients stores the quantity per recipe.
-    // ----------------------------------------------------------
     console.log('Seeding ingredients...');
     const ingredients = [
       'spaghetti', 'egg', 'pancetta', 'Pecorino Romano', 'black pepper',
@@ -152,18 +124,13 @@ async function seed() {
     }
     console.log(`  ${ingredients.length} ingredients inserted.\n`);
 
-    // ----------------------------------------------------------
-    // RECIPES
-    // instructions stored as JSON array (FIX 1).
-    // avg_rating and review_count start at 0 — updated below
-    // after reviews are inserted (FIX 2).
-    // ----------------------------------------------------------
     console.log('Seeding recipes...');
     const recipes = [
       {
-        user_id:     2, // alice_cooks
+        user_id:     2,
         title:       'Classic Spaghetti Carbonara',
         description: 'Rich and creamy Italian pasta. No cream needed — the silky sauce comes from eggs alone.',
+        image_url:   'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800',
         instructions: [
           'Bring a large pot of salted water to a boil. Cook spaghetti until al dente. Reserve 1 cup of pasta water before draining.',
           'Fry pancetta in a large pan over medium heat until crispy. Add minced garlic and cook for 1 minute. Remove from heat.',
@@ -173,9 +140,10 @@ async function seed() {
         prep_time: 10, cook_time: 20, servings: 4, difficulty: 'medium',
       },
       {
-        user_id:     3, // ethan_budget
+        user_id:     3,
         title:       'Simple Fried Rice Bowl',
         description: 'Budget-friendly fried rice using leftover rice and whatever veg you have. Ready in 15 minutes.',
+        image_url:   'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800',
         instructions: [
           'Heat sesame oil in a wok or large frying pan over high heat.',
           'Add spring onion and garlic, stir-fry for 30 seconds.',
@@ -185,10 +153,11 @@ async function seed() {
         prep_time: 5, cook_time: 15, servings: 2, difficulty: 'easy',
       },
       {
-        user_id:     5, // buni_kitchen
+        user_id:     5,
         title:       'Lemon Herb Baked Salmon',
         description: 'Light and healthy baked salmon with a lemon and garlic topping.',
-          instructions: [
+        image_url:   'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800',
+        instructions: [
           'Preheat oven to 200°C (180°C fan). Line a baking tray with foil.',
           'Place salmon fillets on the tray. Season with salt and pepper.',
           'Squeeze lemon juice over the fillets. Top each with butter and minced garlic.',
@@ -197,9 +166,10 @@ async function seed() {
         prep_time: 5, cook_time: 18, servings: 2, difficulty: 'easy',
       },
       {
-        user_id:     4, // lara_vegan
+        user_id:     4,
         title:       'Vegan Banana Oat Pancakes',
         description: 'Fluffy, naturally sweet pancakes with no eggs and no dairy.',
+        image_url:   'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=800',
         instructions: [
           'Mash 2 ripe bananas in a large bowl until smooth.',
           'Add flour, oat milk, and baking powder. Mix until just combined — a few lumps are fine.',
@@ -210,9 +180,10 @@ async function seed() {
         prep_time: 5, cook_time: 15, servings: 8, difficulty: 'easy',
       },
       {
-        user_id:     6, // mike_dorm
+        user_id:     6,
         title:       'Cheesy Jacket Potato',
         description: 'The ultimate student comfort food. Crispy skin, fluffy inside, loaded with cheddar.',
+        image_url:   'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800',
         instructions: [
           'Preheat oven to 220°C. Scrub potatoes and prick all over with a fork.',
           'Rub with olive oil and salt. Place directly on the oven rack.',
@@ -222,9 +193,10 @@ async function seed() {
         prep_time: 5, cook_time: 60, servings: 1, difficulty: 'easy',
       },
       {
-        user_id:     3, // ethan_budget
+        user_id:     3,
         title:       'Spicy Bean Chilli',
         description: 'Hearty protein-packed chilli using storecupboard staples. Feeds 4 for under £3.',
+        image_url:   'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800',
         instructions: [
           'Fry diced onion in oil over medium heat for 5 minutes until soft.',
           'Add garlic, cumin, chilli powder, and paprika. Cook for 1 minute.',
@@ -235,9 +207,10 @@ async function seed() {
         prep_time: 10, cook_time: 30, servings: 4, difficulty: 'easy',
       },
       {
-        user_id:     2, // alice_cooks
+        user_id:     2,
         title:       'Garlic Butter Chicken',
         description: 'Juicy pan-fried chicken breasts with a garlicky butter sauce. Ready in 25 minutes.',
+        image_url:   'https://images.unsplash.com/photo-1598103442097-8b74394b95c4?w=800',
         instructions: [
           'Season chicken breasts with salt, pepper, and paprika on both sides.',
           'Heat olive oil in a pan over medium-high heat. Cook chicken for 6–7 minutes per side until golden.',
@@ -251,72 +224,70 @@ async function seed() {
     for (const r of recipes) {
       await db.execute(
         `INSERT IGNORE INTO recipes
-           (user_id, title, description, instructions, prep_time, cook_time, servings, difficulty)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+           (user_id, title, description, instructions, image_url, prep_time, cook_time, servings, difficulty)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           r.user_id, r.title, r.description,
-          JSON.stringify(r.instructions), // FIX 1 — store as JSON
+          JSON.stringify(r.instructions),
+          r.image_url || null,
           r.prep_time, r.cook_time, r.servings, r.difficulty,
         ]
       );
     }
-    console.log(`  ${recipes.length} recipes inserted.\n`);
 
-    // ----------------------------------------------------------
-    // RECIPE_INGREDIENTS
-    // ingredient_id matches the insertion order above (1-indexed).
-    // quantity and unit are per-recipe values.
-    // ----------------------------------------------------------
+    // Also update existing recipes with images
+    console.log('Updating image URLs for existing recipes...');
+    for (const r of recipes) {
+      await db.execute(
+        `UPDATE recipes SET image_url = ? WHERE title = ? AND (image_url IS NULL OR image_url = '')`,
+        [r.image_url, r.title]
+      );
+    }
+    console.log(`  ${recipes.length} recipes inserted/updated.\n`);
+
     console.log('Seeding recipe ingredients...');
     const recipeIngredients = [
-      // Recipe 1 — Spaghetti Carbonara
-      { recipe_id: 1, ingredient_id: 1,  quantity: 200, unit: 'g'      }, // spaghetti
-      { recipe_id: 1, ingredient_id: 2,  quantity: 3,   unit: ''       }, // egg
-      { recipe_id: 1, ingredient_id: 3,  quantity: 100, unit: 'g'      }, // pancetta
-      { recipe_id: 1, ingredient_id: 4,  quantity: 50,  unit: 'g'      }, // Pecorino Romano
-      { recipe_id: 1, ingredient_id: 5,  quantity: 1,   unit: 'tsp'    }, // black pepper
-      { recipe_id: 1, ingredient_id: 6,  quantity: 2,   unit: 'cloves' }, // garlic
-      // Recipe 2 — Fried Rice Bowl
-      { recipe_id: 2, ingredient_id: 8,  quantity: 200, unit: 'g'      }, // rice
-      { recipe_id: 2, ingredient_id: 2,  quantity: 2,   unit: ''       }, // egg
-      { recipe_id: 2, ingredient_id: 9,  quantity: 2,   unit: 'tbsp'   }, // soy sauce
-      { recipe_id: 2, ingredient_id: 10, quantity: 3,   unit: ''       }, // spring onion
-      { recipe_id: 2, ingredient_id: 11, quantity: 1,   unit: 'tsp'    }, // sesame oil
-      { recipe_id: 2, ingredient_id: 6,  quantity: 2,   unit: 'cloves' }, // garlic
-      // Recipe 3 — Baked Salmon
-      { recipe_id: 3, ingredient_id: 12, quantity: 2,   unit: ''       }, // chicken breast (salmon — add salmon ingredient ideally)
-      { recipe_id: 3, ingredient_id: 13, quantity: 1,   unit: ''       }, // lemon
-      { recipe_id: 3, ingredient_id: 14, quantity: 20,  unit: 'g'      }, // butter
-      { recipe_id: 3, ingredient_id: 6,  quantity: 2,   unit: 'cloves' }, // garlic
-      { recipe_id: 3, ingredient_id: 19, quantity: 0.5, unit: 'tsp'    }, // salt
-      // Recipe 4 — Vegan Pancakes
-      { recipe_id: 4, ingredient_id: 17, quantity: 2,   unit: ''       }, // banana
-      { recipe_id: 4, ingredient_id: 15, quantity: 150, unit: 'g'      }, // flour
-      { recipe_id: 4, ingredient_id: 16, quantity: 200, unit: 'ml'     }, // oat milk
-      { recipe_id: 4, ingredient_id: 18, quantity: 1,   unit: 'tsp'    }, // baking powder
-      { recipe_id: 4, ingredient_id: 19, quantity: 0.5, unit: 'tsp'    }, // salt
-      // Recipe 5 — Jacket Potato
-      { recipe_id: 5, ingredient_id: 29, quantity: 2,   unit: ''       }, // potato
-      { recipe_id: 5, ingredient_id: 22, quantity: 80,  unit: 'g'      }, // cheddar
-      { recipe_id: 5, ingredient_id: 14, quantity: 20,  unit: 'g'      }, // butter
-      { recipe_id: 5, ingredient_id: 7,  quantity: 1,   unit: 'tbsp'   }, // olive oil
-      { recipe_id: 5, ingredient_id: 19, quantity: 0.5, unit: 'tsp'    }, // salt
-      // Recipe 6 — Spicy Bean Chilli
-      { recipe_id: 6, ingredient_id: 24, quantity: 400, unit: 'g'      }, // kidney beans
-      { recipe_id: 6, ingredient_id: 21, quantity: 400, unit: 'g'      }, // tomato
-      { recipe_id: 6, ingredient_id: 20, quantity: 1,   unit: ''       }, // onion
-      { recipe_id: 6, ingredient_id: 6,  quantity: 3,   unit: 'cloves' }, // garlic
-      { recipe_id: 6, ingredient_id: 25, quantity: 1,   unit: 'tsp'    }, // cumin
-      { recipe_id: 6, ingredient_id: 26, quantity: 0.5, unit: 'tsp'    }, // chilli powder
-      { recipe_id: 6, ingredient_id: 27, quantity: 1,   unit: 'tsp'    }, // paprika
-      { recipe_id: 6, ingredient_id: 28, quantity: 200, unit: 'ml'     }, // vegetable stock
-      // Recipe 7 — Garlic Butter Chicken
-      { recipe_id: 7, ingredient_id: 12, quantity: 2,   unit: ''       }, // chicken breast
-      { recipe_id: 7, ingredient_id: 6,  quantity: 4,   unit: 'cloves' }, // garlic
-      { recipe_id: 7, ingredient_id: 14, quantity: 30,  unit: 'g'      }, // butter
-      { recipe_id: 7, ingredient_id: 7,  quantity: 1,   unit: 'tbsp'   }, // olive oil
-      { recipe_id: 7, ingredient_id: 13, quantity: 0.5, unit: ''       }, // lemon
-      { recipe_id: 7, ingredient_id: 27, quantity: 1,   unit: 'tsp'    }, // paprika
+      { recipe_id: 1, ingredient_id: 1,  quantity: 200, unit: 'g'      },
+      { recipe_id: 1, ingredient_id: 2,  quantity: 3,   unit: ''       },
+      { recipe_id: 1, ingredient_id: 3,  quantity: 100, unit: 'g'      },
+      { recipe_id: 1, ingredient_id: 4,  quantity: 50,  unit: 'g'      },
+      { recipe_id: 1, ingredient_id: 5,  quantity: 1,   unit: 'tsp'    },
+      { recipe_id: 1, ingredient_id: 6,  quantity: 2,   unit: 'cloves' },
+      { recipe_id: 2, ingredient_id: 8,  quantity: 200, unit: 'g'      },
+      { recipe_id: 2, ingredient_id: 2,  quantity: 2,   unit: ''       },
+      { recipe_id: 2, ingredient_id: 9,  quantity: 2,   unit: 'tbsp'   },
+      { recipe_id: 2, ingredient_id: 10, quantity: 3,   unit: ''       },
+      { recipe_id: 2, ingredient_id: 11, quantity: 1,   unit: 'tsp'    },
+      { recipe_id: 2, ingredient_id: 6,  quantity: 2,   unit: 'cloves' },
+      { recipe_id: 3, ingredient_id: 12, quantity: 2,   unit: ''       },
+      { recipe_id: 3, ingredient_id: 13, quantity: 1,   unit: ''       },
+      { recipe_id: 3, ingredient_id: 14, quantity: 20,  unit: 'g'      },
+      { recipe_id: 3, ingredient_id: 6,  quantity: 2,   unit: 'cloves' },
+      { recipe_id: 3, ingredient_id: 19, quantity: 0.5, unit: 'tsp'    },
+      { recipe_id: 4, ingredient_id: 17, quantity: 2,   unit: ''       },
+      { recipe_id: 4, ingredient_id: 15, quantity: 150, unit: 'g'      },
+      { recipe_id: 4, ingredient_id: 16, quantity: 200, unit: 'ml'     },
+      { recipe_id: 4, ingredient_id: 18, quantity: 1,   unit: 'tsp'    },
+      { recipe_id: 4, ingredient_id: 19, quantity: 0.5, unit: 'tsp'    },
+      { recipe_id: 5, ingredient_id: 29, quantity: 2,   unit: ''       },
+      { recipe_id: 5, ingredient_id: 22, quantity: 80,  unit: 'g'      },
+      { recipe_id: 5, ingredient_id: 14, quantity: 20,  unit: 'g'      },
+      { recipe_id: 5, ingredient_id: 7,  quantity: 1,   unit: 'tbsp'   },
+      { recipe_id: 5, ingredient_id: 19, quantity: 0.5, unit: 'tsp'    },
+      { recipe_id: 6, ingredient_id: 24, quantity: 400, unit: 'g'      },
+      { recipe_id: 6, ingredient_id: 21, quantity: 400, unit: 'g'      },
+      { recipe_id: 6, ingredient_id: 20, quantity: 1,   unit: ''       },
+      { recipe_id: 6, ingredient_id: 6,  quantity: 3,   unit: 'cloves' },
+      { recipe_id: 6, ingredient_id: 25, quantity: 1,   unit: 'tsp'    },
+      { recipe_id: 6, ingredient_id: 26, quantity: 0.5, unit: 'tsp'    },
+      { recipe_id: 6, ingredient_id: 27, quantity: 1,   unit: 'tsp'    },
+      { recipe_id: 6, ingredient_id: 28, quantity: 200, unit: 'ml'     },
+      { recipe_id: 7, ingredient_id: 12, quantity: 2,   unit: ''       },
+      { recipe_id: 7, ingredient_id: 6,  quantity: 4,   unit: 'cloves' },
+      { recipe_id: 7, ingredient_id: 14, quantity: 30,  unit: 'g'      },
+      { recipe_id: 7, ingredient_id: 7,  quantity: 1,   unit: 'tbsp'   },
+      { recipe_id: 7, ingredient_id: 13, quantity: 0.5, unit: ''       },
+      { recipe_id: 7, ingredient_id: 27, quantity: 1,   unit: 'tsp'    },
     ];
 
     for (const ri of recipeIngredients) {
@@ -328,30 +299,26 @@ async function seed() {
     }
     console.log(`  ${recipeIngredients.length} recipe ingredients inserted.\n`);
 
-    // ----------------------------------------------------------
-    // RECIPE_TAGS
-    // tag_id matches insertion order above.
-    // ----------------------------------------------------------
     console.log('Seeding recipe tags...');
     const recipeTags = [
-      { recipe_id: 1, tag_id: 9  }, // Carbonara      → Dinner
-      { recipe_id: 1, tag_id: 13 }, // Carbonara      → Italian
-      { recipe_id: 2, tag_id: 8  }, // Fried Rice     → Lunch
-      { recipe_id: 2, tag_id: 14 }, // Fried Rice     → Asian
-      { recipe_id: 2, tag_id: 12 }, // Fried Rice     → Quick
-      { recipe_id: 3, tag_id: 9  }, // Salmon         → Dinner
-      { recipe_id: 3, tag_id: 6  }, // Salmon         → High-Protein
-      { recipe_id: 4, tag_id: 1  }, // Pancakes       → Vegan
-      { recipe_id: 4, tag_id: 4  }, // Pancakes       → Dairy-Free
-      { recipe_id: 4, tag_id: 7  }, // Pancakes       → Breakfast
-      { recipe_id: 5, tag_id: 2  }, // Jacket Potato  → Vegetarian
-      { recipe_id: 5, tag_id: 9  }, // Jacket Potato  → Dinner
-      { recipe_id: 5, tag_id: 16 }, // Jacket Potato  → British
-      { recipe_id: 6, tag_id: 1  }, // Chilli         → Vegan
-      { recipe_id: 6, tag_id: 9  }, // Chilli         → Dinner
-      { recipe_id: 6, tag_id: 18 }, // Chilli         → Budget
-      { recipe_id: 7, tag_id: 9  }, // Garlic Chicken → Dinner
-      { recipe_id: 7, tag_id: 6  }, // Garlic Chicken → High-Protein
+      { recipe_id: 1, tag_id: 9  },
+      { recipe_id: 1, tag_id: 13 },
+      { recipe_id: 2, tag_id: 8  },
+      { recipe_id: 2, tag_id: 14 },
+      { recipe_id: 2, tag_id: 12 },
+      { recipe_id: 3, tag_id: 9  },
+      { recipe_id: 3, tag_id: 6  },
+      { recipe_id: 4, tag_id: 1  },
+      { recipe_id: 4, tag_id: 4  },
+      { recipe_id: 4, tag_id: 7  },
+      { recipe_id: 5, tag_id: 2  },
+      { recipe_id: 5, tag_id: 9  },
+      { recipe_id: 5, tag_id: 16 },
+      { recipe_id: 6, tag_id: 1  },
+      { recipe_id: 6, tag_id: 9  },
+      { recipe_id: 6, tag_id: 18 },
+      { recipe_id: 7, tag_id: 9  },
+      { recipe_id: 7, tag_id: 6  },
     ];
 
     for (const rt of recipeTags) {
@@ -362,11 +329,6 @@ async function seed() {
     }
     console.log(`  ${recipeTags.length} recipe tags inserted.\n`);
 
-    // ----------------------------------------------------------
-    // REVIEWS
-    // After inserting reviews we recalculate avg_rating and
-    // review_count for each recipe (FIX 2).
-    // ----------------------------------------------------------
     console.log('Seeding reviews...');
     const reviews = [
       { recipe_id: 1, user_id: 3, rating: 5, body: 'Really easy to follow for a beginner. Turned out creamy and delicious first try.' },
@@ -394,11 +356,6 @@ async function seed() {
     }
     console.log(`  ${reviews.length} reviews inserted.\n`);
 
-    // ----------------------------------------------------------
-    // UPDATE avg_rating + review_count  (FIX 2)
-    // This is the same logic your reviewController will run
-    // in production after every new review is submitted.
-    // ----------------------------------------------------------
     console.log('Updating avg_rating and review_count for all recipes...');
     await db.execute(`
       UPDATE recipes r
@@ -408,10 +365,6 @@ async function seed() {
     `);
     console.log('  Done.\n');
 
-    // ----------------------------------------------------------
-    // SAVED RECIPES
-    // A few demo bookmarks so the saved recipes page has data.
-    // ----------------------------------------------------------
     console.log('Seeding saved recipes...');
     const saved = [
       { user_id: 2, recipe_id: 2 },
